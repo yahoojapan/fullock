@@ -1,0 +1,146 @@
+#! /bin/sh
+#
+# The BASE templates for FULLOCK.
+#
+# Copyright 2015 Yahoo! JAPAN corporation.
+#
+# FULLOCK is fast locking library on user level by Yahoo! JAPAN.
+# FULLOCK is following specifications.
+#
+# For the full copyright and license information, please view
+# the LICENSE file that was distributed with this source code.
+#
+# AUTHOR:   Takeshi Nakatani
+# CREATE:   Wed 13 May 2015
+# REVISION:
+#
+
+#
+# Compiled Object files
+#
+*.slo
+*.lo
+*.o
+*.Po
+*.Plo
+
+#
+# Precompiled Headers
+#
+*.gch
+*.pch
+
+#
+# Compiled Dynamic libraries
+#
+*.so
+*.so.*
+*.dylib
+*.dll
+
+#
+# Fortran module files
+#
+*.mod
+
+#
+# Compiled Static libraries
+#
+*.lai
+*.la
+*.a
+*.lib
+
+#
+# Executables
+#
+*.exe
+*.out
+*.app
+
+#
+# autotools
+#
+aclocal.m4
+autom4te.cache
+autom4te.cache/*
+autoscan.log
+config.guess
+config.h
+config.h.in
+config.h.in~
+config.log
+config.status
+config.sub
+configure
+configure.scan
+depcomp
+install-sh
+libtool
+ltmain.sh
+m4
+m4/*
+missing
+stamp-h1
+
+#
+# automakes
+#
+Makefile.in
+*/Makefile.in
+
+
+#
+# archive files and backups
+#
+*.tgz
+*.tar.gz
+*.rpm
+*.swp
+*.bak
+
+#
+# object directories
+#
+.deps
+.libs
+*/.deps
+*/.deps/*
+*/.libs
+*/.libs/*
+
+#
+# other files
+#
+compile
+compile/*
+test-driver
+test-driver/*
+
+#
+# Other built objects
+#
+*.pc
+Makefile
+*/Makefile
+
+#
+# project custom
+#
+RELEASE_VERSION
+lib/fullockversion.cc
+tests/fullocktest
+tests/singletest
+tests/mttest
+tests/mptest
+tests/fcntl_mttest
+tests/fcntl_mptest
+tests/cond_mptest
+tests/cond_mttest
+*.k2h
+
+#
+# VIM modelines
+#
+# vim:set ts=4 fenc=utf-8:
+#

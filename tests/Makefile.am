@@ -14,7 +14,7 @@
 # REVISION:
 #
 
-noinst_PROGRAMS = fullocktest singletest mttest mptest cond_mttest cond_mptest fcntl_mttest fcntl_mptest
+noinst_PROGRAMS = fullocktest singletest mttest mptest cond_mttest cond_mptest fcntl_mttest fcntl_mptest forktest
 
 fullocktest_SOURCES = fullocktest.cc
 fullocktest_LDADD = -L../lib/.libs -lfullock -lpthread
@@ -39,6 +39,9 @@ fcntl_mttest_LDADD = -L../lib/.libs -lfullock -lpthread
 
 fcntl_mptest_SOURCES = fcntl_mptest.cc
 fcntl_mptest_LDADD = -L../lib/.libs -lfullock
+
+forktest_SOURCES = forktest.cc
+forktest_LDADD = 
 
 ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = -I$(top_srcdir)/lib

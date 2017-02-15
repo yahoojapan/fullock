@@ -476,6 +476,21 @@ bool FlShm::CheckCondDeadLock(fl_pid_cache_map_t* pcache_map, flckpid_t flckpid,
 }
 
 //---------------------------------------------------------
+// FlShm : For Forking
+//---------------------------------------------------------
+// When the program which loads this fullock library is forked, we need to start worker thread
+// in child process.
+//
+void FlShm::PreforkHandler(void)
+{
+	if(FlShm::pCheckPidThread){
+		if(!FlShm::pCheckPidThread->ReInitializeThread()){
+			ERR_FLCKPRN("Call Prefork handler and try to run thread for child process(%d), but FAILED TO RUN THREAD", getpid());
+		}
+	}
+}
+
+//---------------------------------------------------------
 // FlShm : Lock
 //---------------------------------------------------------
 bool FlShm::CheckAttach(void)

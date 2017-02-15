@@ -1,3 +1,15 @@
+fullock (1.0.23) trusty; urgency=low
+
+  * Fixed a bug about deadlock at forking
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 13 Feb 2017 17:08:41 +0900
+
+fullock (1.0.22) trusty; urgency=low
+
+  * Changed exclusive control more strictly
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 06 Feb 2017 13:47:09 +0900
+
 fullock (1.0.21) trusty; urgency=low
 
   * First version of open source on Github

@@ -23,7 +23,7 @@ if [ "X${SRCTOP}" = "X" ]; then
 	SRCTOP=`cd ${MYSCRIPTDIR}/..; pwd`
 fi
 if [ "X${OBJDIR}" = "X" ]; then
-	LD_LIBRARY_PATH="${SRCTOP}/lib/.lib"
+	LD_LIBRARY_PATH="${SRCTOP}/lib/.libs"
 	TESTPROGDIR=${MYSCRIPTDIR}
 else
 	LD_LIBRARY_PATH="${SRCTOP}/lib/${OBJDIR}"
@@ -588,6 +588,26 @@ REST_PROCESSES=`ps ax | grep fullocktest | grep -v grep | awk '{print $1}'`
 kill -HUP $REST_PROCESSES 2> /dev/null
 sleep 1
 kill -9 $REST_PROCESSES 2> /dev/null
+
+##############################################################
+### Test forking
+###
+echo "-- Test forking -------------------------" >> $LOGFILE
+echo "" >> $LOGFILE
+${TESTPROGDIR}/forktest >> $LOGFILE
+
+if [ $? -ne 0 ]; then
+	echo "Test forking --->> ERROR"
+	echo "Test forking --->> ERROR" >> $LOGFILE
+	echo ""
+	echo "---------------- Test forking log ----------------"
+	cat $LOGFILE
+	put_result_xml_func NG ${XMLRESULTSFILE}
+	exit 1
+fi
+echo "Test forking --->> OK"
+echo "Test forking --->> OK" >> $LOGFILE
+echo "" >> $LOGFILE
 
 ##############################################################
 ### Remove file

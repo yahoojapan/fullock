@@ -137,6 +137,7 @@ tests/fcntl_mttest
 tests/fcntl_mptest
 tests/cond_mptest
 tests/cond_mttest
+tests/forktest
 *.k2h
 
 #

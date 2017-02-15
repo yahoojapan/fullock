@@ -247,14 +247,14 @@ namespace fullock
 		flck_rwlock_t	afterval;
 		flck_rwlock_t	beforeval;
 		do{
-			if(FLCK_RWLOCK_UNLOCK == *plockval){
+			beforeval		= *plockval;
+			if(FLCK_RWLOCK_UNLOCK == beforeval){
 				// already unlocked
 				break;
-			}else if(FLCK_RWLOCK_WLOCK == *plockval){
+			}else if(FLCK_RWLOCK_WLOCK >= beforeval){
 				beforeval	= FLCK_RWLOCK_WLOCK;
 				newval		= FLCK_RWLOCK_UNLOCK;
 			}else{
-				beforeval	= *plockval;
 				newval		= beforeval - 1;
 			}
 		}while(beforeval != (afterval = __sync_val_compare_and_swap(plockval, beforeval, newval)) && -1 <= sched_yield());
@@ -585,8 +585,12 @@ namespace fullock
 			return false;
 		}
 		// insert current before top.
-		pcurrent->next	= preltop;
-		preltop			= to_rel(pcurrent);
+		st_ptr_type	newreltop = to_rel(pcurrent);
+		st_ptr_type	oldreltop;
+		do{
+			oldreltop		= preltop;
+			pcurrent->next	= oldreltop;
+		}while(oldreltop != __sync_val_compare_and_swap(&preltop, oldreltop, newreltop));
 
 		return true;
 	}
@@ -596,12 +600,19 @@ namespace fullock
 	template<typename T>
 	inline bool fl_list_base<T>::retreive_list(st_ptr_type& preltop)
 	{
-		if(!preltop){
-			return false;
-		}
-		// set current
-		pcurrent		= to_abs(preltop);
-		preltop			= pcurrent->next;
+		// retreive one from top
+		st_ptr_type	oldreltop;
+		st_ptr_type	newreltop;
+		do{
+			oldreltop = preltop;
+			if(!oldreltop){
+				return false;
+			}
+			newreltop = to_abs(oldreltop)->next;
+
+		}while(oldreltop != __sync_val_compare_and_swap(&preltop, oldreltop, newreltop));
+
+		pcurrent		= to_abs(oldreltop);
 		pcurrent->next	= nullval;
 
 		return true;
@@ -613,15 +624,34 @@ namespace fullock
 		if(!pcurrent || !preltop){
 			return false;
 		}
-		for(st_ptr_type pabstarget = to_abs(preltop), pabsparent = nullval; pabstarget; pabsparent = pabstarget, pabstarget = to_abs(pabstarget->next)){
+		// search current in list
+		st_ptr_type		oldrelnext	= to_rel(pcurrent);
+		st_ptr_type		newrelnext;
+		st_ptr_type*	ptroldnext	= &preltop;
+		bool			is_restart	= false;
+		for(st_ptr_type pabstarget = to_abs(preltop), pabsparent = nullval; pabstarget; ){
 			if(pabstarget == pcurrent){
-				// switch parent's next to target's next
-				if(pabsparent){
-					pabsparent->next= pabstarget->next;
-				}else{
-					preltop			= pabstarget->next;
+				// switch parent's next to current's next(cut current)
+				newrelnext = pcurrent->next;
+
+				if(oldrelnext == __sync_val_compare_and_swap(ptroldnext, oldrelnext, newrelnext)){
+					pcurrent->next = nullval;
+					return true;
 				}
-				return true;
+				is_restart = true;
+			}
+
+			if(is_restart){
+				// restart from top
+				is_restart	= false;
+				pabsparent	= nullval;
+				ptroldnext	= &preltop;
+				pabstarget	= to_abs(preltop);
+			}else{
+				// next
+				pabsparent	= pabstarget;
+				ptroldnext	= &(pabsparent->next);
+				pabstarget	= to_abs(pabstarget->next);
 			}
 		}
 		return false;

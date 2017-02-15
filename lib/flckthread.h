@@ -41,18 +41,26 @@ class FlckThread
 			FLCK_THCNTL_RUN	= 0,
 			FLCK_THCNTL_STOP,
 			FLCK_THCNTL_EXIT,
+			FLCK_THCNTL_FIN
 		}THCNTLFLAG;
 
 		static const int	DEFAULT_INTERVALMS	= 10;		// default interval ms
 
 	protected:
 		static const int	FLCK_WAIT_EVENT_MAX	= 32;		// wait event max count
+		static int			InotifyFd;
+		static int			WatchFd;
+		static int			EventFd;
+		static void*		pThreadParam;					// free point using in worker thread
 
 		volatile THCNTLFLAG	thflag;							// thread control flags
+		int					bup_intervalms;					// backup for forking
+		std::string			bup_filepath;					// backup for forking
 		bool				is_run_worker;
 		pthread_t			pthreadid;						// worker thread id
 
 	protected:
+		static void CleanupHandler(void* arg);				// cleanup handler by canceling thread
 		static void* WorkerProc(void* param);
 		static bool CheckEvent(int InotifyFd, int WatchFd);
 
@@ -62,7 +70,8 @@ class FlckThread
 		FlckThread();
 		virtual ~FlckThread();
 
-		bool InitializeThread(const char* pfile, int intervalms = FlckThread::DEFAULT_INTERVALMS, bool is_stop = true);
+		bool InitializeThread(const char* pfile, int intervalms = FlckThread::DEFAULT_INTERVALMS);
+		bool ReInitializeThread(void);
 		bool Run(void);
 		bool Stop(void);
 		bool Exit(void);

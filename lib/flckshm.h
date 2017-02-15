@@ -106,6 +106,7 @@ class FlShm
 		static FlShm* get(void) { return &FlShm::singleton; }
 		static bool LoadEnv(void);
 
+		static void PreforkHandler(void);						// for forking
 		static bool CheckAttach(void);
 		static bool Attach(void);
 		static bool Detach(void);

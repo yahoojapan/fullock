@@ -20,6 +20,7 @@
 #include <sys/inotify.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 #include <errno.h>
 #include <assert.h>
 
@@ -41,10 +42,86 @@ typedef struct flck_th_param{
 }FLCKTHPARAM, *PFLCKTHPARAM;
 
 //---------------------------------------------------------
+// Utility for thread control flag
+//---------------------------------------------------------
+inline void set_val_thread_cntrl_flag(volatile FlckThread::THCNTLFLAG* pflag, FlckThread::THCNTLFLAG oldval, FlckThread::THCNTLFLAG newval)
+{
+	// oldval is used only first.
+	FlckThread::THCNTLFLAG	resval;
+	while(oldval != (resval = __sync_val_compare_and_swap(pflag, oldval, newval))){
+		if(resval == newval){
+			break;
+		}
+		oldval = resval;
+	}
+}
+
+inline void set_stop_thread_cntrl_flag(volatile FlckThread::THCNTLFLAG* pflag)
+{
+	set_val_thread_cntrl_flag(pflag, FlckThread::FLCK_THCNTL_RUN, FlckThread::FLCK_THCNTL_STOP);
+}
+
+inline void set_run_thread_cntrl_flag(volatile FlckThread::THCNTLFLAG* pflag)
+{
+	set_val_thread_cntrl_flag(pflag, FlckThread::FLCK_THCNTL_STOP, FlckThread::FLCK_THCNTL_RUN);
+}
+
+inline void set_fin_thread_cntrl_flag(volatile FlckThread::THCNTLFLAG* pflag)
+{
+	set_val_thread_cntrl_flag(pflag, FlckThread::FLCK_THCNTL_EXIT, FlckThread::FLCK_THCNTL_FIN);
+}
+
+inline void set_exit_thread_cntrl_flag(volatile FlckThread::THCNTLFLAG* pflag)
+{
+	FlckThread::THCNTLFLAG	oldval = FlckThread::FLCK_THCNTL_RUN;	// temporary
+	FlckThread::THCNTLFLAG	newval = FlckThread::FLCK_THCNTL_EXIT;
+	FlckThread::THCNTLFLAG	resval;
+	while(oldval != (resval = __sync_val_compare_and_swap(pflag, oldval, newval))){
+		if(FlckThread::FLCK_THCNTL_EXIT <= resval){
+			// already set exit or fin
+			break;
+		}
+		oldval = resval;
+	}
+}
+
+//---------------------------------------------------------
 // Class variable
 //---------------------------------------------------------
 const int	FlckThread::DEFAULT_INTERVALMS;
 const int	FlckThread::FLCK_WAIT_EVENT_MAX;
+int			FlckThread::InotifyFd			= FLCK_INVALID_HANDLE;
+int			FlckThread::WatchFd				= FLCK_INVALID_HANDLE;
+int			FlckThread::EventFd				= FLCK_INVALID_HANDLE;
+void*		FlckThread::pThreadParam		= NULL;
+
+//---------------------------------------------------------
+// Class Method : Thread Cancel Handler
+//---------------------------------------------------------
+void FlckThread::CleanupHandler(void* arg)
+{
+	PFLCKTHPARAM			pparam = reinterpret_cast<PFLCKTHPARAM>(arg);
+	volatile THCNTLFLAG*	pThFlag= (pparam ? pparam->pThFlag : NULL);
+
+	MSG_FLCKPRN("Thread canceled and call handler with pflag=%p, watchid=%d, inotifyfd=%d, eventfd=%d", pThFlag, FlckThread::WatchFd, FlckThread::InotifyFd, FlckThread::EventFd);
+
+	// free allocated data
+	FlckThread::pThreadParam = NULL;		// pparam == FlckThread::pThreadParam
+	FLCK_Free(pparam->pfilepath);
+	FLCK_Delete(pparam);
+
+	// close handles
+	if(FLCK_INVALID_HANDLE != FlckThread::WatchFd){
+		inotify_rm_watch(FlckThread::InotifyFd, FlckThread::WatchFd);
+	}
+	FLCK_CLOSE(FlckThread::InotifyFd);
+	FLCK_CLOSE(FlckThread::EventFd);
+
+	// set finish flag
+	if(pThFlag){
+		set_fin_thread_cntrl_flag(pThFlag);
+	}
+}
 
 //---------------------------------------------------------
 // Class Method : Worker proc
@@ -53,83 +130,117 @@ const int	FlckThread::FLCK_WAIT_EVENT_MAX;
 // thflag flag. FlckThread does not use mutex for exclusion
 // control.
 //
+// [NOTE]
+// This fullock library starts the following worker threads when loading
+// the library, and ends when the library is unloaded.
+// 
+// All worker thread is terminated by calling pthrad_cancel function.
+// As a result, when the library is unloaded with dlclose and when it
+// terminates normally, the worker thread can be terminated by same way.
+// The handle and memory used by the worker thread are post-processed by
+// CleanupHandler method.
+// 
+// Take care for that this library uses the nonportable function as
+// pthread_tryjoin_np to wait for the worker thread to terminate in the
+// main thread.
+// In the main thread, not only pthrad_exit is used to terminate a thread,
+// but also a control flag is detected.
+// 
+// If the process loading the library is forked, this library automatically
+// starts the worker thread immediately after starting the child process.
+// 
 void* FlckThread::WorkerProc(void* param)
 {
-	PFLCKTHPARAM	pparam = reinterpret_cast<PFLCKTHPARAM>(param);
+	//
+	// Initialize variables and cleanup handler
+	//
+	int	old_cancel_state = PTHREAD_CANCEL_ENABLE;
+	pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, &old_cancel_state);		// blocking cancel in initializing
+
+	// initialize variables
+	FlckThread::InotifyFd	= FLCK_INVALID_HANDLE;
+	FlckThread::WatchFd		= FLCK_INVALID_HANDLE;
+	FlckThread::EventFd		= FLCK_INVALID_HANDLE;
+
+	// get parameter
+	PFLCKTHPARAM	pparam = reinterpret_cast<PFLCKTHPARAM>(param);			// param is freed in cancel handler
 	if(!pparam){
 		ERR_FLCKPRN("Parameter is wrong.");
+		pthread_setcancelstate(old_cancel_state, NULL);						// rollback cancel state
+		pthread_testcancel();												// check cancel
 		pthread_exit(NULL);
 	}
-
-	// copy & free
+	FlckThread::pThreadParam			= param;							// for forking
 	volatile THCNTLFLAG*	pThFlag		= pparam->pThFlag;
 	int						intervalms	= pparam->intervalms;
 	char*					pfilepath	= pparam->pfilepath;
-	FLCK_Delete(pparam);
 
-	// fds
-	int	InotifyFd;
-	int	WatchFd;
-	int	EventFd;
+	//
+	// set cleanup handler
+	// Take care for pthread_cleanup_push, it is macro which has a part of "do{ }while()".(see: pthread.h)
+	//
+	pthread_cleanup_push(FlckThread::CleanupHandler, pparam);
+	pthread_setcancelstate(old_cancel_state, NULL);							// set allowing cancel
+	pthread_testcancel();													// check cancel
 
 	// create event fd
-	if(-1 == (EventFd = epoll_create1(EPOLL_CLOEXEC))){
+	if(FLCK_INVALID_HANDLE == (FlckThread::EventFd = epoll_create1(EPOLL_CLOEXEC))){
 		ERR_FLCKPRN("Failed to create epoll, error %d", errno);
+		pthread_testcancel();
 		pthread_exit(NULL);
 	}
 	// create inotify
-	if(-1 == (InotifyFd = inotify_init1(IN_NONBLOCK | IN_CLOEXEC))){
+	if(FLCK_INVALID_HANDLE == (FlckThread::InotifyFd = inotify_init1(IN_NONBLOCK | IN_CLOEXEC))){
 		ERR_FLCKPRN("Failed to create inotify, error %d", errno);
-		FLCK_CLOSE(EventFd);
+		pthread_testcancel();												// check cancel
 		pthread_exit(NULL);
 	}
 	// add file to inotify
-	if(FLCK_INVALID_HANDLE == (WatchFd = inotify_add_watch(InotifyFd, pfilepath, IN_CLOSE))){
+	if(FLCK_INVALID_HANDLE == (FlckThread::WatchFd = inotify_add_watch(FlckThread::InotifyFd, pfilepath, IN_CLOSE))){
 		ERR_FLCKPRN("Could not add to watch file %s (errno=%d)", pfilepath, errno);
-		FLCK_CLOSE(InotifyFd);
-		FLCK_CLOSE(EventFd);
-		FLCK_Free(pfilepath);
+		pthread_testcancel();												// check cancel
 		pthread_exit(NULL);
 	}
-	FLCK_Free(pfilepath);
 
 	// add event
 	struct epoll_event	epoolev;
 	memset(&epoolev, 0, sizeof(struct epoll_event));
-	epoolev.data.fd	= InotifyFd;
-	epoolev.events	= EPOLLIN | EPOLLET;
-
-	if(-1 == epoll_ctl(EventFd, EPOLL_CTL_ADD, InotifyFd, &epoolev)){
-		ERR_FLCKPRN("Failed to add inotifyfd(%d)-watchfd(%d) to event fd(%d), error=%d", InotifyFd, WatchFd, EventFd, errno);
-		inotify_rm_watch(InotifyFd, WatchFd);
-		FLCK_CLOSE(InotifyFd);
-		FLCK_CLOSE(EventFd);
+	epoolev.data.fd		= FlckThread::InotifyFd;
+	epoolev.events		= EPOLLIN | EPOLLET;
+	if(-1 == epoll_ctl(FlckThread::EventFd, EPOLL_CTL_ADD, FlckThread::InotifyFd, &epoolev)){
+		ERR_FLCKPRN("Failed to add inotifyfd(%d)-watchfd(%d) to event fd(%d), error=%d", FlckThread::InotifyFd, FlckThread::WatchFd, FlckThread::EventFd, errno);
+		pthread_testcancel();												// check cancel
 		pthread_exit(NULL);
 	}
+	pthread_testcancel();													// check cancel
 
 	// do loop
 	struct timespec		sleepms = {(intervalms / 1000), (intervalms % 1000) * 1000 * 1000};
 	struct epoll_event  events[FLCK_WAIT_EVENT_MAX];
 	int					eventcnt;
+	while(FlckThread::FLCK_THCNTL_EXIT > *pThFlag){
+		pthread_testcancel();												// check cancel
 
-	while(FlckThread::FLCK_THCNTL_EXIT != *pThFlag){
 		if(FlckThread::FLCK_THCNTL_STOP == *pThFlag){
 			// stop(sleep)
 			nanosleep(&sleepms, NULL);
-			continue;
-		}
 
-		if(FlckThread::FLCK_THCNTL_RUN == *pThFlag){
+		}else if(FlckThread::FLCK_THCNTL_RUN == *pThFlag){
 			// wait event
-			if(0 < (eventcnt = epoll_pwait(EventFd, events, FLCK_WAIT_EVENT_MAX, intervalms, NULL))){
+			if(0 < (eventcnt = epoll_pwait(FlckThread::EventFd, events, FLCK_WAIT_EVENT_MAX, intervalms, NULL))){
 				// catch event
 				for(int cnt = 0; cnt < eventcnt; cnt++){
-					if(events[cnt].data.fd != InotifyFd){
-						WAN_FLCKPRN("Why event fd(%d) is not same inotify fd(%d), but continue...", events[cnt].data.fd, InotifyFd);
+					pthread_testcancel();									// check cancel
+					// check flag
+					if(FlckThread::FLCK_THCNTL_EXIT <= *pThFlag){
+						break;
+					}
+					if(events[cnt].data.fd != FlckThread::InotifyFd){
+						WAN_FLCKPRN("Why event fd(%d) is not same inotify fd(%d), but continue...", events[cnt].data.fd, FlckThread::InotifyFd);
 						continue;
 					}
 					// check event
-					if(FlckThread::CheckEvent(InotifyFd, WatchFd)){
+					if(FlckThread::CheckEvent(FlckThread::InotifyFd, FlckThread::WatchFd)){
 						// CLOSE event is occurred.
 						FlShm	LocalFlShm;
 						if(!LocalFlShm.CheckProcessDead()){
@@ -140,7 +251,7 @@ void* FlckThread::WorkerProc(void* param)
 
 			}else if(-1 >= eventcnt){
 				if(EINTR != errno){
-					ERR_FLCKPRN("Something error occured in waiting event(errno=%d): inotifyfd(%d) watchfd(%d) event fd(%d)", errno, InotifyFd, WatchFd, EventFd);
+					ERR_FLCKPRN("Something error occured in waiting event(errno=%d): inotifyfd(%d) watchfd(%d) event fd(%d)", errno, FlckThread::InotifyFd, FlckThread::WatchFd, FlckThread::EventFd);
 					break;
 				}
 				// signal occurred.
@@ -150,33 +261,9 @@ void* FlckThread::WorkerProc(void* param)
 			}
 		}
 	}
-
-	// close all fds
-	inotify_rm_watch(InotifyFd, WatchFd);
-	FLCK_CLOSE(InotifyFd);
-	FLCK_CLOSE(EventFd);
-
-	// [NOTE]
-	// Do not call pthread_exit because this thread is dead locked in pthread_exit
-	// when dlclose is called immediately after calling dlopen.
-	// One of this case, user makes fullock linked apache loadable module which is
-	// loaded by LoadModule in configuration. Apache loads that dso module and unloads
-	// it, reloads it at apache startup. Then apache internal processing calls dlopen,
-	// dlclose, and (re)dlopen.
-	// In these series of processes, the destructor of fullock is called by dlclose.
-	// The destructor will stop this thread, then this thread will call pthread_exit
-	// for exiting. Exactly when that time, pthread_exit is deadlock!
-	// The stack is pointed following: 
-	//   pthread_exit -> pthread_cancel_init -> do_dlopen -> pthread_mutex_lock -> deadlock
-	// 
-	// So we do not call pthread_exit here.
-	// But we will not need to cogitate, when the thread is exited without calling
-	// pthread_exit, it is equivalent to calling pthread_exit with the value supplied
-	// in the return statement.(see: man pthrad_create)
-	// 
-	//pthread_exit(NULL);
-
-	return NULL;
+	pthread_testcancel();													// check cancel
+	pthread_cleanup_pop(1);													// pop and execute cleanup handler
+	pthread_exit(NULL);
 }
 
 //
@@ -220,7 +307,7 @@ bool FlckThread::CheckEvent(int InotifyFd, int WatchFd)
 //---------------------------------------------------------
 // Methods
 //---------------------------------------------------------
-FlckThread::FlckThread() : thflag(FlckThread::FLCK_THCNTL_STOP), is_run_worker(false)
+FlckThread::FlckThread() : thflag(FlckThread::FLCK_THCNTL_STOP), bup_intervalms(FlckThread::DEFAULT_INTERVALMS), bup_filepath(""), is_run_worker(false)
 {
 }
 
@@ -231,7 +318,7 @@ FlckThread::~FlckThread()
 	}
 }
 
-bool FlckThread::InitializeThread(const char* pfile, int intervalms, bool is_stop)
+bool FlckThread::InitializeThread(const char* pfile, int intervalms)
 {
 	if(!pfile){
 		ERR_FLCKPRN("Parameter is wrong.");
@@ -241,13 +328,15 @@ bool FlckThread::InitializeThread(const char* pfile, int intervalms, bool is_sto
 		ERR_FLCKPRN("Already run worker thread, must stop worker.");
 		return false;
 	}
-
-	PFLCKTHPARAM	pparam = new FLCKTHPARAM;
+	// backup for forking
+	bup_intervalms			= intervalms;
+	bup_filepath			= pfile;
 
 	// init param
-	pparam->pThFlag		= &thflag;
-	pparam->intervalms	= intervalms;
-	pparam->pfilepath	= strdup(pfile);
+	PFLCKTHPARAM	pparam	= new FLCKTHPARAM;
+	pparam->pThFlag			= &thflag;
+	pparam->intervalms		= intervalms;
+	pparam->pfilepath		= strdup(pfile);
 
 	// create thread
 	int	result;
@@ -262,6 +351,35 @@ bool FlckThread::InitializeThread(const char* pfile, int intervalms, bool is_sto
 	return true;
 }
 
+// [NOTE]
+// This method is called only pthread_prefork handler.
+// This method re-initialized variables in this class, and starts thread.
+//
+bool FlckThread::ReInitializeThread(void)
+{
+	if(bup_filepath.empty()){
+		ERR_FLCKPRN("Backup file path is empty.");
+		return false;
+	}
+	MSG_FLCKPRN("Run worker thread by forking.");
+
+	// clean old thread's parameter data
+	PFLCKTHPARAM	oldparam = reinterpret_cast<PFLCKTHPARAM>(FlckThread::pThreadParam);
+	if(oldparam){
+		FLCK_Free(oldparam->pfilepath);
+		FLCK_Delete(oldparam);
+		FlckThread::pThreadParam = NULL;
+	}
+
+	// initialize inner data
+	string	tmppath	= bup_filepath;
+	thflag			= FlckThread::FLCK_THCNTL_STOP;
+	is_run_worker	= false;
+
+	// start thread
+	return InitializeThread(tmppath.c_str(), bup_intervalms);
+}
+
 bool FlckThread::Run(void)
 {
 	if(!IsInitWorker()){
@@ -273,8 +391,8 @@ bool FlckThread::Run(void)
 		ERR_FLCKPRN("No worker thread is stopping(already run or exit).");
 		return false;
 	}
-	// set flag second to first.
-	thflag = FlckThread::FLCK_THCNTL_RUN;
+	// set flag run to first.
+	set_run_thread_cntrl_flag(&thflag);
 
 	return true;
 }
@@ -290,8 +408,8 @@ bool FlckThread::Stop(void)
 		ERR_FLCKPRN("No worker thread is running(already stop or exit).");
 		return false;
 	}
-	// set flag second to first.
-	thflag = FlckThread::FLCK_THCNTL_STOP;
+	// set flag stop to first.
+	set_stop_thread_cntrl_flag(&thflag);
 
 	return true;
 }
@@ -302,22 +420,57 @@ bool FlckThread::Exit(void)
 		ERR_FLCKPRN("No worker thread is initialized, must initialize worker.");
 		return false;
 	}
-	if(FlckThread::FLCK_THCNTL_EXIT == thflag){
+	if(FlckThread::FLCK_THCNTL_EXIT <= thflag){
 		MSG_FLCKPRN("Already worker thread exit.");
 		return true;
 	}
 
-	// set flag second to first.
-	thflag = FlckThread::FLCK_THCNTL_EXIT;
-
-	// wait for thread exit
-	void*	pretval = NULL;
-	int		result;
-	if(0 != (result = pthread_join(pthreadid, &pretval))){
-		ERR_FLCKPRN("Failed to wait exiting thread. return code(error) = %d", result);
+	// [NOTE]
+	// At first, send cancel request, next set flag.
+	// Because worker thread blocks cancel event in its loop, and make cancel point after breaking loop.
+	//
+	int	result;
+	if(0 != (result = pthread_cancel(pthreadid))){
+		ERR_FLCKPRN("Could not cancel thread by errno(%d)", result);
 		return false;
 	}
-	MSG_FLCKPRN("Succeed to wait exiting thread. return value ptr = %p(expect=NULL)", pretval);
+	// set flag for exiting
+	set_exit_thread_cntrl_flag(&thflag);
+
+	// loop for joining
+	struct timespec	sleeptime	= {0, 1000 * 1000};		// = 1ms
+	void*			pretval		= NULL;
+	for(result = EBUSY; 0 != result; ){
+		// [NOTE]
+		// Using "nonportable" pthread_tryjoin_np function to avoid blocking by pthread_join.
+		//
+		if(0 != (result = pthread_tryjoin_np(pthreadid, &pretval))){
+			if(EBUSY == result){
+				//MSG_FLCKPRN("Worker thread has not exited yet. join returns code(EBUSY: %d)", result);
+
+				if(FlckThread::FLCK_THCNTL_FIN == thflag){
+					// Already started exiting worker thread, but it did not finish, or deadlocked.
+					// Then we give up waiting(joining) after try to join one more after sleep.
+					//
+					sleeptime.tv_nsec = 20 * 1000 * 1000;	// 20ms
+					nanosleep(&sleeptime, NULL);
+					// last retry
+					if(0 != (result = pthread_tryjoin_np(pthreadid, &pretval))){
+						ERR_FLCKPRN("Failed re-waiting join thread by %s(%d), so give up wor waiting join", (EBUSY == result ? "EBUSY" : EDEADLK == result ? "EDEADLK" : EINVAL == result ? "EINVAL" : EINVAL == result ? "EINVAL" : ESRCH  == result ? "ESRCH" : "unknown"), result);
+					}else{
+						ERR_FLCKPRN("Thread has exited but probabry pthread_exit is not locked.");
+					}
+					break;
+				}
+			}else{
+				// something error is occurred, so we can not wait to join any more.
+				ERR_FLCKPRN("Failed waiting join worker thread by error(%s: %d), thus break waiting.", (EDEADLK == result ? "EDEADLK" : EINVAL == result ? "EINVAL" : EINVAL == result ? "EINVAL" : ESRCH  == result ? "ESRCH" : "unknown"), result);
+				break;
+			}
+			nanosleep(&sleeptime, NULL);
+		}
+	}
+	MSG_FLCKPRN("Succeed to wait exiting thread. return value ptr=%p(expect PTHREAD_CANCELED=-1), join result=%d", pretval, result);
 
 	is_run_worker = false;
 

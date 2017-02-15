@@ -214,6 +214,16 @@ bool FlShm::InitializeShm(void)
 			FlShm::Detach();
 			return false;
 		}
+
+		// [NOTE]
+		// When the program which loads this fullock library is forked, we need to start worker thread
+		// in child process.
+		// Thus we set a handler at forking, and it initializes and runs thread in child process.
+		//
+		int	result;
+		if(0 != (result = pthread_atfork(NULL, NULL, PreforkHandler))){
+			ERR_FLCKPRN("Failed to set handler for forking(errno=%d), but continue...", result);
+		}
 	}
 	return true;
 }

@@ -1,3 +1,10 @@
+fullock (1.0.24) trusty; urgency=low
+
+  * Added lib_version_for_link option to make_valiables.sh
+  * Refixed a bug about deadlock at forking - #1
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 13 Mar 2017 09:19:48 +0900
+
 fullock (1.0.23) trusty; urgency=low
 
   * Fixed a bug about deadlock at forking

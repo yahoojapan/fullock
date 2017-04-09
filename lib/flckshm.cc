@@ -485,6 +485,9 @@ void FlShm::PreforkHandler(void)
 {
 	if(FlShm::pCheckPidThread){
 		if(!FlShm::pCheckPidThread->ReInitializeThread()){
+			ERR_FLCKPRN("Call Prefork handler and try to reinitialize thread for child process(%d), but FAILED TO RUN THREAD", getpid());
+		}
+		if(!FlShm::pCheckPidThread->Run()){
 			ERR_FLCKPRN("Call Prefork handler and try to run thread for child process(%d), but FAILED TO RUN THREAD", getpid());
 		}
 	}

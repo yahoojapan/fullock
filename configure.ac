@@ -87,7 +87,7 @@ AC_SUBST([GIT_DOMAIN], "github.com")
 AC_SUBST([GIT_ORG], "yahoojapan")
 AC_SUBST([GIT_REPO], "fullock")
 AC_SUBST([CURRENTREV], "`$(pwd)/buildutils/make_commit_hash.sh -o yahoojapan -r fullock -short`")
-AC_SUBST([DEV_EMAIL], "`echo ${DEBEMAIL:-antpickax@mail.yahoo.co.jp}`")
+AC_SUBST([DEV_EMAIL], "`echo ${DEBEMAIL:-antpickax-support@mail.yahoo.co.jp}`")
 AC_SUBST([DEV_NAME], "`echo ${DEBFULLNAME:-FULLOCK_DEVELOPER}`")
 
 AC_SUBST([RPMCHANGELOG], "`$(pwd)/buildutils/make_rpm_changelog.sh $(pwd)/ChangeLog`")

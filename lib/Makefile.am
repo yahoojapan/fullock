@@ -1,13 +1,13 @@
 #
-# FULLOCK - Fast User Level LOCK library by Yahoo! JAPAN
+# FULLOCK - Fast User Level LOCK library
 #
-# Copyright 2015 Yahoo! JAPAN corporation.
+# Copyright 2015 Yahoo Japan Corporation.
 #
 # FULLOCK is fast locking library on user level by Yahoo! JAPAN.
 # FULLOCK is following specifications.
 #
 # For the full copyright and license information, please view
-# the LICENSE file that was distributed with this source code.
+# the license file that was distributed with this source code.
 #
 # AUTHOR:   Takeshi Nakatani
 # CREATE:   Wed 13 May 2015
@@ -38,7 +38,7 @@ AM_CPPFLAGS =
 .PHONY: fullockversion
 
 fullockversion.cc: fullockversion
-	@../make_rev.sh fullockversion.cc fullock_commit_hash
+	@../buildutils/make_commit_hash_source.sh fullockversion.cc fullock_commit_hash
 
 #
 # VIM modelines

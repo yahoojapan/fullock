@@ -1,3 +1,24 @@
+fullock (1.0.27) trusty; urgency=low
+
+  * Updated make discription script for packaging
+  * Fixed a bug about packaging for debian
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 15 May 2018 18:57:18 +0900
+
+fullock (1.0.26) trusty; urgency=low
+
+  * Fixed a bug about packaging for debian
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 15 May 2018 14:54:20 +0900
+
+fullock (1.0.25) trusty; urgency=low
+
+  * Cleanup credit comments in sources
+  * Changed build logic to new for rpm/debian packaging
+  * Updated the man page
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 15 May 2018 12:25:30 +0900
+
 fullock (1.0.24) trusty; urgency=low
 
   * Added lib_version_for_link option to make_valiables.sh

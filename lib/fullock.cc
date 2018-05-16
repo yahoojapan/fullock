@@ -1,13 +1,13 @@
 /*
- * FULLOCK - Fast User Level LOCK library by Yahoo! JAPAN
+ * FULLOCK - Fast User Level LOCK library
  *
- * Copyright 2015 Yahoo! JAPAN corporation.
+ * Copyright 2015 Yahoo Japan Corporation.
  *
  * FULLOCK is fast locking library on user level by Yahoo! JAPAN.
  * FULLOCK is following specifications.
  *
  * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * the license file that was distributed with this source code.
  *
  * AUTHOR:   Takeshi Nakatani
  * CREATE:   Wed 13 May 2015
@@ -35,7 +35,7 @@ void fullock_print_version(FILE* stream)
 		"\n"
 		"FULLOCK Version %s (commit: %s)\n"
 		"\n"
-		"Copyright 2015 Yahoo! JAPAN corporation.\n"
+		"Copyright(C) 2015 Yahoo Japan Corporation.\n"
 		"\n"
 		"FULLOCK is fast locking library on user level by Yahoo! JAPAN.\n"
 		"FULLOCK is following specifications.\n"

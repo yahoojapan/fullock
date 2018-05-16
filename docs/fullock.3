@@ -1,94 +1,76 @@
 .TH fullock "3" "May 2015" "fullock" "FULLOCK"
 .SH NAME
-fullock \- Fast User Level LOCK library provided by Yahoo! JAPAN
+fullock \- A Fast User Level LOCK (FULLOCK) library for C/C++
 .SH SYNOPSIS
-.TP
-\fBlibfullock.so
+Please see
+.B fullock.h
+for full description.
 .SH DESCRIPTION
-.TP 2
-FULLOCK is fast locking library on user level provided by Yahoo! JAPAN. FULLOCK is following specifications.
-.PP
-Supports multi-threading.
-.PP
-Supports multi-processing.
-.PP
-Automatically unlock when the process is terminated while holding the lock.
-.PP
-Automatically unlock when the thread is terminated while holding the lock.
-.PP
-Automatically unlock when the file handle is closed while holding the lock.
-.PP
-Not dead lock by same thread locking.
-.PP
-Provide programming interface like posix mutex and rwlock.
-.PP
+.I
+fullock
+is an open-source software for user level lock library supported by Yahoo! JAPAN.
+It runs on user level and provides two types lock.
+One is a shared reader/writer lock which has the same functionality with
+pthread_rwlock.
+Another is a shared mutex lock which also has the same functionality with pthread_mutex.
+.LP
+Here is primary fullock features:
+.IP 1.
+.I fullock
+is a thread safety library which can be used for multi-processing as well as for multi-threading.
+.IP 2.
+.I fullock
+releases a mutex lock safely even if a lock owner process exit with 0 in which case OS doesn't release the lock.
+.IP 3.
+.I fullock
+provides a shared reader/writer lock. A lock owner thread can get another lock again without deadlock.
+.LP
+Please visit our website and get more details at:
+.IP
+.I https://github.com/yahoojapan/fullock
 .SH FUNCTIONS
 .TP 2
-FULLOCK provides following programming interface.
-.PP
+FULLOCK provides following programming interface:
+.IP
+.in +4n
+.nf
 void fullock_print_version(...)
-.PP
 bool fullock_set_no_robust(...)
-.PP
 bool fullock_set_low_robust(...)
-.PP
 bool fullock_set_high_robust(...)
-.PP
 bool fullock_set_noretry_allow_nomap(...)
-.PP
 bool fullock_set_noretry_deny_nomap(...)
-.PP
 bool fullock_set_retry_allow_nomap(...)
-.PP
 bool fullock_set_retry_deny_nomap(...)
-.PP
 bool fullock_set_no_freeunit(...)
-.PP
 bool fullock_set_fd_freeunit(...)
-.PP
 bool fullock_set_offset_freeunit(...)
-.PP
 bool fullock_set_robust_check_count(...)
-.PP
 bool fullock_reinitialize(...)
-.PP
 bool fullock_reinitialize_ex(...)
-.PP
 int fullock_mutex_lock(...)
-.PP
 int fullock_mutex_trylock(...)
-.PP
 int fullock_mutex_timedlock(...)
-.PP
 int fullock_mutex_unlock(...)
-.PP
 int fullock_rwlock_rdlock(...)
-.PP
 int fullock_rwlock_tryrdlock(...)
-.PP
 int fullock_rwlock_timedrdlock(...)
-.PP
 int fullock_rwlock_wrlock(...)
-.PP
 int fullock_rwlock_trywrlock(...)
-.PP
 int fullock_rwlock_timedwrlock(...)
-.PP
 int fullock_rwlock_unrwlock(...)
-.PP
 bool fullock_rwlock_islocked(...)
-.PP
 int fullock_cond_timedwait(...)
-.PP
 int fullock_cond_wait(...)
-.PP
 int fullock_cond_signal(...)
-.PP
 int fullock_cond_broadcast(...)
-.PP
+.fi
+.in
+
 .SH ENVIRONMENT
-.TP 2
-fullock use some environments automatically, plese take care these environments.
+.I
+fullock
+uses useful environments for debug that change its behaviour.
 .IP FLCKDBGMODE 20
 specifies debugging level: INFO/WAN/ERR/SILENT
 .IP FLCKDBGFILE 20
@@ -101,7 +83,7 @@ specify NO/LOW/HIGH for robust mode.
 specify ALLOW(ALLOW_NORETRY) / DENY(DENY_NORETRY) / ALLOW_RETRY / DENY_RETRY for fault tolerant.
 This value determines the behavior of the case can not be mapped.
 .IP FLCKFREEUNITMODE 20
-spacify NO/FD/OFFSET/ALWAYS, it specifies the open method of unit management area to be used in the reader/writer lock.
+specify NO/FD/OFFSET/ALWAYS, it specifies the open method of unit management area to be used in the reader/writer lock.
 .IP FLCKROBUSTCHKCNT 20
 If fullock is operating in a high robust mode, this value sets the processing frequency for the deadlock detection.
 .IP FLCKUMASK 20
@@ -122,14 +104,39 @@ specify count for named mutex.
 specify count for named condition variable.
 .IP FLCKWAITERCNT 20
 specify named condition waiter count for named condition variable.
-.SH NOTES
-.TP
-FULLOCK is fast locking library on user level provided by Yahoo! JAPAN.
 .SH SEE ALSO
-.TP
-fullock(1)
-.SH BUGS
-.TP
-Please report owner and comitter.
-.SH AUTHOR
-fullock has been written by Takeshi Nakatani <ggtakec@gmail.com>.
+The web site can be found at:
+.IP
+.I https://github.com/yahoojapan/fullock
+.SH REPORTING BUGS
+Please make sure you use the latest version in the web site:
+.IP
+https://github.com/yahoojapan/fullock
+.LP
+Then, please submit your questions or comments here:
+.IP
+.I https://github.com/yahoojapan/fullock/issues
+.SH "AUTHORS"
+Takeshi Nakatani <ggtakec@gmail.com>
+.SH "COPYRIGHT"
+MIT License
+.PP
+Copyright (C) 2015 Yahoo Japan Corporation
+.PP
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the \*(L"Software\*(R"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+.PP
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+.PP
+\&\s-1THE SOFTWARE IS PROVIDED \*(L"AS IS\*(R", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.\s0

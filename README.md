@@ -2,7 +2,7 @@ fullock
 -------
 [![Build Status](https://travis-ci.org/yahoojapan/fullock.svg?branch=master)](https://travis-ci.org/yahoojapan/fullock)
 
-FULLOCK - Fast User Level LOCK library by Yahoo! JAPAN  
+FULLOCK - Fast User Level LOCK library
 
 ### Overview
 
@@ -25,6 +25,6 @@ These provide the functionality of more than pthread_rwlock and pthread_mutex, a
   - [WIKI](https://github.com/yahoojapan/fullock/wiki)
 
 ### License
-This software is released under the MIT License, see the LICENSE file.
+This software is released under the MIT License, see the license file.
 
-Copyright 2015 Yahoo! JAPAN corporation.
+Copyright(C) 2015 Yahoo Japan Corporation.

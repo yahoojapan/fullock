@@ -1,14 +1,13 @@
-#! /bin/sh
 #
-# The BASE templates for FULLOCK.
+# FULLOCK - Fast User Level LOCK library
 #
-# Copyright 2015 Yahoo! JAPAN corporation.
+# Copyright 2015 Yahoo Japan Corporation.
 #
 # FULLOCK is fast locking library on user level by Yahoo! JAPAN.
 # FULLOCK is following specifications.
 #
 # For the full copyright and license information, please view
-# the LICENSE file that was distributed with this source code.
+# the license file that was distributed with this source code.
 #
 # AUTHOR:   Takeshi Nakatani
 # CREATE:   Wed 13 May 2015
@@ -63,7 +62,6 @@
 #
 aclocal.m4
 autom4te.cache
-autom4te.cache/*
 autoscan.log
 config.guess
 config.h
@@ -87,7 +85,7 @@ stamp-h1
 # automakes
 #
 Makefile.in
-*/Makefile.in
+Makefile
 
 
 #
@@ -96,8 +94,8 @@ Makefile.in
 *.tgz
 *.tar.gz
 *.rpm
+*.deb
 *.swp
-*.bak
 
 #
 # object directories
@@ -120,15 +118,24 @@ test-driver/*
 #
 # Other built objects
 #
+RELEASE_VERSION
+COMMIT_HASH
 *.pc
-Makefile
-*/Makefile
+*.spec
+buildutils/control
+buildutils/copyright
+rpmbuild
+rpmbuild/*
+debian
+debian/*
+debian_build
+debian_build/*
 
 #
 # project custom
 #
-RELEASE_VERSION
 lib/fullockversion.cc
+tests/results.xml
 tests/fullocktest
 tests/singletest
 tests/mttest
@@ -138,7 +145,6 @@ tests/fcntl_mptest
 tests/cond_mptest
 tests/cond_mttest
 tests/forktest
-*.k2h
 
 #
 # VIM modelines

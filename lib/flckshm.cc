@@ -82,6 +82,74 @@ using namespace fullock;
 #define	FLCK_FLCKWAITERCNT_MAX					16384
 
 //---------------------------------------------------------
+// Helper class
+//---------------------------------------------------------
+// [NOTE]
+// To avoid static object initialization order problem(SIOF)
+//
+class FlShmHelper
+{
+	protected:
+		FlShm			flckshm;
+		string			ShmDirPath;					// flck shm Directory path
+		string			ShmFileName;				// flck shm file name
+		string			ShmPath;					// flck shm file path
+
+	protected:
+		FlShmHelper(void) : flckshm(this), ShmDirPath(""), ShmFileName(""), ShmPath("")
+		{
+			FlShm::pShmDirPath	= &ShmDirPath;
+			FlShm::pShmFileName	= &ShmFileName;
+			FlShm::pShmPath		= &ShmPath;
+			FlShm::InitializeObject(true);
+		}
+		virtual ~FlShmHelper(void)
+		{
+			FlShm::Destroy();
+			FlShm::pShmDirPath	= NULL;
+			FlShm::pShmFileName	= NULL;
+			FlShm::pShmPath		= NULL;
+		}
+
+		static FlShmHelper& GetFlShmHelper(void)
+		{
+			static FlShmHelper	helper;				// singleton
+			return helper;
+		}
+
+	public:
+		static bool Initialize(void)
+		{
+			(void)GetFlShmHelper();
+			return true;
+		}
+
+		static string& GetShmDirPath(void)
+		{
+			if(!FlShm::pShmDirPath){
+				Initialize();
+			}
+			return *(FlShm::pShmDirPath);
+		}
+
+		static string& GetShmFileName(void)
+		{
+			if(!FlShm::pShmFileName){
+				Initialize();
+			}
+			return *(FlShm::pShmFileName);
+		}
+
+		static string& GetShmPath(void)
+		{
+			if(!FlShm::pShmPath){
+				Initialize();
+			}
+			return *(FlShm::pShmPath);
+		}
+};
+
+//---------------------------------------------------------
 // FlShm : Class Variable
 //---------------------------------------------------------
 const char*			FlShm::FLCKAUTOINIT			= "FLCKAUTOINIT";
@@ -113,10 +181,9 @@ size_t				FlShm::NCondAreaCount		= FLCK_FLCKNCONDCNT_DEFAULT;
 size_t				FlShm::WaiterAreaCount		= FLCK_FLCKWAITERCNT_DEFAULT;
 
 int					FlShm::ShmFd				= FLCK_INVALID_HANDLE;
-std::string			FlShm::ShmDirPath;
-std::string			FlShm::ShmFileName;
-std::string			FlShm::ShmPath;
-
+std::string*		FlShm::pShmDirPath			= NULL;
+std::string*		FlShm::pShmFileName			= NULL;
+std::string*		FlShm::pShmPath				= NULL;
 void*				FlShm::pShmBase				= NULL;
 PFLHEAD				FlShm::pFlHead				= NULL;
 FlckThread*			FlShm::pCheckPidThread		= NULL;
@@ -124,14 +191,41 @@ int					FlShm::InotifyFd			= FLCK_INVALID_HANDLE;
 int					FlShm::WatchFd				= FLCK_INVALID_HANDLE;
 int					FlShm::EventFd				= FLCK_INVALID_HANDLE;
 
-FlShm				FlShm::singleton;
+//---------------------------------------------------------
+// FlShm : Class Method
+//---------------------------------------------------------
+// [NOTE]
+// To avoid static object initialization order problem(SIOF)
+//
+bool FlShm::InitializeSeingleton(void* phelper)
+{
+	if(phelper){
+		return true;
+	}
+	return FlShmHelper::Initialize();
+}
+
+string& FlShm::ShmDirPath(void)
+{
+	return FlShmHelper::GetShmDirPath();
+}
+
+string& FlShm::ShmFileName(void)
+{
+	return FlShmHelper::GetShmFileName();
+}
+
+string& FlShm::ShmPath(void)
+{
+	return FlShmHelper::GetShmPath();
+}
 
 //---------------------------------------------------------
 // FlShm : Initialize variables
 //---------------------------------------------------------
 bool FlShm::InitializeObject(bool is_load_env)
 {
-	FlShm::ShmPath.erase();
+	FlShm::ShmPath().erase();
 
 	// Load environment
 	if(is_load_env && !LoadFlckDbgEnv()){
@@ -145,15 +239,15 @@ bool FlShm::InitializeObject(bool is_load_env)
 		return true;
 	}
 
-	if(FlShm::ShmPath.empty()){
+	if(FlShm::ShmPath().empty()){
 		// Set & Check working directory
-		if(!MakeWorkDirectory(FlShm::ShmDirPath.c_str())){
-			ERR_FLCKPRN("Failed to make working directory(%s).", ShmPath.c_str());
+		if(!MakeWorkDirectory(FlShm::ShmDirPath().c_str())){
+			ERR_FLCKPRN("Failed to make working directory(%s).", FlShm::ShmPath().c_str());
 			return false;
 		}
-		FlShm::ShmPath  = FlShm::ShmDirPath;
-		FlShm::ShmPath += "/";
-		FlShm::ShmPath += FlShm::ShmFileName;
+		FlShm::ShmPath()  = FlShm::ShmDirPath();
+		FlShm::ShmPath() += "/";
+		FlShm::ShmPath() += FlShm::ShmFileName();
 	}
 
 	// Initialize
@@ -207,8 +301,8 @@ bool FlShm::ReInitializeObject(const char* dirname, const char* filename, size_t
 	}
 
 	// set count values as default
-	FlShm::ShmDirPath			= DEFAULT_SHM_DIRPATH;
-	FlShm::ShmFileName			= DEFAULT_SHM_FILENAME;
+	FlShm::ShmDirPath()			= DEFAULT_SHM_DIRPATH;
+	FlShm::ShmFileName()		= DEFAULT_SHM_FILENAME;
 	FlShm::FileLockAreaCount	= FLCK_FLCKFILECNT_DEFAULT;
 	FlShm::OffLockAreaCount		= FLCK_FLCKOFFETCNT_DEFAULT;
 	FlShm::LockerAreaCount		= FLCK_FLCKLOCKERCNT_DEFAULT;
@@ -224,11 +318,11 @@ bool FlShm::ReInitializeObject(const char* dirname, const char* filename, size_t
 
 	// overwrite parameters
 	if(!FLCKEMPTYSTR(dirname)){
-		GetRealPath(dirname, FlShm::ShmDirPath);
+		GetRealPath(dirname, FlShm::ShmDirPath());
 	}
 	if(!FLCKEMPTYSTR(filename)){
-		FlShm::ShmFileName = filename;
-		FlShm::ShmFileName = trim(FlShm::ShmFileName);
+		FlShm::ShmFileName() = filename;
+		FlShm::ShmFileName() = trim(FlShm::ShmFileName());
 	}
 	if(FLCK_INITCNT_DEFAULT != filelockcnt){
 		FlShm::FileLockAreaCount = filelockcnt;
@@ -921,7 +1015,7 @@ bool FlShm::LoadEnv(void)
 	// FLCKDIRPATH
 	if(NULL == (pEnvVal = getenv(FlShm::FLCKDIRPATH))){
 		MSG_FLCKPRN("%s ENV is not set.", FlShm::FLCKDIRPATH);
-		FlShm::ShmDirPath = DEFAULT_SHM_DIRPATH;
+		FlShm::ShmDirPath() = DEFAULT_SHM_DIRPATH;
 	}else{
 		string	toppath;
 		if(!GetRealPath(pEnvVal, toppath)){
@@ -931,8 +1025,8 @@ bool FlShm::LoadEnv(void)
 			if(!MakeWorkDirectory(toppath.c_str())){
 				ERR_FLCKPRN("%s ENV path(%s) is invalid or no such directory(could not make it).", FlShm::FLCKDIRPATH, pEnvVal);
 			}else{
-				FlShm::ShmDirPath	= toppath;
-				MSG_FLCKPRN("Set shmfile directory path(%s) by ENV(%s=%s).", FlShm::ShmDirPath.c_str(), FlShm::FLCKDIRPATH, pEnvVal);
+				FlShm::ShmDirPath()	= toppath;
+				MSG_FLCKPRN("Set shmfile directory path(%s) by ENV(%s=%s).", FlShm::ShmDirPath().c_str(), FlShm::FLCKDIRPATH, pEnvVal);
 			}
 		}
 	}
@@ -940,15 +1034,15 @@ bool FlShm::LoadEnv(void)
 	// FLCKFILENAME
 	if(NULL == (pEnvVal = getenv(FlShm::FLCKFILENAME))){
 		MSG_FLCKPRN("%s ENV is not set.", FlShm::FLCKFILENAME);
-		FlShm::ShmFileName = DEFAULT_SHM_FILENAME;
+		FlShm::ShmFileName() = DEFAULT_SHM_FILENAME;
 	}else{
 		string	filepath = pEnvVal;
 		filepath = trim(filepath);
 		if(string::npos != filepath.find('/')){
 			ERR_FLCKPRN("%s ENV has invalid file name(%s).", FlShm::FLCKFILENAME, pEnvVal);
 		}else{
-			FlShm::ShmFileName = filepath;
-			MSG_FLCKPRN("Set shmfile name(%s) by ENV(%s=%s).", FlShm::ShmFileName.c_str(), FlShm::FLCKFILENAME, pEnvVal);
+			FlShm::ShmFileName() = filepath;
+			MSG_FLCKPRN("Set shmfile name(%s) by ENV(%s=%s).", FlShm::ShmFileName().c_str(), FlShm::FLCKFILENAME, pEnvVal);
 		}
 	}
 

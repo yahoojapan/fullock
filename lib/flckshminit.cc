@@ -122,15 +122,15 @@ bool FlShm::InitializeShm(void)
 	mode_t	old_umask = umask(FlShm::ShmFileUmask);
 
 	// test by creating
-	if(FLCK_INVALID_HANDLE == (FlShm::ShmFd = open(FlShm::ShmPath.c_str(), O_RDWR | O_CREAT | O_EXCL, FLCK_SHM_PERMS))){
+	if(FLCK_INVALID_HANDLE == (FlShm::ShmFd = open(FlShm::ShmPath().c_str(), O_RDWR | O_CREAT | O_EXCL, FLCK_SHM_PERMS))){
 		if(EEXIST != errno){
-			ERR_FLCKPRN("Failed to open(create) %s(errno=%d).", FlShm::ShmPath.c_str(), errno);
+			ERR_FLCKPRN("Failed to open(create) %s(errno=%d).", FlShm::ShmPath().c_str(), errno);
 			umask(old_umask);
 			return false;
 		}
 		// already file exists
-		if(FLCK_INVALID_HANDLE == (FlShm::ShmFd = open(FlShm::ShmPath.c_str(), O_RDWR, FLCK_SHM_PERMS))){
-			ERR_FLCKPRN("Failed to open %s(errno=%d).", FlShm::ShmPath.c_str(), errno);
+		if(FLCK_INVALID_HANDLE == (FlShm::ShmFd = open(FlShm::ShmPath().c_str(), O_RDWR, FLCK_SHM_PERMS))){
+			ERR_FLCKPRN("Failed to open %s(errno=%d).", FlShm::ShmPath().c_str(), errno);
 			umask(old_umask);
 			return false;
 		}
@@ -144,12 +144,12 @@ bool FlShm::InitializeShm(void)
 			if(FileWriteLock(FlShm::ShmFd, 0L)){
 				// re-initialize file
 				if(!FlShm::InitializeShmFile()){
-					ERR_FLCKPRN("Failed to initialize shmfile(%s) and mmap(fd=%d).", FlShm::ShmPath.c_str(), FlShm::ShmFd);
+					ERR_FLCKPRN("Failed to initialize shmfile(%s) and mmap(fd=%d).", FlShm::ShmPath().c_str(), FlShm::ShmFd);
 					break;
 				}
 				// Change lock mode to read mode
 				if(!FileReadLock(FlShm::ShmFd, 0L)){
-					ERR_FLCKPRN("Could not lock read mode to %s, give up...", FlShm::ShmPath.c_str());
+					ERR_FLCKPRN("Could not lock read mode to %s, give up...", FlShm::ShmPath().c_str());
 					break;
 				}
 				isSuccess = true;
@@ -160,18 +160,18 @@ bool FlShm::InitializeShm(void)
 				if(FileReadLock(FlShm::ShmFd, 0L)){
 					// attach
 					if(!FlShm::Attach()){
-						ERR_FLCKPRN("Failed to mmap shmfile(%s) and mmap(fd=%d).", FlShm::ShmPath.c_str(), FlShm::ShmFd);
+						ERR_FLCKPRN("Failed to mmap shmfile(%s) and mmap(fd=%d).", FlShm::ShmPath().c_str(), FlShm::ShmFd);
 					}else{
 						isSuccess = true;
 					}
 					break;
 				}
-				MSG_FLCKPRN("Failed to lock read mode to %s, so retry...", FlShm::ShmPath.c_str());
+				MSG_FLCKPRN("Failed to lock read mode to %s, so retry...", FlShm::ShmPath().c_str());
 			}
 			nanosleep(&sleeptime, NULL);
 		}
 		if(!isSuccess){
-			ERR_FLCKPRN("Could not lock both read and write mode to %s, give up...", FlShm::ShmPath.c_str());
+			ERR_FLCKPRN("Could not lock both read and write mode to %s, give up...", FlShm::ShmPath().c_str());
 			FlShm::Detach();
 			return false;
 		}
@@ -181,19 +181,19 @@ bool FlShm::InitializeShm(void)
 
 		// lock write mode ASSAP
 		if(!FileWriteLock(FlShm::ShmFd, 0L)){
-			ERR_FLCKPRN("Could not lock write mode to %s, give up...", FlShm::ShmPath.c_str());
+			ERR_FLCKPRN("Could not lock write mode to %s, give up...", FlShm::ShmPath().c_str());
 			FLCK_CLOSE(FlShm::ShmFd);
 			return false;
 		}
 		// initialize file
 		if(!FlShm::InitializeShmFile()){
-			ERR_FLCKPRN("Failed to initialize shmfile(%s) and mmap(fd=%d).", FlShm::ShmPath.c_str(), FlShm::ShmFd);
+			ERR_FLCKPRN("Failed to initialize shmfile(%s) and mmap(fd=%d).", FlShm::ShmPath().c_str(), FlShm::ShmFd);
 			FlShm::Detach();
 			return false;
 		}
 		// Change lock mode to read mode
 		if(!FileReadLock(FlShm::ShmFd, 0L)){
-			ERR_FLCKPRN("Could not lock read mode to %s, give up...", FlShm::ShmPath.c_str());
+			ERR_FLCKPRN("Could not lock read mode to %s, give up...", FlShm::ShmPath().c_str());
 			FlShm::Detach();
 			return false;
 		}
@@ -202,14 +202,14 @@ bool FlShm::InitializeShm(void)
 	// run epoll thread
 	if(FlShm::IsLowRobust()){
 		FlShm::pCheckPidThread = new FlckThread();
-		if(!FlShm::pCheckPidThread->InitializeThread(FlShm::ShmPath.c_str())){
-			ERR_FLCKPRN("Failed to create and initialize pid check thread for file(%s).", FlShm::ShmPath.c_str());
+		if(!FlShm::pCheckPidThread->InitializeThread(FlShm::ShmPath().c_str())){
+			ERR_FLCKPRN("Failed to create and initialize pid check thread for file(%s).", FlShm::ShmPath().c_str());
 			FLCK_Delete(FlShm::pCheckPidThread);
 			FlShm::Detach();
 			return false;
 		}
 		if(!FlShm::pCheckPidThread->Run()){
-			ERR_FLCKPRN("Failed to run pid check thread for file(%s).", FlShm::ShmPath.c_str());
+			ERR_FLCKPRN("Failed to run pid check thread for file(%s).", FlShm::ShmPath().c_str());
 			FLCK_Delete(FlShm::pCheckPidThread);
 			FlShm::Detach();
 			return false;

@@ -22,9 +22,64 @@
 using namespace std;
 
 //---------------------------------------------------------
-// FLRwlRcsv : Class Variable
+// Class FLRwlRcsvHelper
 //---------------------------------------------------------
-FLRwlRcsvStack	FLRwlRcsv::Stack;
+// [NOTE]
+// To avoid static object initialization order problem(SIOF)
+//
+class FLRwlRcsvHelper
+{
+	protected:
+		int				LockVal;													// like mutex
+		flrwlrcsv_vec_t	FLRwlStack;
+
+	protected:
+		FLRwlRcsvHelper(void) : LockVal(FLCK_NOSHARED_MUTEX_VAL_UNLOCKED) {}
+		virtual ~FLRwlRcsvHelper(void) {}
+
+		static FLRwlRcsvHelper& GetFlShm(void)
+		{
+			static FLRwlRcsvHelper	helper;											// singlton
+			return helper;
+		}
+
+	public:
+		static flrwlrcsv_vec_t& GetStack(void)
+		{
+			return GetFlShm().FLRwlStack;
+		}
+
+		static void Lock(void)
+		{
+			while(!fullock::flck_trylock_noshared_mutex(&(GetFlShm().LockVal)));	// no call sched_yield()
+		}
+
+		static void Unlock(void)
+		{
+			fullock::flck_unlock_noshared_mutex(&(GetFlShm().LockVal));
+		}
+};
+
+//---------------------------------------------------------
+// FLRwlRcsv : Class Methos
+//---------------------------------------------------------
+// [NOTE]
+// To avoid static object initialization order problem(SIOF)
+//
+flrwlrcsv_vec_t& FLRwlRcsv::Stack(void)
+{
+	return FLRwlRcsvHelper::GetStack();
+}
+
+void FLRwlRcsv::StackLock(void)
+{
+	FLRwlRcsvHelper::Lock();
+}
+
+void FLRwlRcsv::StackUnlock(void)
+{
+	FLRwlRcsvHelper::Unlock();
+}
 
 //---------------------------------------------------------
 // FLRwlRcsv : Methos
@@ -44,7 +99,7 @@ FLRwlRcsv::FLRwlRcsv(int fd, off_t offset, size_t length, bool is_read) : lock_t
 		}
 	}
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 	}
 }
 
@@ -54,7 +109,7 @@ FLRwlRcsv::~FLRwlRcsv(void)
 	RawUnlock(is_mutex_locked);
 
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 	}
 }
 
@@ -105,7 +160,7 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 
 	// lock mutex for global stack
 	if(!is_mutex_locked){
-		FLRwlRcsv::Stack.lock();
+		FLRwlRcsv::StackLock();
 		is_mutex_locked = true;
 	}
 
@@ -122,10 +177,10 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 
 	}else{
 		// search same lock in stack
-		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack.FLRwlStack.begin(); iter != FLRwlRcsv::Stack.FLRwlStack.end(); ++iter){
+		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ++iter){
 			if(this == (*iter)){
 				// erase own
-				FLRwlRcsv::Stack.FLRwlStack.erase(iter);
+				FLRwlRcsv::Stack().erase(iter);
 				break;
 			}
 		}
@@ -157,14 +212,14 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 			pNewMaster->is_locked	= true;
 			pNewMaster->lock_type	= lock_type;			// [NOTICE] there is a possibility case read type to write.
 			pNewMaster->pMaster		= NULL;
-			FLRwlRcsv::Stack.FLRwlStack.push_back(pNewMaster);
+			FLRwlRcsv::Stack().push_back(pNewMaster);
 
 		}else{
 			// if object has lock -> unlock writer/reader lock
 			if(has_locker){
 				// unlock mutex for global stack(temporary)
 				if(is_mutex_locked){
-					FLRwlRcsv::Stack.unlock();
+					FLRwlRcsv::StackUnlock();
 					is_mutex_locked = false;
 				}
 				if(0 != (result = shm.Unlock(lock_fd, lock_offset, lock_length))){
@@ -172,11 +227,11 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 
 					// for recovering
 					if(!is_mutex_locked){
-						FLRwlRcsv::Stack.lock();
+						FLRwlRcsv::StackLock();
 						is_mutex_locked = true;
 					}
 					// add own to global stack
-					FLRwlRcsv::Stack.FLRwlStack.push_back(this);
+					FLRwlRcsv::Stack().push_back(this);
 					return false;
 				}
 
@@ -210,7 +265,7 @@ bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 
 	// lock mutex for global stack
 	if(!is_mutex_locked){
-		FLRwlRcsv::Stack.lock();
+		FLRwlRcsv::StackLock();
 		is_mutex_locked = true;
 	}
 
@@ -224,7 +279,7 @@ bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 	lock_type = FLCK_READ_LOCK;
 
 	// check all status in global stack
-	for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack.FLRwlStack.begin(); iter != FLRwlRcsv::Stack.FLRwlStack.end(); ++iter){
+	for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ++iter){
 		if(compare(*(*iter))){
 			// found same tid read or write lock
 			if(!(*iter)->is_locked){
@@ -239,11 +294,11 @@ bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 		}
 	}
 	// add own to global stack
-	FLRwlRcsv::Stack.FLRwlStack.push_back(this);
+	FLRwlRcsv::Stack().push_back(this);
 
 	// unlock mutex for global stack
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 		is_mutex_locked = false;
 	}
 
@@ -253,13 +308,13 @@ bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 
 		// for recovering
 		if(!is_mutex_locked){
-			FLRwlRcsv::Stack.lock();
+			FLRwlRcsv::StackLock();
 			is_mutex_locked = true;
 		}
 		// remove own from global stack
-		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack.FLRwlStack.begin(); iter != FLRwlRcsv::Stack.FLRwlStack.end(); ++iter){
+		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ++iter){
 			if(this == (*iter)){
-				FLRwlRcsv::Stack.FLRwlStack.erase(iter);
+				FLRwlRcsv::Stack().erase(iter);
 				break;
 			}
 		}
@@ -294,7 +349,7 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 
 	// lock mutex for global stack
 	if(!is_mutex_locked){
-		FLRwlRcsv::Stack.lock();
+		FLRwlRcsv::StackLock();
 		is_mutex_locked = true;
 	}
 
@@ -309,12 +364,12 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 
 	// check all status in global stack
 	flrwlrcsv_vec_t	PandingReaderList;
-	for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack.FLRwlStack.begin(); iter != FLRwlRcsv::Stack.FLRwlStack.end(); ){
+	for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ){
 		if(compare(*(*iter))){
 			if(FLCK_READ_LOCK == (*iter)->lock_type){
 				// found same tid reader
 				PandingReaderList.push_back(*iter);
-				iter = FLRwlRcsv::Stack.FLRwlStack.erase(iter);
+				iter = FLRwlRcsv::Stack().erase(iter);
 				continue;
 
 			}else if(FLCK_WRITE_LOCK == (*iter)->lock_type){
@@ -334,11 +389,11 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 		++iter;
 	}
 	// add own to global stack
-	FLRwlRcsv::Stack.FLRwlStack.push_back(this);
+	FLRwlRcsv::Stack().push_back(this);
 
 	// unlock mutex for global stack
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 		is_mutex_locked = false;
 	}
 
@@ -365,13 +420,13 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 
 		// for recovering
 		if(!is_mutex_locked){
-			FLRwlRcsv::Stack.lock();
+			FLRwlRcsv::StackLock();
 			is_mutex_locked = true;
 		}
 		// remove own from global stack
-		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack.FLRwlStack.begin(); iter != FLRwlRcsv::Stack.FLRwlStack.end(); ++iter){
+		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ++iter){
 			if(this == (*iter)){
-				FLRwlRcsv::Stack.FLRwlStack.erase(iter);
+				FLRwlRcsv::Stack().erase(iter);
 				break;
 			}
 		}
@@ -410,7 +465,7 @@ bool FLRwlRcsv::Lock(int fd, off_t offset, size_t length, bool is_read)
 	}
 
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 	}
 	return bresult;
 }
@@ -427,7 +482,7 @@ bool FLRwlRcsv::Lock(bool is_read)
 	}
 
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 	}
 	return bresult;
 }
@@ -444,7 +499,7 @@ bool FLRwlRcsv::Lock(void)
 	}
 
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 	}
 	return bresult;
 }
@@ -455,7 +510,7 @@ bool FLRwlRcsv::ReadLock(void)
 	bool	bresult			= RawReadLock(is_mutex_locked);
 
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 	}
 	return bresult;
 }
@@ -466,7 +521,7 @@ bool FLRwlRcsv::WriteLock(void)
 	bool	bresult			= RawWriteLock(is_mutex_locked);
 
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 	}
 	return bresult;
 }
@@ -477,7 +532,7 @@ bool FLRwlRcsv::Unlock(void)
 	bool	bresult			= RawUnlock(is_mutex_locked);
 
 	if(is_mutex_locked){
-		FLRwlRcsv::Stack.unlock();
+		FLRwlRcsv::StackUnlock();
 	}
 	return bresult;
 }

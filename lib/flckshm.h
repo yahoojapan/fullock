@@ -26,8 +26,12 @@
 //---------------------------------------------------------
 // Class FlShm
 //---------------------------------------------------------
+class FlShmHelper;
+
 class FlShm
 {
+	friend class FlShmHelper;
+
 	public:
 		typedef enum robust_mode{								// ROBUST mode
 			ROBUST_NO			= 0,							// no checking process dead, closed file without unlock
@@ -84,9 +88,9 @@ class FlShm
 
 		// Shared memory
 		static int				ShmFd;							// shm file descriptor
-		static std::string		ShmDirPath;						// flck shm Directory path
-		static std::string		ShmFileName;					// flck shm file name
-		static std::string		ShmPath;						// flck shm file path
+		static std::string*		pShmDirPath;					// flck shm Directory path
+		static std::string*		pShmFileName;					// flck shm file name
+		static std::string*		pShmPath;						// flck shm file path
 
 		// Worker thread
 		static FlckThread*		pCheckPidThread;				// thread for checking process dead
@@ -94,16 +98,16 @@ class FlShm
 		static int				WatchFd;						// watch fd for other process dead
 		static int				EventFd;						// epoll fd for other process dead
 
-		// Common object
-		static FlShm			singleton;						// MAIN OBJECT(for class variables initializing/destorying)
-
 	public:
 		// Shared memory(direct access for performance)
 		static void*			pShmBase;						// shared memory base address
 		static PFLHEAD			pFlHead;						// header pointer
 
 	protected:
-		static FlShm* get(void) { return &FlShm::singleton; }
+		static bool InitializeSeingleton(void* phelper);		// MAIN SINGLETON OBJECT(for class variables initializing/destorying)
+		static std::string&	ShmDirPath(void);
+		static std::string&	ShmFileName(void);
+		static std::string&	ShmPath(void);
 		static bool LoadEnv(void);
 
 		static void PreforkHandler(void);						// for forking
@@ -162,8 +166,8 @@ class FlShm
 
 	public:
 		// Constructor/Destructor
-		FlShm(void) { if(this == &FlShm::singleton){ FlShm::InitializeObject(true); } }
-		virtual ~FlShm(void) { if(this == &FlShm::singleton){ FlShm::Destroy(); } }
+		FlShm(void* phelper = NULL) { FlShm::InitializeSeingleton(phelper); }
+		virtual ~FlShm(void) {}
 
 		//
 		// Lock/Unlock for named mutex

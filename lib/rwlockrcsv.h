@@ -23,6 +23,7 @@
 #include "flcklocktype.h"
 #include "flckshm.h"
 #include "flckbaselist.tcc"
+#include "flckutil.h"
 
 //---------------------------------------------------------
 // Typedefs
@@ -32,32 +33,11 @@ class FLRwlRcsv;
 typedef std::vector<FLRwlRcsv*>		flrwlrcsv_vec_t;
 
 //---------------------------------------------------------
-// Class FLRwlRcsvStack
-//---------------------------------------------------------
-class FLRwlRcsvStack
-{
-	protected:
-		int					LockVal;		// like mutex
-
-	public:
-		flrwlrcsv_vec_t		FLRwlStack;
-
-	public:
-		FLRwlRcsvStack(void) : LockVal(FLCK_NOSHARED_MUTEX_VAL_UNLOCKED) {}
-		virtual ~FLRwlRcsvStack(void) {}
-
-		inline void lock(void) { while(!fullock::flck_trylock_noshared_mutex(&LockVal)); }	// no call sched_yield()
-		inline void unlock(void) { fullock::flck_unlock_noshared_mutex(&LockVal); }
-};
-
-//---------------------------------------------------------
 // Class FLRwlRcsv
 //---------------------------------------------------------
 class FLRwlRcsv
 {
 	protected:
-		static FLRwlRcsvStack	Stack;
-
 		tid_t					lock_tid;
 		int						lock_fd;
 		off_t					lock_offset;
@@ -70,6 +50,10 @@ class FLRwlRcsv
 		FLRwlRcsv*				pMaster;			// for recursive, master pends this
 
 	protected:
+		static flrwlrcsv_vec_t& Stack(void);
+		static void StackLock(void);
+		static void StackUnlock(void);
+
 		bool compare(const FLRwlRcsv& other) const;
 		inline void move_panding_stack(flrwlrcsv_vec_t& dest, flrwlrcsv_vec_t& src, FLRwlRcsv* pNewMaster)
 		{

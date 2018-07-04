@@ -27,48 +27,77 @@
 using namespace std;
 
 //---------------------------------------------------------
+// Global variable
+//---------------------------------------------------------
+FlckDbgMode	flckdbg_mode	= FLCKDBG_SILENT;
+FILE*		flckdbg_fp		= NULL;
+
+//---------------------------------------------------------
 // Class FlckDbgCntrl
 //---------------------------------------------------------
+// [NOTE]
+// To avoid static object initialization order problem(SIOF)
+//
 class FlckDbgCntrl
 {
 	protected:
 		static const char*		DBGENVNAME;
 		static const char*		DBGENVFILE;
-		static FlckDbgCntrl		singleton;
+
+		FlckDbgMode*			pflckdbg_mode;		// pointer to global variable
+		FILE**					pflckdbg_fp;		// pointer to global variable
+
+	protected:
+		FlckDbgCntrl() : pflckdbg_mode(&flckdbg_mode), pflckdbg_fp(&flckdbg_fp)
+		{
+			*pflckdbg_mode	= FLCKDBG_SILENT;
+			*pflckdbg_fp	= NULL;
+			FlckDbgCntrlLoadEnv();
+		}
+
+		virtual ~FlckDbgCntrl()
+		{
+			UnsetFlckDbgCntrlFile();
+		}
+
+		bool FlckDbgCntrlLoadEnvName(void);
+		bool FlckDbgCntrlLoadEnvFile(void);
 
 	public:
-		static bool LoadEnv(void);
-		static bool LoadEnvName(void);
-		static bool LoadEnvFile(void);
+		bool FlckDbgCntrlLoadEnv(void);
 
-		FlckDbgCntrl();
-		virtual ~FlckDbgCntrl();
+		FlckDbgMode SetFlckDbgCntrlMode(FlckDbgMode mode);
+		FlckDbgMode BumpupFlckDbgCntrlMode(void);
+		FlckDbgMode GetFlckDbgCntrlMode(void);
+
+		bool SetFlckDbgCntrlFile(const char* filepath);
+		bool UnsetFlckDbgCntrlFile(void);
+
+		static FlckDbgCntrl& GetFlckDbgCntrl(void)
+		{
+			static FlckDbgCntrl	singleton;			// singleton
+			return singleton;
+		}
 };
 
+//
 // Class valiables
+//
 const char*		FlckDbgCntrl::DBGENVNAME = "FLCKDBGMODE";
 const char*		FlckDbgCntrl::DBGENVFILE = "FLCKDBGFILE";
-FlckDbgCntrl	FlckDbgCntrl::singleton;
 
-// Constructor / Destructor
-FlckDbgCntrl::FlckDbgCntrl()
+//
+// Methods
+//
+bool FlckDbgCntrl::FlckDbgCntrlLoadEnv(void)
 {
-	FlckDbgCntrl::LoadEnv();
-}
-FlckDbgCntrl::~FlckDbgCntrl()
-{
-}
-
-// Class Methods
-bool FlckDbgCntrl::LoadEnv(void)
-{
-	if(!FlckDbgCntrl::LoadEnvName() || !FlckDbgCntrl::LoadEnvFile()){
+	if(!FlckDbgCntrlLoadEnvName() || !FlckDbgCntrlLoadEnvFile()){
 		return false;
 	}
 	return true;
 }
 
-bool FlckDbgCntrl::LoadEnvName(void)
+bool FlckDbgCntrl::FlckDbgCntrlLoadEnvName(void)
 {
 	char*	pEnvVal;
 	if(NULL == (pEnvVal = getenv(FlckDbgCntrl::DBGENVNAME))){
@@ -76,13 +105,13 @@ bool FlckDbgCntrl::LoadEnvName(void)
 		return true;
 	}
 	if(0 == strcasecmp(pEnvVal, "SILENT")){
-		SetFlckDbgMode(FLCKDBG_SILENT);
+		SetFlckDbgCntrlMode(FLCKDBG_SILENT);
 	}else if(0 == strcasecmp(pEnvVal, "ERR")){
-		SetFlckDbgMode(FLCKDBG_ERR);
+		SetFlckDbgCntrlMode(FLCKDBG_ERR);
 	}else if(0 == strcasecmp(pEnvVal, "WAN")){
-		SetFlckDbgMode(FLCKDBG_WARN);
+		SetFlckDbgCntrlMode(FLCKDBG_WARN);
 	}else if(0 == strcasecmp(pEnvVal, "INFO")){
-		SetFlckDbgMode(FLCKDBG_MSG);
+		SetFlckDbgCntrlMode(FLCKDBG_MSG);
 	}else{
 		MSG_FLCKPRN("%s ENV is not unknown string(%s).", FlckDbgCntrl::DBGENVNAME, pEnvVal);
 		return false;
@@ -90,36 +119,30 @@ bool FlckDbgCntrl::LoadEnvName(void)
 	return true;
 }
 
-bool FlckDbgCntrl::LoadEnvFile(void)
+bool FlckDbgCntrl::FlckDbgCntrlLoadEnvFile(void)
 {
 	char*	pEnvVal;
 	if(NULL == (pEnvVal = getenv(FlckDbgCntrl::DBGENVFILE))){
 		MSG_FLCKPRN("%s ENV is not set.", FlckDbgCntrl::DBGENVFILE);
 		return true;
 	}
-	if(!SetFlckDbgFile(pEnvVal)){
+	if(!SetFlckDbgCntrlFile(pEnvVal)){
 		MSG_FLCKPRN("%s ENV is unsafe string(%s).", FlckDbgCntrl::DBGENVFILE, pEnvVal);
 		return false;
 	}
 	return true;
 }
 
-//---------------------------------------------------------
-// Global variable
-//---------------------------------------------------------
-FlckDbgMode	flckdbg_mode	= FLCKDBG_SILENT;
-FILE*		flckdbg_fp		= NULL;
-
-FlckDbgMode SetFlckDbgMode(FlckDbgMode mode)
+FlckDbgMode FlckDbgCntrl::SetFlckDbgCntrlMode(FlckDbgMode mode)
 {
-	FlckDbgMode oldmode = flckdbg_mode;
-	flckdbg_mode = mode;
+	FlckDbgMode oldmode = *pflckdbg_mode;
+	*pflckdbg_mode = mode;
 	return oldmode;
 }
 
-FlckDbgMode BumpupFlckDbgMode(void)
+FlckDbgMode FlckDbgCntrl::BumpupFlckDbgCntrlMode(void)
 {
-	FlckDbgMode	mode = GetFlckDbgMode();
+	FlckDbgMode	mode = GetFlckDbgCntrlMode();
 
 	if(FLCKDBG_SILENT == mode){
 		mode = FLCKDBG_ERR;
@@ -130,26 +153,21 @@ FlckDbgMode BumpupFlckDbgMode(void)
 	}else{	// FLCKDBG_MSG == mode
 		mode = FLCKDBG_SILENT;
 	}
-	return ::SetFlckDbgMode(mode);
+	return SetFlckDbgCntrlMode(mode);
 }
 
-FlckDbgMode GetFlckDbgMode(void)
+FlckDbgMode FlckDbgCntrl::GetFlckDbgCntrlMode(void)
 {
-	return flckdbg_mode;
+	return *pflckdbg_mode;
 }
 
-bool LoadFlckDbgEnv(void)
-{
-	return FlckDbgCntrl::LoadEnv();
-}
-
-bool SetFlckDbgFile(const char* filepath)
+bool FlckDbgCntrl::SetFlckDbgCntrlFile(const char* filepath)
 {
 	if(FLCKEMPTYSTR(filepath)){
 		ERR_FLCKPRN("Parameter is wrong.");
 		return false;
 	}
-	if(!UnsetFlckDbgFile()){
+	if(!UnsetFlckDbgCntrlFile()){
 		return false;
 	}
 	FILE*	newfp;
@@ -157,21 +175,54 @@ bool SetFlckDbgFile(const char* filepath)
 		ERR_FLCKPRN("Could not open debug file(%s). errno = %d", filepath, errno);
 		return false;
 	}
-	flckdbg_fp = newfp;
+	*pflckdbg_fp = newfp;
 	return true;
+}
+
+bool FlckDbgCntrl::UnsetFlckDbgCntrlFile(void)
+{
+	if(*pflckdbg_fp){
+		if(0 != fclose(*pflckdbg_fp)){
+			ERR_FLCKPRN("Could not close debug file. errno = %d", errno);
+			*pflckdbg_fp = NULL;		// On this case, flckdbg_fp is not correct pointer after error...
+			return false;
+		}
+		*pflckdbg_fp = NULL;
+	}
+	return true;
+}
+
+//---------------------------------------------------------
+// Global Functions
+//---------------------------------------------------------
+FlckDbgMode SetFlckDbgMode(FlckDbgMode mode)
+{
+	return FlckDbgCntrl::GetFlckDbgCntrl().SetFlckDbgCntrlMode(mode);
+}
+
+FlckDbgMode BumpupFlckDbgMode(void)
+{
+	return FlckDbgCntrl::GetFlckDbgCntrl().BumpupFlckDbgCntrlMode();
+}
+
+FlckDbgMode GetFlckDbgMode(void)
+{
+	return FlckDbgCntrl::GetFlckDbgCntrl().GetFlckDbgCntrlMode();
+}
+
+bool LoadFlckDbgEnv(void)
+{
+	return FlckDbgCntrl::GetFlckDbgCntrl().FlckDbgCntrlLoadEnv();
+}
+
+bool SetFlckDbgFile(const char* filepath)
+{
+	return FlckDbgCntrl::GetFlckDbgCntrl().SetFlckDbgCntrlFile(filepath);
 }
 
 bool UnsetFlckDbgFile(void)
 {
-	if(flckdbg_fp){
-		if(0 != fclose(flckdbg_fp)){
-			ERR_FLCKPRN("Could not close debug file. errno = %d", errno);
-			flckdbg_fp = NULL;		// On this case, flckdbg_fp is not correct pointer after error...
-			return false;
-		}
-		flckdbg_fp = NULL;
-	}
-	return true;
+	return FlckDbgCntrl::GetFlckDbgCntrl().UnsetFlckDbgCntrlFile();
 }
 
 /*

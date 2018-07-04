@@ -557,58 +557,59 @@ size_t GetSystemPageSize(void)
 // Thread Id Cache
 //---------------------------------------------------------
 //
-// Class FlTidCache
+// FlTidCache Class
+//
+// [NOTE]
+// To avoid static object initialization order problem(SIOF)
 //
 class FlTidCache
 {
-	friend tid_t get_threadid(void);
+	protected:
+		bool			Initialized;
+		pthread_key_t	TidKey;						// == unsigned int
 
 	protected:
-		static FlTidCache		singleton;
-		static pthread_key_t	TidKey;
-		static bool				IsInit;
-
-	protected:
-		static FlTidCache* Get(void) { return &FlTidCache::singleton; }
-
-		FlTidCache(void);
-		virtual ~FlTidCache(void);
-};
-
-//
-// FlTidCache: Class variable
-//
-FlTidCache		FlTidCache::singleton;
-pthread_key_t	FlTidCache::TidKey;
-bool			FlTidCache::IsInit = false;
-
-//
-// FlTidCache: Methods
-//
-FlTidCache::FlTidCache(void)
-{
-	if(this == FlTidCache::Get()){
-		int	result;
-		if(0 != (result = pthread_key_create(&FlTidCache::TidKey, NULL))){
-			ERR_FLCKPRN("Could not create key for each thread, error code=%d.", result);
-			FlTidCache::IsInit = false;
-		}else{
-			FlTidCache::IsInit = true;
-		}
-	}
-}
-
-FlTidCache::~FlTidCache(void)
-{
-	if(this == FlTidCache::Get()){
-		if(FlTidCache::IsInit){
+		FlTidCache(void) : Initialized(false)
+		{
 			int	result;
-			if(0 != (result = pthread_key_delete(FlTidCache::TidKey))){
-				ERR_FLCKPRN("Could not delete key for each thread, error code=%d.", result);
+			if(0 != (result = pthread_key_create(&TidKey, NULL))){
+				ERR_FLCKPRN("Could not create key for each thread, error code=%d.", result);
+				Initialized = false;
+			}else{
+				Initialized = true;
 			}
 		}
-	}
-}
+
+		virtual ~FlTidCache(void)
+		{
+			if(Initialized){
+				int	result;
+				if(0 != (result = pthread_key_delete(TidKey))){
+					ERR_FLCKPRN("Could not delete key for each thread, error code=%d.", result);
+				}
+			}
+		}
+
+		//
+		// Access function to avoid static object initialization order problem
+		//
+		static FlTidCache& GetObject(void)
+		{
+			static FlTidCache	Cache;				// singleton
+			return Cache;
+		}
+
+	public:
+		static pthread_key_t& GetTid(void)
+		{
+			return GetObject().TidKey;
+		}
+
+		static bool IsInit(void)
+		{
+			return GetObject().Initialized;
+		}
+};
 
 //
 // Thread Id Cache: Global function
@@ -616,12 +617,12 @@ FlTidCache::~FlTidCache(void)
 tid_t get_threadid(void)
 {
 	tid_t	tid;
-	if(FlTidCache::IsInit){
+	if(FlTidCache::IsInit()){
 		void*	pData;
-		if(NULL == (pData = pthread_getspecific(FlTidCache::TidKey))){
+		if(NULL == (pData = pthread_getspecific(FlTidCache::GetTid()))){
 			tid = gettid();
 			int	result;
-			if(0 != (result = pthread_setspecific(FlTidCache::TidKey, reinterpret_cast<const void*>(tid)))){
+			if(0 != (result = pthread_setspecific(FlTidCache::GetTid(), reinterpret_cast<const void*>(tid)))){
 				ERR_FLCKPRN("Could not set key and value(tid=%d), error code=%d.", tid, result);
 			}
 		}else{

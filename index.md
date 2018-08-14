@@ -21,13 +21,13 @@ arrow_link_environments: <a href="environments.html" class="link-title"><span cl
 [Overview](home.html) about **FULLOCK** library.
 
 ## {{ page.arrow_link_feature }}
-The explanation of the detailed [Feature](featureja.html) of **FULLOCK** library.
+The explanation of the detailed [Feature](feature.html) of **FULLOCK** library.
 
 ## {{ page.arrow_link_usage }}
 How to [use](usage.html) **FULLOCK** library for your program.
 
 ## {{ page.arrow_link_build }}
-How to [build](buildja.html) **FULLOCK** library from [source code]({{ site.github.repository_url }}) on Github.
+How to [build](build.html) **FULLOCK** library from [source code]({{ site.github.repository_url }}) on Github.
 
 ## {{ page.arrow_link_developer }}
 Detailed description of the programming interface provided by **FULLOCK** library for [developer](developer.html)s.

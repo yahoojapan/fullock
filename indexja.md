@@ -6,7 +6,7 @@ short_desc: Fast User Level LOCK library
 lang_opp_file: index.html
 lang_opp_word: To English
 arrow_link_overview: <a href="homeja.html" class="link-title"><span class="arrow-base link-arrow-right"></span>概要</a>
-arrow_link_features: <a href="featuresja.html" class="link-title"><span class="arrow-base link-arrow-right"></span>特徴</a>
+arrow_link_feature: <a href="featureja.html" class="link-title"><span class="arrow-base link-arrow-right"></span>特徴</a>
 arrow_link_usage: <a href="usageja.html" class="link-title"><span class="arrow-base link-arrow-right"></span>使い方</a>
 arrow_link_build: <a href="buildja.html" class="link-title"><span class="arrow-base link-arrow-right"></span>ビルド</a>
 arrow_link_developer: <a href="developerja.html" class="link-title"><span class="arrow-base link-arrow-right"></span>開発者</a>
@@ -20,11 +20,11 @@ arrow_link_environments: <a href="environmentsja.html" class="link-title"><span 
 ## {{ page.arrow_link_overview }}
 **FULLOCK** の[概要](homeja.html)について説明します。  
 
-## {{ page.arrow_link_features }}
-**FULLOCK** の[特徴](featuresja.html)について詳しく説明します。  
+## {{ page.arrow_link_feature }}
+**FULLOCK** の[特徴](featureja.html)について詳しく説明します。  
 
 ## {{ page.arrow_link_usage }}
-**FULLOCK** をプログラムに組み込むための[使い方](usage.html)について説明します。  
+**FULLOCK** をプログラムに組み込むための[使い方](usageja.html)について説明します。  
 
 ## {{ page.arrow_link_build }}
 **FULLOCK** をGithubの[ソースコード]({{ site.github.repository_url }})から[ビルド](buildja.html)する方法を説明します。

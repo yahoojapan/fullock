@@ -1,3 +1,15 @@
+fullock (1.0.30) trusty; urgency=low
+
+  * Fixed lintian error in man page about wrong word(2)
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Wed, 17 Oct 2018 14:57:02 +0900
+
+fullock (1.0.29) trusty; urgency=low
+
+  * Fixed lintian error in man page about wrong word
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Wed, 17 Oct 2018 13:46:05 +0900
+
 fullock (1.0.28) trusty; urgency=low
 
   * avoid static object initialization order problem(SIOF) - #4

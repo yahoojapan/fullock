@@ -27,7 +27,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 AC_PREREQ([2.63])
-AC_INIT(fullock, m4_esyscmd([tr -d '\n' < $(pwd)/RELEASE_VERSION]) )
+AC_INIT(fullock, m4_esyscmd([tr -d '\n' < $(pwd)/RELEASE_VERSION]))
 AM_INIT_AUTOMAKE()
 LT_INIT()
 
@@ -101,6 +101,8 @@ AC_SUBST([LIB_VERSION_LINK], "`$(pwd)/buildutils/make_variables.sh -lib_version_
 AC_SUBST([LIB_MAJOR_NUMBER], "`$(pwd)/buildutils/make_variables.sh -major_number`")
 AC_SUBST([PKGLICENSE], "`grep License COPYING | sed 's/ License//g'`")
 AC_SUBST([DEBCOPYING], "`tail -n +5 COPYING | sed 's/^$/./g' | sed 's/^/ /g'`")
+AC_SUBST([DEBHELPER_DEP], "`$(pwd)/buildutils/make_variables.sh -debhelper_dep`")
+AC_SUBST([RPMPKG_GROUP], ["`$(pwd)/buildutils/make_variables.sh -rpmpkg_group | sed 's#NEEDRPMGROUP#Group: Applications/Databases#g'`"])
 AM_SUBST_NOTMAKE([CURRENTREV])
 AM_SUBST_NOTMAKE([RPMCHANGELOG])
 AM_SUBST_NOTMAKE([SHORTDESC])
@@ -108,6 +110,8 @@ AM_SUBST_NOTMAKE([LONGDESC])
 AM_SUBST_NOTMAKE([ESCLONGDESC])
 AM_SUBST_NOTMAKE([DEBLONGDESC])
 AM_SUBST_NOTMAKE([DEBCOPYING])
+AM_SUBST_NOTMAKE([DEBHELPER_DEP])
+AM_SUBST_NOTMAKE([RPMPKG_GROUP])
 
 #
 # CFLAGS/CXXFLAGS

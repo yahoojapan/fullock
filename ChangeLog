@@ -1,3 +1,9 @@
+fullock (1.0.31) trusty; urgency=low
+
+  * Changed to strict packaging and changed documents
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 27 Nov 2018 12:21:28 +0900
+
 fullock (1.0.30) trusty; urgency=low
 
   * Fixed lintian error in man page about wrong word(2)
@@ -14,7 +20,7 @@ fullock (1.0.28) trusty; urgency=low
 
   * avoid static object initialization order problem(SIOF) - #4
 
- -- Takeshi Nakatani <ggtakec@gmail.com> Fri, 29 Jun 2018 09:19:20 +0900
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 29 Jun 2018 09:19:20 +0900
 
 fullock (1.0.27) trusty; urgency=low
 

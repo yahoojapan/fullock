@@ -28,9 +28,8 @@
 func_usage()
 {
 	echo ""
-	echo "Usage:  $1 [-<ostype>] [-pctoken <package cloud token>] [-pcuser <user>] [-pcrepo <repogitory name>] [-pcdist <any path(os/version)>] <package name>..."
+	echo "Usage:  $1 [-<ostype>] [-pcuser <user>] [-pcrepo <repogitory name>] [-pcdist <any path(os/version)>] <package name>..."
 	echo "        -<ostype>          specify OS type for script mode(ubuntu/debian/fedora/el)"
-	echo "        -pctoken           specify packagecloud.io token for uploading(optional)"
 	echo "        -pcuser            specify publish user name(optional)"
 	echo "        -pcrepo            specify publish repogitory name(optional)"
 	echo "        -pcdist            specify publish distribute(optional) - example: \"ubuntu/trusty\""
@@ -41,6 +40,7 @@ func_usage()
 	echo "        TRAVIS_TAG         if the current build is for a git tag, this variable is set to the tag’s name"
 	echo "        FORCE_BUILD_PKG    if this env is 'true', force packaging anytime"
 	echo "        USE_PC_REPO        if this env is 'true', use packagecloud.io repogitory"
+	echo "        PCTOKEN            specify packagecloud.io PACKAGECLOUD_TOKEN value"
 	echo ""
 }
 
@@ -85,7 +85,6 @@ GEM_BIN="gem"
 PKGTYPE_RPM=0
 PKGDIR=""
 PKGEXT=""
-PCTOKEN=""
 PCUSER=""
 PCREPO=""
 PCDIST=""
@@ -143,18 +142,6 @@ while [ $# -ne 0 ]; do
 		PKGEXT="rpm"
 		IS_CENTOS=1
 
-	elif [ "X$1" = "X-pctoken" -o "X$1" = "X-PCTOKEN" ]; then
-		if [ "X${PCTOKEN}" != "X" ]; then
-			echo "[ERROR] ${PRGNAME} : already set packagecloud.io token." 1>&2
-			exit 1
-		fi
-		shift
-		if [ $# -eq 0 ]; then
-			echo "[ERROR] ${PRGNAME} : -pctoken option is specified without parameter." 1>&2
-			exit 1
-		fi
-		PCTOKEN=$1
-
 	elif [ "X$1" = "X-pcuser" -o "X$1" = "X-PCUSER" ]; then
 		if [ "X${PCUSER}" != "X" ]; then
 			echo "[ERROR] ${PRGNAME} : already set packagecloud.io user name." 1>&2
@@ -207,7 +194,7 @@ if [ "X${INSTALLER_BIN}" = "X" ]; then
 fi
 if [ "X${PCTOKEN}" = "X" ]; then
 	if [ "X${PCUSER}" != "X" -o "X${PCREPO}" != "X" -o "X${PCDIST}" = "X" ]; then
-		echo "[ERROR] ${PRGNAME} : -pctoken is not specified, but other packagecloud.io options are specified." 1>&2
+		echo "[ERROR] ${PRGNAME} : PCTOKEN environment is not specified, but other packagecloud.io options are specified." 1>&2
 		exit 1
 	fi
 else
@@ -216,7 +203,7 @@ echo "PCUSER=${PCUSER}, PCREPO=${PCREPO}" 1>&2
 ### TEST FOR DEBUGGING - END
 
 	if [ "X${PCUSER}" = "X" -o "X${PCREPO}" = "X" ]; then
-		echo "[ERROR] ${PRGNAME} : -pctoken is specified, but -pcuser or -pcrepo options are not specified." 1>&2
+		echo "[ERROR] ${PRGNAME} : PCTOKEN environment is specified, but -pcuser or -pcrepo options are not specified." 1>&2
 		exit 1
 	fi
 	PCPUBLISH_PATH="${PCUSER}/${PCREPO}"

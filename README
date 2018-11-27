@@ -20,8 +20,10 @@ These provide the functionality of more than pthread_rwlock and pthread_mutex, a
   - Not dead lock by same thread locking
   - Provide programming interface like posix mutex and rwlock
 
-### Doccuments
-  - https://github.com/yahoojapan/fullock/wiki
+### Documents
+  - Github Pages - https://fullock.antpick.ax/
+  - Github Wiki - https://github.com/yahoojapan/fullock/wiki
+  - AntPickax - https://antpick.ax/
 
 ### License
 This software is released under the MIT License, see the license file.

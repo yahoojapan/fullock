@@ -21,12 +21,15 @@ sudo: required
 dist: trusty
 
 env:
+  global:
+    - PCUSER=antpickax
+    - PCREPO=current
   matrix:
-    - PCUSER=antpickax PCREPO=current OS=centos TAG=centos7 DISTTAG=el/7 INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
-    - PCUSER=antpickax PCREPO=current OS=centos TAG=centos6 DISTTAG=el/6 INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
-    - PCUSER=antpickax PCREPO=current OS=fedora TAG=28 DISTTAG=fedora/28 INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
-    - PCUSER=antpickax PCREPO=current OS=ubuntu TAG=18.04 DISTTAG=ubuntu/bionic INSTPKG="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration"
-    - PCUSER=antpickax PCREPO=current OS=debian TAG=stretch DISTTAG=debian/stretch INSTPKG="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration"
+    - OS=centos TAG=centos7 DISTTAG=el/7 INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
+    - OS=centos TAG=centos6 DISTTAG=el/6 INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
+    - OS=fedora TAG=28 DISTTAG=fedora/28 INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
+    - OS=ubuntu TAG=18.04 DISTTAG=ubuntu/bionic INSTPKG="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration"
+    - OS=debian TAG=stretch DISTTAG=debian/stretch INSTPKG="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration"
 
 cache: apt
 

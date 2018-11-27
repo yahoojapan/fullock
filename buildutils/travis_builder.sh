@@ -329,7 +329,7 @@ else
 	# Create debian packages
 	#
 	DEBUILD_OPT=""
-	if [ "X${NO_DEBUILD}" = "Xtrue" -o "X${NO_DEBUILD}" = "XTRUE" ]; then
+	if [ ${IS_PACKAGING} -ne 1 ]; then
 		DEBUILD_OPT="-nodebuild"
 	fi
 	run_cmd ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} ${DEBUILD_OPT} -y

@@ -44,6 +44,7 @@ before_install:
  - sudo docker image pull ${OS}:${TAG}
 
 script:
+ - env
  - sudo docker container run --rm=true -e TRAVIS_TAG=${TRAVIS_TAG} -e FORCE_BUILD_PKG=${FORCE_BUILD_PKG} -e USE_PC_REPO=${USE_PC_REPO} -e BUILD_NUMBER=${BUILD_NUMBER} -e DEBFULLNAME=${DEBFULLNAME} -e DEBEMAIL=${DEBEMAIL} -v `pwd`:/fullock:rw ${OS}:${TAG} /bin/sh -c "/fullock/buildutils/travis_builder.sh -${OS} -pctoken ${PACKAGECLOUD_TOKEN} -pcuser ${PCUSER} -pcrepo ${PCREPO} -pcdist ${DISTTAG} ${INSTPKG}"
 
 #

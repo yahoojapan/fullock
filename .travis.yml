@@ -44,7 +44,7 @@ before_install:
  - sudo docker image pull ${OS}:${TAG}
 
 script:
- - 'if [ "X${TRAVIS_PULL_REQUEST}" = "Xtrue" ]; then export PCTOKEN=dummy_token; else export PCTOKEN=${PACKAGECLOUD_TOKEN}; fi'
+ - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then export PCTOKEN=dummy_token_for_pr; else export PCTOKEN=${PACKAGECLOUD_TOKEN}; fi'
  - sudo docker container run --rm=true -e TRAVIS_TAG=${TRAVIS_TAG} -e FORCE_BUILD_PKG=${FORCE_BUILD_PKG} -e USE_PC_REPO=${USE_PC_REPO} -e BUILD_NUMBER=${BUILD_NUMBER} -e DEBFULLNAME=${DEBFULLNAME} -e DEBEMAIL=${DEBEMAIL} -v `pwd`:/fullock:rw ${OS}:${TAG} /bin/sh -c "/fullock/buildutils/travis_builder.sh -${OS} -pctoken ${PCTOKEN} -pcuser ${PCUSER} -pcrepo ${PCREPO} -pcdist ${DISTTAG} ${INSTPKG}"
 
 #

@@ -41,6 +41,7 @@ func_usage()
 	echo "        TRAVIS_TAG         if the current build is for a git tag, this variable is set to the tag’s name"
 	echo "        FORCE_BUILD_PKG    if this env is 'true', force packaging anytime"
 	echo "        USE_PC_REPO        if this env is 'true', use packagecloud.io repogitory"
+	echo "        NO_DEBUILD         if this env is 'true'(on pull request), do not run debuild."
 	echo ""
 }
 
@@ -68,14 +69,6 @@ PRGNAME=`basename $0`
 MYSCRIPTDIR=`dirname $0`
 MYSCRIPTDIR=`cd ${MYSCRIPTDIR}; pwd`
 SRCTOP=`cd ${MYSCRIPTDIR}/..; pwd`
-
-### TEST FOR DEBUGGING - START
-env 1>&2
-### TEST FOR DEBUGGING - END
-
-### TEST FOR DEBUGGING - START
-echo $@ 1>&2
-### TEST FOR DEBUGGING - END
 
 #
 # Check options
@@ -210,10 +203,6 @@ if [ "X${PCTOKEN}" = "X" ]; then
 		exit 1
 	fi
 else
-### TEST FOR DEBUGGING - START
-echo "PCUSER=${PCUSER}, PCREPO=${PCREPO}" 1>&2
-### TEST FOR DEBUGGING - END
-
 	if [ "X${PCUSER}" = "X" -o "X${PCREPO}" = "X" ]; then
 		echo "[ERROR] ${PRGNAME} : -pctoken is specified, but -pcuser or -pcrepo options are not specified." 1>&2
 		exit 1
@@ -339,7 +328,11 @@ else
 	#
 	# Create debian packages
 	#
-	run_cmd ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} -y
+	DEBUILD_OPT=""
+	if [ "X${NO_DEBUILD}" = "Xtrue" -o "X${NO_DEBUILD}" = "XTRUE" ]; then
+		DEBUILD_OPT="-nodebuild"
+	fi
+	run_cmd ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} ${DEBUILD_OPT} -y
 fi
 
 #

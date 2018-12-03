@@ -1,8 +1,9 @@
 fullock (1.0.32) trusty; urgency=low
 
-  * Removed AC_PROG_LIBTOOL
+  * Removed deprecated AC_PROG_LIBTOOL in configura.ac.
+  * Removed improper macros in libfullock.spec.in for relocatable package.
 
- -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 03 Dec 2018 09:16:16 +0900
+ -- Hirotaka Wakabayashi <hiwakaba@yahoo-corp.jp>  Mon, 03 Dec 2018 09:16:16 +0900
 
 fullock (1.0.31) trusty; urgency=low
 

@@ -46,9 +46,7 @@ License: @PKGLICENSE@
 @RPMPKG_GROUP@
 URL: https://@GIT_DOMAIN@/@GIT_ORG@/@PACKAGE_NAME@
 Source0: https://@GIT_DOMAIN@/@GIT_ORG@/@PACKAGE_NAME@/archive/%{gittag}/@PACKAGE_NAME@-%{version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires: git-core gcc-c++ make libtool
-Prefix: %{_prefix}
 
 %description
 @LONGDESC@

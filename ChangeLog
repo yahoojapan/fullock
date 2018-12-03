@@ -1,3 +1,9 @@
+fullock (1.0.32) trusty; urgency=low
+
+  * Removed AC_PROG_LIBTOOL
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 03 Dec 2018 09:16:16 +0900
+
 fullock (1.0.31) trusty; urgency=low
 
   * Changed to strict packaging and changed documents

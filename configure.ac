@@ -45,7 +45,6 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
-AC_PROG_LIBTOOL
 
 #
 # Checks for libraries.
@@ -103,6 +102,7 @@ AC_SUBST([PKGLICENSE], "`grep License COPYING | sed 's/ License//g'`")
 AC_SUBST([DEBCOPYING], "`tail -n +5 COPYING | sed 's/^$/./g' | sed 's/^/ /g'`")
 AC_SUBST([DEBHELPER_DEP], "`$(pwd)/buildutils/make_variables.sh -debhelper_dep`")
 AC_SUBST([RPMPKG_GROUP], ["`$(pwd)/buildutils/make_variables.sh -rpmpkg_group | sed 's#NEEDRPMGROUP#Group: Applications/Databases#g'`"])
+AC_SUBST([CONFIGREWITHOPT], "")
 AM_SUBST_NOTMAKE([CURRENTREV])
 AM_SUBST_NOTMAKE([RPMCHANGELOG])
 AM_SUBST_NOTMAKE([SHORTDESC])
@@ -112,6 +112,7 @@ AM_SUBST_NOTMAKE([DEBLONGDESC])
 AM_SUBST_NOTMAKE([DEBCOPYING])
 AM_SUBST_NOTMAKE([DEBHELPER_DEP])
 AM_SUBST_NOTMAKE([RPMPKG_GROUP])
+AM_SUBST_NOTMAKE([CONFIGREWITHOPT])
 
 #
 # CFLAGS/CXXFLAGS

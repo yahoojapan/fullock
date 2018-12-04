@@ -1,3 +1,10 @@
+fullock (1.0.32) trusty; urgency=low
+
+  * Fixed RPM packaging about configure.ac and spec file
+  * Updated some scripts related to packaging
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 04 Dec 2018 12:00:18 +0900
+
 fullock (1.0.31) trusty; urgency=low
 
   * Changed to strict packaging and changed documents

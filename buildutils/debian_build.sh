@@ -28,16 +28,28 @@
 func_usage()
 {
 	echo ""
-	echo "Usage:  $1 [-buildnum <build number>] [-nodebuild] [-rootdir] [-product <product name>] [-y] [additional debuild options]"
+	echo "Usage:  $1 [-buildnum <build number>] [-nodebuild] [-rootdir] [-product <product name>] [-class <class name>] [-y] [additional debuild options]"
 	echo "        -buildnum                     specify build number for packaging(default 1)"
 	echo "        -nodebuild                    stops before do debuild command."
 	echo "        -rootdir                      layout \"debian\" directory for packaging under source top directory"
 	echo "        -product                      specify product name(use PACKAGE_NAME in Makefile s default)"
+	echo "        -class                        specify package class name(optional)"
 	echo "        -y                            runs no interacitive mode."
 	echo "        additional debuild options    this script run debuild with \"-uc -us\", can specify additional options."
 	echo "        -h                            print help"
 	echo ""
 }
+
+func_get_default_class()
+{
+	dh_make -h 2>/dev/null | grep '\--multi' >/dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		echo "multi"
+	else
+		echo "library"
+	fi
+}
+
 PRGNAME=`basename $0`
 MYSCRIPTDIR=`dirname $0`
 MYSCRIPTDIR=`cd ${MYSCRIPTDIR}; pwd`
@@ -53,6 +65,7 @@ IS_ROOTDIR=0
 DH_MAKE_AUTORUN_OPTION=""
 BUILD_NUMBER=1
 DEBUILD_OPT=""
+PKGCLASSNAME=`func_get_default_class`
 while [ $# -ne 0 ]; do
 	if [ "X$1" = "X" ]; then
 		break
@@ -83,6 +96,14 @@ while [ $# -ne 0 ]; do
 			exit 1
 		fi
 		PACKAGE_NAME=$1
+
+	elif [ "X$1" = "X-class" ]; then
+		shift
+		if [ $# -eq 0 ]; then
+			echo "ERROR: -class option needs parameter." 1>&2
+			exit 1
+		fi
+		PKGCLASSNAME=$1
 
 	elif [ "X$1" = "X-y" ]; then
 		IS_INTERACTIVE=0
@@ -137,8 +158,8 @@ fi
 #
 # Make dist package by make dist
 #
-${SRCTOP}/autogen.sh	|| exit 1
-${SRCTOP}/configure		|| exit 1
+${SRCTOP}/autogen.sh				|| exit 1
+${SRCTOP}/configure ${CONFIGREOPT}	|| exit 1
 PACKAGE_VERSION=`${MYSCRIPTDIR}/make_variables.sh -pkg_version`
 PACKAGE_MAJOR_VER=`${MYSCRIPTDIR}/make_variables.sh -major_number`
 
@@ -177,12 +198,12 @@ cd ${EXPANDDIR} || exit 1
 #
 # initialize debian directory
 #
-dh_make -f ${BUILDDEBDIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}.tar.gz --createorig --library ${DH_MAKE_AUTORUN_OPTION} || exit 1
+dh_make -f ${BUILDDEBDIR}/${PACKAGE_NAME}-${PACKAGE_VERSION}.tar.gz --createorig --${PKGCLASSNAME} ${DH_MAKE_AUTORUN_OPTION} || exit 1
 
 #
 # remove unnecessary template files
 #
-rm -rf ${EXPANDDIR}/debian/*.ex ${EXPANDDIR}/debian/*.EX ${EXPANDDIR}/debian/${PACKAGE_NAME}-doc.* ${EXPANDDIR}/debian/README.* ${EXPANDDIR}/debian/docs
+rm -rf ${EXPANDDIR}/debian/*.ex ${EXPANDDIR}/debian/*.EX ${EXPANDDIR}/debian/${PACKAGE_NAME}-doc.* ${EXPANDDIR}/debian/README.* ${EXPANDDIR}/debian/docs ${EXPANDDIR}/debian/*.install
 
 #
 # adding some lines into rules file
@@ -210,6 +231,12 @@ echo "	ls debian/lib${PACKAGE_NAME}/usr/lib/x86_64-linux-gnu/*.so >/dev/null 2>&
 echo "	ls debian/lib${PACKAGE_DEV_NAME}/usr/lib/x86_64-linux-gnu/*.a >/dev/null 2>&1;   if [ $? -eq 0 ]; then rm -rf debian/lib${PACKAGE_DEV_NAME}/usr/lib/x86_64-linux-gnu/*.a;   fi"	>> ${EXPANDDIR}/debian/rules || exit 1
 echo "	ls debian/lib${PACKAGE_DEV_NAME}/usr/lib/x86_64-linux-gnu/*.la >/dev/null 2>&1;  if [ $? -eq 0 ]; then rm -rf debian/lib${PACKAGE_DEV_NAME}/usr/lib/x86_64-linux-gnu/*.la;  fi"	>> ${EXPANDDIR}/debian/rules || exit 1
 echo "	ls debian/lib${PACKAGE_DEV_NAME}/usr/lib/x86_64-linux-gnu/*.so* >/dev/null 2>&1; if [ $? -eq 0 ]; then rm -rf debian/lib${PACKAGE_DEV_NAME}/usr/lib/x86_64-linux-gnu/*.so*; fi"	>> ${EXPANDDIR}/debian/rules || exit 1
+
+if [ "X${CONFIGREOPT}" != "X" ]; then
+	echo ""																				>> ${EXPANDDIR}/debian/rules || exit 1
+	echo "override_dh_auto_configure:"													>> ${EXPANDDIR}/debian/rules || exit 1
+	echo "	dh_auto_configure -- ${CONFIGREOPT}"										>> ${EXPANDDIR}/debian/rules || exit 1
+fi
 
 #
 # create links file for library

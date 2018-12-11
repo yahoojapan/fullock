@@ -32,7 +32,7 @@ func_usage()
 	echo "        -<ostype>          specify OS type for script mode(ubuntu/debian/fedora/el)"
 	echo "        -pctoken           specify packagecloud.io token for uploading(optional)"
 	echo "        -pcuser            specify publish user name(optional)"
-	echo "        -pcrepo            specify publish repogitory name(optional)"
+	echo "        -pcrepo            specify publish repository name(optional)"
 	echo "        -pcdlrepo          specify download repository name(optional)"
 	echo "        -pcdist            specify publish distribute(optional) - example: \"ubuntu/trusty\""
 	echo "        <package name>...  specify package names needed before building"
@@ -41,8 +41,8 @@ func_usage()
 	echo "        BUILD_NUMBER       specify build number for packaging(default 1)"
 	echo "        TRAVIS_TAG         if the current build is for a git tag, this variable is set to the tag’s name"
 	echo "        FORCE_BUILD_PKG    if this env is 'true', force packaging anytime"
-	echo "        USE_PC_REPO        if this env is 'true', use packagecloud.io repogitory"
-	echo "        CONFIGREOPT        specify extra configure option."
+	echo "        USE_PC_REPO        if this env is 'true', use packagecloud.io repository"
+	echo "        CONFIGUREOPT       specify extra configure option."
 	echo "        NO_DEBUILD         if this env is 'true'(on pull request), do not run debuild."
 	echo ""
 }
@@ -164,7 +164,7 @@ while [ $# -ne 0 ]; do
 
 	elif [ "X$1" = "X-pcrepo" -o "X$1" = "X-PCREPO" ]; then
 		if [ "X${PCREPO}" != "X" ]; then
-			echo "[ERROR] ${PRGNAME} : already set packagecloud.io repogitory name." 1>&2
+			echo "[ERROR] ${PRGNAME} : already set packagecloud.io repository name." 1>&2
 			exit 1
 		fi
 		shift
@@ -267,7 +267,7 @@ else
 fi
 
 #
-# Set package repogitory on packagecloud.io
+# Set package repository on packagecloud.io
 #
 if [ "X${USE_PC_REPO}" = "Xtrue" -o "X${USE_PC_REPO}" = "XTRUE" ]; then
 	#
@@ -288,7 +288,7 @@ if [ "X${USE_PC_REPO}" = "Xtrue" -o "X${USE_PC_REPO}" = "XTRUE" ]; then
 	fi
 
 	#
-	# Download and set pckagecloud.io repogitory
+	# Download and set pckagecloud.io repository
 	#
 	if [ ${IS_CENTOS} -eq 1 -o ${IS_FEDORA} -eq 1 ]; then
 		PC_REPO_ADD_SH="script.rpm.sh"
@@ -298,7 +298,7 @@ if [ "X${USE_PC_REPO}" = "Xtrue" -o "X${USE_PC_REPO}" = "XTRUE" ]; then
 	prn_cmd "curl -s https://packagecloud.io/install/repositories/${PCUSER}/${PCDLREPO_NAME}/${PC_REPO_ADD_SH} | bash"
 	curl -s https://packagecloud.io/install/repositories/${PCUSER}/${PCDLREPO_NAME}/${PC_REPO_ADD_SH} | bash
 	if [ $? -ne 0 ]; then
-		echo "[ERROR] ${PRGNAME} : could not add packagecloud.io repogitory." 1>&2
+		echo "[ERROR] ${PRGNAME} : could not add packagecloud.io repository." 1>&2
 		exit 1
 	fi
 fi
@@ -331,11 +331,12 @@ fi
 # Start bulding ( build under /tmp )
 #
 run_cmd cp -rp ${SRCTOP} /tmp
-SRCTOP="/tmp${SRCTOP}"
+TMPSRCTOP=`basename ${SRCTOP}`
+SRCTOP="/tmp/${TMPSRCTOP}"
 
 run_cmd cd ${SRCTOP}
 run_cmd ./autogen.sh
-run_cmd ./configure --prefix=/usr ${CONFIGREOPT}
+run_cmd ./configure --prefix=/usr ${CONFIGUREOPT}
 run_cmd make
 run_cmd make check
 
@@ -356,8 +357,8 @@ else
 	if [ ${IS_PACKAGING} -ne 1 ]; then
 		DEBUILD_OPT="-nodebuild"
 	fi
-	prn_cmd CONFIGREOPT=${CONFIGREOPT} ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} ${DEBUILD_OPT} -y
-	CONFIGREOPT=${CONFIGREOPT} ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} ${DEBUILD_OPT} -y
+	prn_cmd CONFIGUREOPT=${CONFIGUREOPT} ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} ${DEBUILD_OPT} -y
+	CONFIGUREOPT=${CONFIGUREOPT} ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} ${DEBUILD_OPT} -y
 fi
 if [ $? -ne 0 ]; then
 	echo "[ERROR] ${PRGNAME} : Failed to build packages" 1>&2

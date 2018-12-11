@@ -56,7 +56,7 @@ BuildRequires: git-core gcc-c++ make libtool
 
 %build
 ./autogen.sh
-%configure --disable-static @CONFIGREWITHOPT@
+%configure --disable-static @CONFIGUREWITHOPT@
 %make_build
 
 %install

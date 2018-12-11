@@ -14,6 +14,7 @@
 # REVISION:
 #
 
+
 language: cpp
 
 sudo: required
@@ -29,23 +30,23 @@ env:
     - OS=centos 
       TAG=centos7 
       DISTTAG=el/7 
-      INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
+      INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
     - OS=centos 
       TAG=centos6 
       DISTTAG=el/6 
-      INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
+      INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
     - OS=fedora 
       TAG=28 
       DISTTAG=fedora/28 
-      INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems"
+      INSTPKG="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
     - OS=ubuntu 
       TAG=18.04 
       DISTTAG=ubuntu/bionic 
-      INSTPKG="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration"
+      INSTPKG="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration procps"
     - OS=debian 
       TAG=stretch 
       DISTTAG=debian/stretch 
-      INSTPKG="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration"
+      INSTPKG="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration procps"
 
 cache: apt
 
@@ -61,7 +62,7 @@ before_install:
 
 script:
   - 'if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then export PCTOKEN=dummy_token_for_pr; else export PCTOKEN=${PACKAGECLOUD_TOKEN}; fi'
-  - sudo docker container run 
+  - docker container run 
     --rm=true 
     -e TRAVIS_TAG=${TRAVIS_TAG} 
     -e FORCE_BUILD_PKG=${FORCE_BUILD_PKG} 
@@ -69,6 +70,7 @@ script:
     -e BUILD_NUMBER=${BUILD_NUMBER} 
     -e DEBFULLNAME=${DEBFULLNAME} 
     -e DEBEMAIL=${DEBEMAIL} 
+    -e CONFIGUREOPT=${CONFIGUREOPT} 
     -v `pwd`:/fullock:rw ${OS}:${TAG} 
     /bin/sh -c "/fullock/buildutils/travis_builder.sh -${OS} -pctoken ${PCTOKEN} -pcuser ${PCUSER} -pcrepo ${PCREPO} -pcdlrepo ${PCDLREPO} -pcdist ${DISTTAG} ${INSTPKG}"
 

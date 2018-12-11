@@ -1,3 +1,9 @@
+fullock (1.0.33) trusty; urgency=low
+
+  * Updated common build tool files
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 11 Dec 2018 10:45:03 +0900
+
 fullock (1.0.32) trusty; urgency=low
 
   * Fixed RPM packaging about configure.ac and spec file

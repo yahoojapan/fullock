@@ -304,7 +304,6 @@ bool FlShm::InitializeShmFile(void)
 PFLFILELOCK FlShm::MakeListFileLock(PFLFILELOCK ptr, size_t count)
 {
 	if(!ptr){
-		ERR_FLCKPRN("Paraemter is wrong.");
 		return NULL;
 	}
 	// initialize as list
@@ -316,7 +315,6 @@ PFLFILELOCK FlShm::MakeListFileLock(PFLFILELOCK ptr, size_t count)
 PFLOFFLOCK FlShm::MakeListOffLock(PFLOFFLOCK ptr, size_t count)
 {
 	if(!ptr){
-		ERR_FLCKPRN("Paraemter is wrong.");
 		return NULL;
 	}
 	// initialize as list
@@ -328,7 +326,6 @@ PFLOFFLOCK FlShm::MakeListOffLock(PFLOFFLOCK ptr, size_t count)
 PFLLOCKER FlShm::MakeListLocker(PFLLOCKER ptr, size_t count)
 {
 	if(!ptr){
-		ERR_FLCKPRN("Paraemter is wrong.");
 		return NULL;
 	}
 	// initialize as list
@@ -340,7 +337,6 @@ PFLLOCKER FlShm::MakeListLocker(PFLLOCKER ptr, size_t count)
 PFLNAMEDMUTEX FlShm::MakeListNMtxLock(PFLNAMEDMUTEX ptr, size_t count)
 {
 	if(!ptr){
-		ERR_FLCKPRN("Paraemter is wrong.");
 		return NULL;
 	}
 	// initialize as list
@@ -352,7 +348,6 @@ PFLNAMEDMUTEX FlShm::MakeListNMtxLock(PFLNAMEDMUTEX ptr, size_t count)
 PFLNAMEDCOND FlShm::MakeListNCondLock(PFLNAMEDCOND ptr, size_t count)
 {
 	if(!ptr){
-		ERR_FLCKPRN("Paraemter is wrong.");
 		return NULL;
 	}
 	// initialize as list
@@ -364,7 +359,6 @@ PFLNAMEDCOND FlShm::MakeListNCondLock(PFLNAMEDCOND ptr, size_t count)
 PFLWAITER FlShm::MakeListWaiter(PFLWAITER ptr, size_t count)
 {
 	if(!ptr){
-		ERR_FLCKPRN("Paraemter is wrong.");
 		return NULL;
 	}
 	// initialize as list

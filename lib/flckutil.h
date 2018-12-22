@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 #include "flckcommon.h"
 #include "flckpidcache.h"
@@ -134,10 +135,8 @@ template<typename T> inline std::string to_hexstring(T data)
 
 inline std::string spaces_string(int count)
 {
-	std::string	result;
-	for(int cnt = 0; cnt < count; ++cnt){
-		result += ' ';
-	}
+	std::string result(count, ' ');
+
 	return result;
 }
 

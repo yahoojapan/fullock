@@ -105,17 +105,13 @@ inline std::string trim(const std::string &base, const std::string &trims = SPAC
 // Convert
 inline std::string lower(std::string base)
 {
-	for(std::string::size_type pos = 0; pos < base.length(); pos++){
-		base[pos] = tolower(base[pos]);
-	}
+	std::transform(base.begin(), base.end(), base.begin(), ::tolower);
 	return base;
 }
 
 inline std::string upper(std::string base)
 {
-	for(std::string::size_type pos = 0; pos < base.length(); pos++){
-		base[pos] = toupper(base[pos]);
-	}
+	std::transform(base.begin(), base.end(), base.begin(), ::toupper);
 	return base;
 }
 

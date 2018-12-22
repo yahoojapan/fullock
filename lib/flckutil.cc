@@ -62,7 +62,7 @@ typedef std::vector<std::string>				strlist_t;
 void* RawMap(int fd, size_t size, off_t offset)
 {
 	if(FLCK_INVALID_HANDLE == fd){
-		ERR_FLCKPRN("Paraemter is wrong.");
+		ERR_FLCKPRN("Parameter is wrong.");
 		return NULL;
 	}
 	void*	pBase;
@@ -76,7 +76,7 @@ void* RawMap(int fd, size_t size, off_t offset)
 bool RawUnmap(void* pmap, size_t size)
 {
 	if(!pmap){
-		ERR_FLCKPRN("Paraemter is wrong.");
+		ERR_FLCKPRN("Parameter is wrong.");
 		return false;
 	}
 	if(0 != munmap(pmap, size)){
@@ -92,7 +92,7 @@ bool RawUnmap(void* pmap, size_t size)
 bool CvtNumberStringToLong(const char* str, long* presult)
 {
 	if(!presult){
-		ERR_FLCKPRN("Paraemter is wrong.");
+		ERR_FLCKPRN("Parameter is wrong.");
 		return false;
 	}
 	if(FLCKEMPTYSTR(str)){

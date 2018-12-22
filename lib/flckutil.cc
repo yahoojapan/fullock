@@ -507,9 +507,7 @@ bool flck_fill_zero(int fd, size_t count, off_t offset)
 	static unsigned char	bydata[4096];
 	static bool				is_init = false;
 	if(!is_init){
-		for(size_t cnt = 0; cnt < sizeof(bydata); cnt++){
-			bydata[cnt] = 0x00;
-		}
+		memset(bydata, 0x00, sizeof(bydata));
 		is_init = true;
 	}
 

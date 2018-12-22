@@ -76,6 +76,7 @@ void* RawMap(int fd, size_t size, off_t offset)
 bool RawUnmap(void* pmap, size_t size)
 {
 	if(!pmap){
+		ERR_FLCKPRN("Parameter is wrong.");
 		return false;
 	}
 	if(0 != munmap(pmap, size)){
@@ -91,6 +92,7 @@ bool RawUnmap(void* pmap, size_t size)
 bool CvtNumberStringToLong(const char* str, long* presult)
 {
 	if(!presult){
+		ERR_FLCKPRN("Parameter is wrong.");
 		return false;
 	}
 	if(FLCKEMPTYSTR(str)){

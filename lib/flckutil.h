@@ -98,7 +98,6 @@ inline std::string rtrim(const std::string &base, const std::string &trims = SPA
 
 inline std::string trim(const std::string &base, const std::string &trims = SPACECAHRS)
 {
-	std::string	newstr(base);
 	return ltrim(rtrim(base, trims), trims);
 }
 

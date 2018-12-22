@@ -370,7 +370,7 @@ static bool overareacnt_test(string& strtesttype, const char* procname, bool is_
 		int	fd;
 		if(-1 == (fd = open(MYTEST_FILE, O_RDONLY))){
 			ERR("Could not open file(%s), errno = %d", MYTEST_FILE, errno);
-			return -1;
+			return false;
 		}
 
 		int	lockcnt;

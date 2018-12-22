@@ -519,7 +519,7 @@ bool flck_fill_zero(int fd, size_t count, off_t offset)
 		one_write = std::min((count - static_cast<size_t>(write_cnt)), sizeof(bydata));
 		if(-1 == (one_write = flck_pwrite(fd, bydata, one_write, (offset + write_cnt)))){
 			WAN_FLCKPRN("Failed to initlize zero to fd(%d:%jd), errno = %d", fd, static_cast<intmax_t>(offset + write_cnt), errno);
-			return -1;
+			return false;
 		}
 	}
 	return true;

@@ -65,7 +65,7 @@ bool FlShm::Attach(void)
 
 	// check
 	if(FLCK_FILE_VERSION < pTmpHead->version){
-		ERR_FLCKPRN("Fullock shm file version(%ld: %s) is newer this library(%ld: %s)", pTmpHead->version, pTmpHead->szver, FLCK_FILE_VERSION, FLCK_FILE_VERSION_STR);
+		ERR_FLCKPRN("Fullock shm file version(%lu: %s) is newer this library(%ld: %s)", pTmpHead->version, pTmpHead->szver, FLCK_FILE_VERSION, FLCK_FILE_VERSION_STR);
 		RawUnmap(pTmpHead, sizeof(FLHEAD));
 		return false;
 	}

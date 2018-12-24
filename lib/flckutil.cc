@@ -62,7 +62,7 @@ typedef std::vector<std::string>				strlist_t;
 void* RawMap(int fd, size_t size, off_t offset)
 {
 	if(FLCK_INVALID_HANDLE == fd){
-		ERR_FLCKPRN("Paraemter is wrong.");
+		ERR_FLCKPRN("Parameter is wrong.");
 		return NULL;
 	}
 	void*	pBase;
@@ -76,7 +76,7 @@ void* RawMap(int fd, size_t size, off_t offset)
 bool RawUnmap(void* pmap, size_t size)
 {
 	if(!pmap){
-		ERR_FLCKPRN("Paraemter is wrong.");
+		ERR_FLCKPRN("Parameter is wrong.");
 		return false;
 	}
 	if(0 != munmap(pmap, size)){
@@ -92,7 +92,7 @@ bool RawUnmap(void* pmap, size_t size)
 bool CvtNumberStringToLong(const char* str, long* presult)
 {
 	if(!presult){
-		ERR_FLCKPRN("Paraemter is wrong.");
+		ERR_FLCKPRN("Parameter is wrong.");
 		return false;
 	}
 	if(FLCKEMPTYSTR(str)){
@@ -507,9 +507,7 @@ bool flck_fill_zero(int fd, size_t count, off_t offset)
 	static unsigned char	bydata[4096];
 	static bool				is_init = false;
 	if(!is_init){
-		for(size_t cnt = 0; cnt < sizeof(bydata); cnt++){
-			bydata[cnt] = 0x00;
-		}
+		memset(bydata, 0x00, sizeof(bydata));
 		is_init = true;
 	}
 
@@ -519,7 +517,7 @@ bool flck_fill_zero(int fd, size_t count, off_t offset)
 		one_write = std::min((count - static_cast<size_t>(write_cnt)), sizeof(bydata));
 		if(-1 == (one_write = flck_pwrite(fd, bydata, one_write, (offset + write_cnt)))){
 			WAN_FLCKPRN("Failed to initlize zero to fd(%d:%jd), errno = %d", fd, static_cast<intmax_t>(offset + write_cnt), errno);
-			return -1;
+			return false;
 		}
 	}
 	return true;

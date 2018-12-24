@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 #include "flckcommon.h"
 #include "flckpidcache.h"
@@ -98,24 +99,19 @@ inline std::string rtrim(const std::string &base, const std::string &trims = SPA
 
 inline std::string trim(const std::string &base, const std::string &trims = SPACECAHRS)
 {
-	std::string	newstr(base);
 	return ltrim(rtrim(base, trims), trims);
 }
 
 // Convert
 inline std::string lower(std::string base)
 {
-	for(std::string::size_type pos = 0; pos < base.length(); pos++){
-		base[pos] = tolower(base[pos]);
-	}
+	std::transform(base.begin(), base.end(), base.begin(), ::tolower);
 	return base;
 }
 
 inline std::string upper(std::string base)
 {
-	for(std::string::size_type pos = 0; pos < base.length(); pos++){
-		base[pos] = toupper(base[pos]);
-	}
+	std::transform(base.begin(), base.end(), base.begin(), ::toupper);
 	return base;
 }
 
@@ -135,10 +131,8 @@ template<typename T> inline std::string to_hexstring(T data)
 
 inline std::string spaces_string(int count)
 {
-	std::string	result;
-	for(int cnt = 0; cnt < count; ++cnt){
-		result += ' ';
-	}
+	std::string result(count, ' ');
+
 	return result;
 }
 

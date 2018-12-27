@@ -47,7 +47,7 @@ $ sudo yum install libfullock
 ```
 To install the developer package, please install the following package.
 ```
-$ sudo apt-get install libfullock-devel
+$ sudo yum install libfullock-devel
 ```
 
 #### Other OS

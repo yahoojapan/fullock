@@ -47,7 +47,7 @@ $ sudo yum install libfullock
 ```
 開発者向けパッケージをインストールする場合は、以下のパッケージをインストールしてください。
 ```
-$ sudo apt-get install libfullock-devel
+$ sudo yum install libfullock-devel
 ```
 
 #### 上記以外のOS

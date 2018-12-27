@@ -22,7 +22,7 @@ The other way is to build and install FULLOCK library from source code yourself.
 These methods are described below.  
 
 ### Installing packages
-The FULLOCK library publishes [packages](https://packagecloud.io/app/antpickax/stable/search?q=fullock) in [packagecloud.io - AntPickax stable repository](https://packagecloud.io/app/antpickax/stable) so that anyone can use it.  
+The FULLOCK library publishes [packages](https://packagecloud.io/app/antpickax/stable/search?q=fullock) in [packagecloud.io - AntPickax stable repository](https://packagecloud.io/antpickax/stable) so that anyone can use it.  
 The package of the FULLOCK library is released in the form of Debian package, RPM package.  
 Since the installation method differs depending on your OS, please check the following procedure and install it.  
 

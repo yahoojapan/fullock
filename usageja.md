@@ -22,7 +22,7 @@ FULLOCKライブラリをご利用の環境にインストールするには、2
 これらの方法について、以下に説明します。
 
 ### パッケージのインストール
-FULLOCKライブラリは、誰でも利用できるように[packagecloud.io - AntPickax stable repository](https://packagecloud.io/app/antpickax/stable/)で[パッケージ](https://packagecloud.io/app/antpickax/stable/search?q=fullock)を公開しています。  
+FULLOCKライブラリは、誰でも利用できるように[packagecloud.io - AntPickax stable repository](https://packagecloud.io/antpickax/stable/)で[パッケージ](https://packagecloud.io/app/antpickax/stable/search?q=fullock)を公開しています。  
 FULLOCKライブラリのパッケージは、Debianパッケージ、RPMパッケージの形式で公開しています。  
 お使いのOSによりインストール方法が異なりますので、以下の手順を確認してインストールしてください。  
 

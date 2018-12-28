@@ -13,30 +13,46 @@ next_url: developer.html
 next_string: Developer
 ---
 
-# Building
-The build method for FULLOCK is explained below.
+# Build
 
-## 1. Install prerequisites before compiling
-- Debian / Ubuntu
-```
-$ sudo apt update
-$ sudo apt install git autoconf automake libtool g++
-```
+This chapter instructs how to build **FULLOCK** and install it and its header files.
 
-- Fedora / CentOS
+## 1. Install prerequisites
+
+For DebianStretch or Ubuntu(Bionic Beaver) users, follow the steps below.
 ```
-$ sudo yum install git gcc-c++ make libtool
+$ sudo apt-get update -y
+$ sudo apt install git autoconf automake libtool g++ -y
 ```
 
-## 2. Clone source codes from Github
+For Fedora28 or CentOS7.x(6.x) users, follow the steps below.
 ```
-$ git clone git@github.com:yahoojapan/fullock.git
+$ sudo yum makecache
+$ sudo yum install git gcc-c++ make libtool -y
+```
+
+## 2. Clone source codes from GitHub
+
+Download the **FULLOCK**'s source code from [GitHub](https://github.com/yahoojapan/fullock).
+
+```
+$ git clone https://github.com/yahoojapan/fullock.git
 ```
 
 ## 3. Building and installing FULLOCK
+
+Just follow the steps below to build **fullock** and install it. We use [GNU Automake](https://www.gnu.org/software/automake/) to build **fullock**.
+
+
 ```
+$ cd fullock
 $ ./autogen.sh
 $ ./configure
 $ make
 $ sudo make install
+```
+
+After successfully installing **FULLOCK**, you will see the manual page for **fullock**:
+```bash
+$ man fullock
 ```

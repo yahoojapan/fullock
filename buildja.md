@@ -13,7 +13,7 @@ next_url: developerja.html
 next_string: Developer
 ---
 
-＃ビルド
+# ビルド
 
 この章では**FULLOCK**をビルドしてそれとそのヘッダファイルをインストールする方法を説明します。
 

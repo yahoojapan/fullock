@@ -1,3 +1,9 @@
+fullock (1.0.34) trusty; urgency=low
+
+  * some small fix(typo and optimize code) - #15
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 28 Dec 2018 08:45:22 +0900
+
 fullock (1.0.33) trusty; urgency=low
 
   * Updated common build tool files

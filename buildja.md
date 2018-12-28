@@ -13,30 +13,46 @@ next_url: developerja.html
 next_string: Developer
 ---
 
-# ビルド方法
-FULLOCKをビルドする方法を説明します。
+＃ビルド
 
-## 1. 事前環境
-- Debian / Ubuntu
-```
-$ sudo apt update
-$ sudo apt install git autoconf automake libtool g++
-```
+この章では**FULLOCK**をビルドしてそれとそのヘッダファイルをインストールする方法を説明します。
 
-- Fedora / CentOS
+## 1.ビルド環境の構築
+
+DebianStretchまたはUbuntu（Bionic Beaver）をお使いの場合は、以下の手順に従ってください。
 ```
-$ sudo yum install git gcc-c++ make libtool
+$ sudo apt-get update -y
+$ sudo apt install git autoconf automake libtool g++ -y
 ```
 
-## 2. clone
+Fedora28またはCentOS7.x（6.x）ユーザーの場合は、以下の手順に従ってください。
 ```
-$ git clone git@github.com:yahoojapan/fullock.git
+$ sudo yum makecache
+$ sudo yum install git gcc-c++ make libtool -y
 ```
 
-## 3. ビルド、インストール：FULLOCK
+## 2. GitHubからソースコードを複製する
+
+**FULLOCK**のソースコードを[GitHub](https://github.com/yahoojapan/fullock)からダウンロードしてください。
+
 ```
+$ git clone https://github.com/yahoojapan/fullock.git
+```
+
+## 3. FULLOCKの構築とインストール
+
+以下の手順に従って**FULLOCK**をビルドしてインストールしてください。 **FULLOCK**を構築するために[GNU Automake](https://www.gnu.org/software/automake/)を使用します。
+
+
+```
+$ cd fullock
 $ ./autogen.sh
 $ ./configure
 $ make
 $ sudo make install
+```
+
+**FULLOCK**のインストールに成功すると、**fullock**のマニュアルページが表示されます。
+```bash
+$ man fullock
 ```

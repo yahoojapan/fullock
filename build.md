@@ -41,7 +41,7 @@ $ git clone https://github.com/yahoojapan/fullock.git
 
 ## 3. Building and installing FULLOCK
 
-Just follow the steps below to build **fullock** and install it. We use [GNU Automake](https://www.gnu.org/software/automake/) to build **fullock**.
+Just follow the steps below to build **FULLOCK** and install it. We use [GNU Automake](https://www.gnu.org/software/automake/) to build **FULLOCK**.
 
 
 ```

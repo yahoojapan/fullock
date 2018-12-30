@@ -73,7 +73,7 @@ class FlShm
 		static const char*		FLCKWAITERCNT;					// Env name : area count for waiter structure
 
 		// Parameters for management
-		static bool				IsAutoInitialize;				// Which initializing or not at constructor for singlton.
+		static bool				IsAutoInitialize;				// Which initializing or not at constructor for singleton.
 		static ROBUSTMODE		RobustMode;						// ROBUST mode
 		static NOMAPMODE		NomapMode;						// mode for no mmapping
 		static FREEUNITMODE		FreeUnitMode;					// Free Unit mode

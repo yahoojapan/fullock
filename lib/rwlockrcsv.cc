@@ -39,7 +39,7 @@ class FLRwlRcsvHelper
 
 		static FLRwlRcsvHelper& GetFlShm(void)
 		{
-			static FLRwlRcsvHelper	helper;											// singlton
+			static FLRwlRcsvHelper	helper;											// singleton
 			return helper;
 		}
 

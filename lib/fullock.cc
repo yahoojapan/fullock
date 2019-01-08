@@ -209,7 +209,7 @@ bool fullock_rwlock_islocked(int fd, off_t offset, size_t length)
 }
 
 //---------------------------------------------------------
-// Functions - named mutex
+// Functions - named cond
 //---------------------------------------------------------
 int fullock_cond_timedwait(const char* pcondname, const char* pmutexname, time_t timeout_usec)
 {

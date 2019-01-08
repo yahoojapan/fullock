@@ -62,22 +62,22 @@ using namespace fullock;
 #define	FLCK_FREEUNITMODE_OFFSET_STR			"OFFSET"
 #define	FLCK_FREEUNITMODE_ALWAYS_STR			"ALWAYS"
 
-#define	FLCK_FLCKFILECNT_DEFAULT				128					// deafult area count for file lock structure
+#define	FLCK_FLCKFILECNT_DEFAULT				128					// default area count for file lock structure
 #define	FLCK_FLCKFILECNT_MIN					1
 #define	FLCK_FLCKFILECNT_MAX					2048
-#define	FLCK_FLCKOFFETCNT_DEFAULT				8192				// deafult area count for offset lock structure
+#define	FLCK_FLCKOFFETCNT_DEFAULT				8192				// default area count for offset lock structure
 #define	FLCK_FLCKOFFETCNT_MIN					4
 #define	FLCK_FLCKOFFETCNT_MAX					16384
-#define	FLCK_FLCKLOCKERCNT_DEFAULT				8192				// deafult area count for locker structure
+#define	FLCK_FLCKLOCKERCNT_DEFAULT				8192				// default area count for locker structure
 #define	FLCK_FLCKLOCKERCNT_MIN					4
 #define	FLCK_FLCKLOCKERCNT_MAX					16384
-#define	FLCK_FLCKNMTXCNT_DEFAULT				256					// deafult area count for named mutex structure
+#define	FLCK_FLCKNMTXCNT_DEFAULT				256					// default area count for named mutex structure
 #define	FLCK_FLCKNMTXCNT_MIN					1
 #define	FLCK_FLCKNMTXCNT_MAX					8192
-#define	FLCK_FLCKNCONDCNT_DEFAULT				256					// deafult area count for named cond structure
+#define	FLCK_FLCKNCONDCNT_DEFAULT				256					// default area count for named cond structure
 #define	FLCK_FLCKNCONDCNT_MIN					1
 #define	FLCK_FLCKNCONDCNT_MAX					8192
-#define	FLCK_FLCKWAITERCNT_DEFAULT				8192				// deafult area count for waiter structure
+#define	FLCK_FLCKWAITERCNT_DEFAULT				8192				// default area count for waiter structure
 #define	FLCK_FLCKWAITERCNT_MIN					4
 #define	FLCK_FLCKWAITERCNT_MAX					16384
 
@@ -197,7 +197,7 @@ int					FlShm::EventFd				= FLCK_INVALID_HANDLE;
 // [NOTE]
 // To avoid static object initialization order problem(SIOF)
 //
-bool FlShm::InitializeSeingleton(void* phelper)
+bool FlShm::InitializeSingleton(void* phelper)
 {
 	if(phelper){
 		return true;

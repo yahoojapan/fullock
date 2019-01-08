@@ -78,16 +78,16 @@ template <typename T> inline T* ADDPTR(T* pointer, off_t offset)
 //---------------------------------------------------------
 // String Utilities
 //---------------------------------------------------------
-#define	SPACECAHRS						" \t\r\n"
+#define	SPACECHARS						" \t\r\n"
 
 // Trim
-inline std::string ltrim(const std::string &base, const std::string &trims = SPACECAHRS)
+inline std::string ltrim(const std::string &base, const std::string &trims = SPACECHARS)
 {
 	std::string	newstr(base);
 	return newstr.erase(0, base.find_first_not_of(trims));
 }
 
-inline std::string rtrim(const std::string &base, const std::string &trims = SPACECAHRS)
+inline std::string rtrim(const std::string &base, const std::string &trims = SPACECHARS)
 {
 	std::string::size_type	pos = base.find_last_not_of(trims);
 	if(std::string::npos == pos){
@@ -97,7 +97,7 @@ inline std::string rtrim(const std::string &base, const std::string &trims = SPA
 	return newstr.erase(pos + 1);
 }
 
-inline std::string trim(const std::string &base, const std::string &trims = SPACECAHRS)
+inline std::string trim(const std::string &base, const std::string &trims = SPACECHARS)
 {
 	return ltrim(rtrim(base, trims), trims);
 }

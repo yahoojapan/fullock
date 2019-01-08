@@ -535,7 +535,7 @@ tid_t gettid(void)
 
 size_t GetSystemPageSize(void)
 {
-	// Check only onece.
+	// Check only once.
 	static size_t	s_pagesize	= FLCK_DEFAULT_SYSTEM_PAGESIZE;
 	static bool		s_init		= false;
 

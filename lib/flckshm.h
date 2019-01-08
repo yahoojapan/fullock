@@ -73,7 +73,7 @@ class FlShm
 		static const char*		FLCKWAITERCNT;					// Env name : area count for waiter structure
 
 		// Parameters for management
-		static bool				IsAutoInitialize;				// Which initializing or not at constructor for singlton.
+		static bool				IsAutoInitialize;				// Which initializing or not at constructor for singleton.
 		static ROBUSTMODE		RobustMode;						// ROBUST mode
 		static NOMAPMODE		NomapMode;						// mode for no mmapping
 		static FREEUNITMODE		FreeUnitMode;					// Free Unit mode
@@ -104,7 +104,7 @@ class FlShm
 		static PFLHEAD			pFlHead;						// header pointer
 
 	protected:
-		static bool InitializeSeingleton(void* phelper);		// MAIN SINGLETON OBJECT(for class variables initializing/destorying)
+		static bool InitializeSingleton(void* phelper);		// MAIN SINGLETON OBJECT(for class variables initializing/destorying)
 		static std::string&	ShmDirPath(void);
 		static std::string&	ShmFileName(void);
 		static std::string&	ShmPath(void);
@@ -166,7 +166,7 @@ class FlShm
 
 	public:
 		// Constructor/Destructor
-		FlShm(void* phelper = NULL) { FlShm::InitializeSeingleton(phelper); }
+		FlShm(void* phelper = NULL) { FlShm::InitializeSingleton(phelper); }
 		virtual ~FlShm(void) {}
 
 		//

@@ -39,7 +39,7 @@ class FLRwlRcsvHelper
 
 		static FLRwlRcsvHelper& GetFlShm(void)
 		{
-			static FLRwlRcsvHelper	helper;											// singlton
+			static FLRwlRcsvHelper	helper;											// singleton
 			return helper;
 		}
 
@@ -61,7 +61,7 @@ class FLRwlRcsvHelper
 };
 
 //---------------------------------------------------------
-// FLRwlRcsv : Class Methos
+// FLRwlRcsv : Class Methods
 //---------------------------------------------------------
 // [NOTE]
 // To avoid static object initialization order problem(SIOF)
@@ -82,7 +82,7 @@ void FLRwlRcsv::StackUnlock(void)
 }
 
 //---------------------------------------------------------
-// FLRwlRcsv : Methos
+// FLRwlRcsv : Methods
 //---------------------------------------------------------
 FLRwlRcsv::FLRwlRcsv(int fd, off_t offset, size_t length) : lock_tid(get_threadid()), lock_fd(fd), lock_offset(offset), lock_length(length), lock_type(FLCK_UNLOCK), is_locked(false), has_locker(false), pMaster(NULL)
 {

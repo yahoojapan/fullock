@@ -145,7 +145,7 @@ class FlShm
 		static size_t SetWaiterAreaCount(size_t newval);
 
 		static bool IsNoRobust(void) { return (ROBUST_NO == FlShm::RobustMode); }
-		static bool IsLowRobust(void) { return (ROBUST_NO != FlShm::RobustMode); }
+		static bool IsRobust(void) { return (ROBUST_NO != FlShm::RobustMode); }
 		static bool IsHighRobust(void) { return (ROBUST_HIGH == FlShm::RobustMode); }
 		static NOMAPMODE GetNomapMode(void) { return FlShm::NomapMode; }
 		static bool IsFreeUnitFd(void) { return (FREE_FD == FlShm::FreeUnitMode); }

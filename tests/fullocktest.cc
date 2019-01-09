@@ -260,8 +260,8 @@ static bool env_test(string& strtesttype, const char* procname, bool is_parent)
 			return false;
 		}
 		// FLCKROBUSTMODE
-		if(!FlShm::IsLowRobust()){
-			ERR("FLCKROBUSTMODE does not LOW.");
+		if(!FlShm::IsRobust()){
+			ERR("FLCKROBUSTMODE does not LOW or HIGH.");
 			return false;
 		}
 		// FLCKNOMAPMODE

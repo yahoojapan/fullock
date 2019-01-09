@@ -43,7 +43,7 @@ class FlListOffLock : public fllistbaseofflock
 		int dolock(FLCKLOCKTYPE LockType, dev_t devid, ino_t inoid, flckpid_t flckpid, int fd, time_t timeout_usec);
 
 	public:
-		FlListOffLock(PFLOFFLOCK ptr = NULL) : fllistbaseofflock(ptr) {}
+		explicit FlListOffLock(PFLOFFLOCK ptr = NULL) : fllistbaseofflock(ptr) {}
 		FlListOffLock(const FlListOffLock& other) : fllistbaseofflock(other) {}
 		virtual ~FlListOffLock() {}
 

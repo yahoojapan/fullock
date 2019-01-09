@@ -649,7 +649,7 @@ int main(int argc, char** argv)
 		}
 	}
 	if(is_failed){
-		delete pParams;
+		delete[] pParams;
 		exit(EXIT_FAILURE);		// no care for threads exiting...
 	}
 
@@ -702,7 +702,7 @@ int main(int argc, char** argv)
 
 		ADD_TIMESPEC(&total_sleep_ts, &pParams[cnt].sleep_ts);
 	}
-	delete pParams;
+	delete[] pParams;
 
 	// end time
 	MONO_TIMESPEC(&end_total_ts);

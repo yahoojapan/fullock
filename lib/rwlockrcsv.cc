@@ -151,7 +151,6 @@ bool FLRwlRcsv::Set(int fd, off_t offset, size_t length, bool is_read, bool& is_
 bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 {
 	FlShm	shm;
-	int		result;
 
 	if(FLCK_UNLOCK == lock_type || !is_locked){
 		//MSG_FLCKPRN("Already unlocked.");
@@ -222,7 +221,8 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 					FLRwlRcsv::StackUnlock();
 					is_mutex_locked = false;
 				}
-				if(0 != (result = shm.Unlock(lock_fd, lock_offset, lock_length))){
+				int	result = shm.Unlock(lock_fd, lock_offset, lock_length);
+				if(0 != result){
 					ERR_FLCKPRN("Could not unlock rwlock for fd(%d) offset(%zd) length(%zu), error code=%d", lock_fd, lock_offset, lock_length, result);
 
 					// for recovering
@@ -249,7 +249,6 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 {
 	FlShm	shm;
-	int		result;
 
 	// check locking
 	if(is_locked){
@@ -303,7 +302,8 @@ bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 	}
 
 	// try read lock
-	if(0 != (result = shm.ReadLock(lock_fd, lock_offset, lock_length))){
+	int	result = shm.ReadLock(lock_fd, lock_offset, lock_length);
+	if(0 != result){
 		ERR_FLCKPRN("Could not reader lock for fd(%d) offset(%zd) length(%zu), error code=%d", lock_fd, lock_offset, lock_length, result);
 
 		// for recovering
@@ -332,7 +332,6 @@ bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 {
 	FlShm	shm;
-	int		result;
 
 	// check locking
 	if(is_locked){
@@ -400,8 +399,9 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 	// unlock all same tid reader
 	for(flrwlrcsv_vec_t::iterator iter = PendingReaderList.begin(); iter != PendingReaderList.end(); ++iter){
 		if((*iter)->is_locked && (*iter)->has_locker){
-			if(0 != (result = shm.Unlock((*iter)->lock_fd, (*iter)->lock_offset, (*iter)->lock_length))){
-				ERR_FLCKPRN("Could not unlock reader for fd(%d) offset(%zd) length(%zu), error code=%d, but continue...", (*iter)->lock_fd, (*iter)->lock_offset, (*iter)->lock_length, result);
+			int	result1 = shm.Unlock((*iter)->lock_fd, (*iter)->lock_offset, (*iter)->lock_length);
+			if(0 != result1){
+				ERR_FLCKPRN("Could not unlock reader for fd(%d) offset(%zd) length(%zu), error code=%d, but continue...", (*iter)->lock_fd, (*iter)->lock_offset, (*iter)->lock_length, result1);
 			}
 		}
 		(*iter)->has_locker	= false;
@@ -415,7 +415,8 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 	}
 
 	// try write lock
-	if(0 != (result = shm.WriteLock(lock_fd, lock_offset, lock_length))){
+	int	result = shm.WriteLock(lock_fd, lock_offset, lock_length);
+	if(0 != result){
 		ERR_FLCKPRN("Could not writer lock for fd(%d) offset(%zd) length(%zu), error code=%d", lock_fd, lock_offset, lock_length, result);
 
 		// for recovering

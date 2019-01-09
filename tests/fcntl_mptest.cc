@@ -245,7 +245,7 @@ static bool InitTestFile(const char* filepath)
 	return true;
 }
 
-static int OpenStatsFile(const string filepath, size_t& totalsize, bool is_create)
+static int OpenStatsFile(const string& filepath, size_t& totalsize, bool is_create)
 {
 	int	fd;
 

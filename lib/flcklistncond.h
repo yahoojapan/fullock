@@ -42,7 +42,7 @@ class FlListNCond : public fllistbasencond
 		int rawlock(FLCKLOCKTYPE LockType, bool is_broadcast, PFLNAMEDMUTEX abs_nmtx, time_t timeout_usec);
 
 	public:
-		FlListNCond(PFLNAMEDCOND ptr = NULL) : fllistbasencond(ptr) {}
+		explicit FlListNCond(PFLNAMEDCOND ptr = NULL) : fllistbasencond(ptr) {}
 		FlListNCond(const FlListNCond& other) : fllistbasencond(other) {}
 		virtual ~FlListNCond() {}
 

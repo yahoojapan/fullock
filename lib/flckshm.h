@@ -166,39 +166,39 @@ class FlShm
 
 	public:
 		// Constructor/Destructor
-		FlShm(void* phelper = NULL) { FlShm::InitializeSingleton(phelper); }
+		explicit FlShm(void* phelper = NULL) { InitializeSingleton(phelper); }
 		virtual ~FlShm(void) {}
 
 		//
 		// Lock/Unlock for named mutex
 		//
-		int TimeoutLock(const char* pname, time_t timeout_usec) { return FlShm::RawLock(FLCK_NMTX_LOCK, pname, timeout_usec); }
-		int TryLock(const char* pname) { return FlShm::RawLock(FLCK_NMTX_LOCK, pname, FLCK_TRY_TIMEOUT); }
-		int Lock(const char* pname) { return FlShm::RawLock(FLCK_NMTX_LOCK, pname, FLCK_NO_TIMEOUT); }
-		int Unlock(const char* pname) { return FlShm::RawLock(FLCK_UNLOCK, pname, FLCK_NO_TIMEOUT); }
+		int TimeoutLock(const char* pname, time_t timeout_usec) { return RawLock(FLCK_NMTX_LOCK, pname, timeout_usec); }
+		int TryLock(const char* pname) { return RawLock(FLCK_NMTX_LOCK, pname, FLCK_TRY_TIMEOUT); }
+		int Lock(const char* pname) { return RawLock(FLCK_NMTX_LOCK, pname, FLCK_NO_TIMEOUT); }
+		int Unlock(const char* pname) { return RawLock(FLCK_UNLOCK, pname, FLCK_NO_TIMEOUT); }
 
 		//
 		// Lock/Unlock for rwlock
 		//
 		bool IsLocked(int fd, off_t offset, size_t length);
 
-		int TimeoutReadLock(int fd, off_t offset, size_t length, time_t timeout_usec) { return FlShm::RawLock(FLCK_READ_LOCK, fd, offset, length, timeout_usec); }
-		int TryReadLock(int fd, off_t offset, size_t length) { return FlShm::RawLock(FLCK_READ_LOCK, fd, offset, length, FLCK_TRY_TIMEOUT); }
-		int ReadLock(int fd, off_t offset, size_t length) { return FlShm::RawLock(FLCK_READ_LOCK, fd, offset, length, FLCK_NO_TIMEOUT); }
+		int TimeoutReadLock(int fd, off_t offset, size_t length, time_t timeout_usec) { return RawLock(FLCK_READ_LOCK, fd, offset, length, timeout_usec); }
+		int TryReadLock(int fd, off_t offset, size_t length) { return RawLock(FLCK_READ_LOCK, fd, offset, length, FLCK_TRY_TIMEOUT); }
+		int ReadLock(int fd, off_t offset, size_t length) { return RawLock(FLCK_READ_LOCK, fd, offset, length, FLCK_NO_TIMEOUT); }
 
-		int TimeoutWriteLock(int fd, off_t offset, size_t length, time_t timeout_usec) { return FlShm::RawLock(FLCK_WRITE_LOCK, fd, offset, length, timeout_usec); }
-		int TryWriteLock(int fd, off_t offset, size_t length) { return FlShm::RawLock(FLCK_WRITE_LOCK, fd, offset, length, FLCK_TRY_TIMEOUT); }
-		int WriteLock(int fd, off_t offset, size_t length) { return FlShm::RawLock(FLCK_WRITE_LOCK, fd, offset, length, FLCK_NO_TIMEOUT); }
+		int TimeoutWriteLock(int fd, off_t offset, size_t length, time_t timeout_usec) { return RawLock(FLCK_WRITE_LOCK, fd, offset, length, timeout_usec); }
+		int TryWriteLock(int fd, off_t offset, size_t length) { return RawLock(FLCK_WRITE_LOCK, fd, offset, length, FLCK_TRY_TIMEOUT); }
+		int WriteLock(int fd, off_t offset, size_t length) { return RawLock(FLCK_WRITE_LOCK, fd, offset, length, FLCK_NO_TIMEOUT); }
 
-		int Unlock(int fd, off_t offset, size_t length) { return FlShm::RawLock(FLCK_UNLOCK, fd, offset, length, FLCK_NO_TIMEOUT); }
+		int Unlock(int fd, off_t offset, size_t length) { return RawLock(FLCK_UNLOCK, fd, offset, length, FLCK_NO_TIMEOUT); }
 
 		//
 		// Wait/Signal for named cond
 		//
-		int TimeoutWait(const char* pcondname, const char* pmutexname, time_t timeout_usec) { return FlShm::RawLock(FLCK_NCOND_WAIT, pcondname, pmutexname, false, timeout_usec); }
-		int Wait(const char* pcondname, const char* pmutexname) { return FlShm::RawLock(FLCK_NCOND_WAIT, pcondname, pmutexname, false, FLCK_NO_TIMEOUT); }
-		int Signal(const char* pcondname) { return FlShm::RawLock(FLCK_NCOND_UP, pcondname, NULL, false, FLCK_NO_TIMEOUT); }
-		int Broadcast(const char* pcondname) { return FlShm::RawLock(FLCK_NCOND_UP, pcondname, NULL, true, FLCK_NO_TIMEOUT); }
+		int TimeoutWait(const char* pcondname, const char* pmutexname, time_t timeout_usec) { return RawLock(FLCK_NCOND_WAIT, pcondname, pmutexname, false, timeout_usec); }
+		int Wait(const char* pcondname, const char* pmutexname) { return RawLock(FLCK_NCOND_WAIT, pcondname, pmutexname, false, FLCK_NO_TIMEOUT); }
+		int Signal(const char* pcondname) { return RawLock(FLCK_NCOND_UP, pcondname, NULL, false, FLCK_NO_TIMEOUT); }
+		int Broadcast(const char* pcondname) { return RawLock(FLCK_NCOND_UP, pcondname, NULL, true, FLCK_NO_TIMEOUT); }
 
 		// For debug
 		static bool Dump(std::ostream& out, bool is_free_list = true);

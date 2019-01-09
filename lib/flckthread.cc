@@ -339,8 +339,8 @@ bool FlckThread::InitializeThread(const char* pfile, int intervalms)
 	pparam->pfilepath		= strdup(pfile);
 
 	// create thread
-	int	result;
-	if(0 != (result = pthread_create(&pthreadid, NULL, FlckThread::WorkerProc, pparam))){
+	int	result = pthread_create(&pthreadid, NULL, FlckThread::WorkerProc, pparam);
+	if(0 != result){
 		ERR_FLCKPRN("Failed to create thread. return code(error) = %d", result);
 		FLCK_Free(pparam->pfilepath);
 		FLCK_Delete(pparam);

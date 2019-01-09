@@ -43,7 +43,7 @@ class FlListNMtx : public fllistbasenmtx
 		int rawlock(FLCKLOCKTYPE LockType, time_t timeout_usec);
 
 	public:
-		FlListNMtx(PFLNAMEDMUTEX ptr = NULL) : fllistbasenmtx(ptr) {}
+		explicit FlListNMtx(PFLNAMEDMUTEX ptr = NULL) : fllistbasenmtx(ptr) {}
 		FlListNMtx(const FlListNMtx& other) : fllistbasenmtx(other) {}
 		virtual ~FlListNMtx() {}
 

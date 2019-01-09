@@ -173,9 +173,12 @@ bool FlckDbgCntrl::SetFlckDbgCntrlFile(const char* filepath)
 	FILE*	newfp;
 	if(NULL == (newfp = fopen(filepath, "a+"))){
 		ERR_FLCKPRN("Could not open debug file(%s). errno = %d", filepath, errno);
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress resourceLeak
 		return false;
 	}
 	*pflckdbg_fp = newfp;
+
 	return true;
 }
 

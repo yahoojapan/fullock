@@ -41,7 +41,7 @@ class FlListFileLock : public fllistbasefilelock
 		int rawlock(FLCKLOCKTYPE LockType, flckpid_t flckpid, int fd, off_t offset, size_t length, time_t timeout_usec);
 
 	public:
-		FlListFileLock(PFLFILELOCK ptr = NULL) : fllistbasefilelock(ptr) {}
+		explicit FlListFileLock(PFLFILELOCK ptr = NULL) : fllistbasefilelock(ptr) {}
 		FlListFileLock(const FlListFileLock& other) : fllistbasefilelock(other) {}
 		virtual ~FlListFileLock() {}
 

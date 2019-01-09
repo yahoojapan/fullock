@@ -446,6 +446,8 @@ ssize_t flck_read(int fd, unsigned char** ppbuff)
 				readsize = 0;
 				continue;
 			}
+			// cppcheck-suppress unmatchedSuppression
+			// cppcheck-suppress invalidPrintfArgType_sint
 			ERR_FLCKPRN("Failed to read from fd(%d: %zd: %zd). errno=%d", fd, pos, pagesize, errno);
 			FLCK_Free(pbuff);
 			return -1;
@@ -569,8 +571,8 @@ class FlTidCache
 	protected:
 		FlTidCache(void) : Initialized(false)
 		{
-			int	result;
-			if(0 != (result = pthread_key_create(&TidKey, NULL))){
+			int	result = pthread_key_create(&TidKey, NULL);
+			if(0 != result){
 				ERR_FLCKPRN("Could not create key for each thread, error code=%d.", result);
 				Initialized = false;
 			}else{
@@ -581,8 +583,8 @@ class FlTidCache
 		virtual ~FlTidCache(void)
 		{
 			if(Initialized){
-				int	result;
-				if(0 != (result = pthread_key_delete(TidKey))){
+				int	result = pthread_key_delete(TidKey);
+				if(0 != result){
 					ERR_FLCKPRN("Could not delete key for each thread, error code=%d.", result);
 				}
 			}
@@ -619,8 +621,8 @@ tid_t get_threadid(void)
 		void*	pData;
 		if(NULL == (pData = pthread_getspecific(FlTidCache::GetTid()))){
 			tid = gettid();
-			int	result;
-			if(0 != (result = pthread_setspecific(FlTidCache::GetTid(), reinterpret_cast<const void*>(tid)))){
+			int	result = pthread_setspecific(FlTidCache::GetTid(), reinterpret_cast<const void*>(tid));
+			if(0 != result){
 				ERR_FLCKPRN("Could not set key and value(tid=%d), error code=%d.", tid, result);
 			}
 		}else{

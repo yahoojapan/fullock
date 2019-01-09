@@ -44,7 +44,7 @@ template<typename T> inline bool FLCKEMPTYSTR(const T& pstr)
 // For alignment
 template<typename T1, typename T2> inline T1 ALIGNMENT(const T1& value, const T2& size)
 {
-	return ((((value) / (size)) + (0 == (value) % (size) ? 0 : 1)) * (size));
+	return ((((value) / (size)) + ((0 == (value) % (size)) ? 0 : 1)) * (size));
 }
 
 // Additional/Subtraction Pointer

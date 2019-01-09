@@ -72,7 +72,7 @@ bool FlShm::Attach(void)
 	// get file size.
 	size_t	length = pTmpHead->flength;
 
-	// unmap
+	// munmap
 	RawUnmap(pTmpHead, sizeof(FLHEAD));
 
 	// remmap
@@ -87,9 +87,9 @@ bool FlShm::Attach(void)
 
 bool FlShm::Detach(void)
 {
-	// Unmmap
+	// munmap
 	if(!FlShm::pShmBase){
-		WAN_FLCKPRN("Already unmmap.");
+		WAN_FLCKPRN("Already munmap.");
 	}else{
 		if(!FlShm::pFlHead){
 			ERR_FLCKPRN("pShmBase(%p) is not NULL, but pFlHead is NULL, but continue...", FlShm::pShmBase);
@@ -376,7 +376,7 @@ PFLWAITER FlShm::MakeListWaiter(PFLWAITER ptr, size_t count)
 bool FlShm::Destroy(void)
 {
 	if(FLCK_INVALID_HANDLE == FlShm::ShmFd){
-		MSG_FLCKPRN("Already destroied object.");
+		MSG_FLCKPRN("Already destroyed object.");
 		return true;
 	}
 

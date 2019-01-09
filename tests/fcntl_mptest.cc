@@ -58,7 +58,7 @@ typedef struct opt_param{
 typedef std::map<std::string, OPTPARAM>		optparams_t;
 
 //
-// Process paraemter
+// Process parameter
 //
 typedef struct proc_common{
 	bool			is_rwlock;
@@ -180,7 +180,7 @@ static void Help(char* progname)
 	PRN("       -loop(l)     <count>           loop count for each thread");
 	PRN("       -keep(k)     <usec | \"random\"> keep time lock usec or random time waiting");
 	PRN("       -waittime(a) <nsec>            wait time for next lock after unlocking");
-	PRN("       -print(p)                      print messgages by each thread.");
+	PRN("       -print(p)                      print messages by each thread.");
 	PRN(NULL);
 }
 
@@ -848,7 +848,7 @@ int main(int argc, char** argv)
 		ADD_TIMESPEC(&total_sleep_ts, &st_chparam[cnt].sleep_ts);
 	}
 
-	// dispaly
+	// display
 	struct timespec	total_ts;
 	struct timespec	total_real_ts;
 	struct timespec	avrg_run_ts;

@@ -145,7 +145,7 @@ bool FLRwlRcsv::Set(int fd, off_t offset, size_t length, bool is_read, bool& is_
 // [NOTE]
 // If the target is locking as recursion and one of locking is write lock, you must take care for this case.
 // On this case, if the target is unlocked from writer locking, the target keeps locking as writer yet.
-// Untill all of panding stack are unlocked, the target is locked as writer.
+// Until all of pending stack are unlocked, the target is locked as writer.
 // So that the target is locked as writer until unlocking all.
 //
 bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
@@ -186,10 +186,10 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 		}
 
 		if(0 < PendingStack.size()){
-			// if has panding stack, swap master to next in panding list.
+			// if has pending stack, swap master to next in pending list.
 			FLRwlRcsv*	pNewMaster = NULL;
 
-			// check panding stack, and seach writer
+			// check pending stack, and search writer
 			for(flrwlrcsv_vec_t::iterator iter = PendingStack.begin(); iter != PendingStack.end(); ++iter){
 				if(FLCK_WRITE_LOCK == (*iter)->lock_type){
 					pNewMaster = *iter;
@@ -205,7 +205,7 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 			}
 
 			// do swap master
-			move_panding_stack(pNewMaster->PendingStack, PendingStack, pNewMaster);
+			move_pending_stack(pNewMaster->PendingStack, PendingStack, pNewMaster);
 			PendingStack.clear();
 
 			pNewMaster->has_locker	= true;
@@ -363,12 +363,12 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 	lock_type = FLCK_WRITE_LOCK;
 
 	// check all status in global stack
-	flrwlrcsv_vec_t	PandingReaderList;
+	flrwlrcsv_vec_t	PendingReaderList;
 	for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ){
 		if(compare(*(*iter))){
 			if(FLCK_READ_LOCK == (*iter)->lock_type){
 				// found same tid reader
-				PandingReaderList.push_back(*iter);
+				PendingReaderList.push_back(*iter);
 				iter = FLRwlRcsv::Stack().erase(iter);
 				continue;
 
@@ -398,7 +398,7 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 	}
 
 	// unlock all same tid reader
-	for(flrwlrcsv_vec_t::iterator iter = PandingReaderList.begin(); iter != PandingReaderList.end(); ++iter){
+	for(flrwlrcsv_vec_t::iterator iter = PendingReaderList.begin(); iter != PendingReaderList.end(); ++iter){
 		if((*iter)->is_locked && (*iter)->has_locker){
 			if(0 != (result = shm.Unlock((*iter)->lock_fd, (*iter)->lock_offset, (*iter)->lock_length))){
 				ERR_FLCKPRN("Could not unlock reader for fd(%d) offset(%zd) length(%zu), error code=%d, but continue...", (*iter)->lock_fd, (*iter)->lock_offset, (*iter)->lock_length, result);
@@ -410,7 +410,7 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 		PendingStack.push_back(*iter);
 
 		// add pending list
-		move_panding_stack(PendingStack, (*iter)->PendingStack, this);
+		move_pending_stack(PendingStack, (*iter)->PendingStack, this);
 		(*iter)->PendingStack.clear();
 	}
 
@@ -430,7 +430,7 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 				break;
 			}
 		}
-		// re-lock panding list(and put into global stack)
+		// re-lock pending list(and put into global stack)
 		for(flrwlrcsv_vec_t::iterator iter = PendingStack.begin(); iter != PendingStack.end(); iter = PendingStack.erase(iter)){
 			(*iter)->has_locker	= false;
 			(*iter)->is_locked	= false;

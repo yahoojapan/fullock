@@ -100,7 +100,7 @@ int FlListOffLock::rawlock(FLCKLOCKTYPE LockType, dev_t devid, ino_t inoid, flck
 		// unset lock flag
 		tglistobj.set_unlock();
 
-		// retrive target list
+		// retrieve target list
 		if(tglistobj.cutoff_list((is_writer ? pcurrent->writer_list : pcurrent->reader_list))){
 			// return object to free list
 			if(!tglistobj.insert_list(FlShm::pFlHead->locker_free)){
@@ -113,7 +113,7 @@ int FlListOffLock::rawlock(FLCKLOCKTYPE LockType, dev_t devid, ino_t inoid, flck
 		FlListLocker	tglistobj;
 
 		// Always get new locker object.
-		if(!tglistobj.retreive_list(FlShm::pFlHead->locker_free)){
+		if(!tglistobj.retrieve_list(FlShm::pFlHead->locker_free)){
 			ERR_FLCKPRN("Could not get free locker structure.");
 			fl_unlock_lockid(&FlShm::pFlHead->file_lock_lockid, flckpid);		// unlock lockid
 			return ENOLCK;					// ENOLCK
@@ -250,7 +250,7 @@ bool FlListOffLock::check_dead_lock(dev_t devid, ino_t inoid, fl_pid_cache_map_t
 		tmpobj.set(pabscur);
 		if(tmpobj.check_dead_lock(devid, inoid, pcache, except_flckpid, except_fd)){
 
-			// retrive target list
+			// retrieve target list
 			if(tmpobj.cutoff_list(pcurrent->reader_list)){
 				if(tmpobj.is_locked()){
 					// do unlock
@@ -281,7 +281,7 @@ bool FlListOffLock::check_dead_lock(dev_t devid, ino_t inoid, fl_pid_cache_map_t
 		tmpobj.set(pabscur);
 		if(tmpobj.check_dead_lock(devid, inoid, pcache, except_flckpid, except_fd)){
 
-			// retrive target list
+			// retrieve target list
 			if(tmpobj.cutoff_list(pcurrent->writer_list)){
 				if(tmpobj.is_locked()){
 					// do unlock

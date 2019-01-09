@@ -87,7 +87,7 @@ int FlListFileLock::rawlock(FLCKLOCKTYPE LockType, flckpid_t flckpid, int fd, of
 		// check free
 		if(FlShm::IsFreeUnitOffset()){
 			if(!tglistobj.is_locked()){
-				// retrive target list
+				// retrieve target list
 				if(tglistobj.cutoff_list(pcurrent->offset_lock_list)){
 					// return object to free list
 					if(!tglistobj.insert_list(FlShm::pFlHead->offset_lock_free)){
@@ -102,7 +102,7 @@ int FlListFileLock::rawlock(FLCKLOCKTYPE LockType, flckpid_t flckpid, int fd, of
 		FlListOffLock	tglistobj;
 		if(!tglistobj.find(offset, length, pcurrent->offset_lock_list)){
 			// Not found, so get new offset lock and insert it.
-			if(!tglistobj.retreive_list(FlShm::pFlHead->offset_lock_free)){
+			if(!tglistobj.retrieve_list(FlShm::pFlHead->offset_lock_free)){
 				ERR_FLCKPRN("Could not get free offset lock structure.");
 				fl_unlock_lockid(&FlShm::pFlHead->file_lock_lockid, flckpid);		// unlock lockid
 				return ENOLCK;					// ENOLCK
@@ -137,7 +137,7 @@ int FlListFileLock::rawlock(FLCKLOCKTYPE LockType, flckpid_t flckpid, int fd, of
 
 				if(tglistobj.find(offset, length, pcurrent->offset_lock_list)){
 					if(!tglistobj.is_locked()){
-						// retrive target list
+						// retrieve target list
 						if(tglistobj.cutoff_list(pcurrent->offset_lock_list)){
 							// return object to free list
 							if(!tglistobj.insert_list(FlShm::pFlHead->offset_lock_free)){
@@ -169,7 +169,7 @@ bool FlListFileLock::check_dead_lock(fl_pid_cache_map_t* pcache, flckpid_t excep
 	for(PFLOFFLOCK pabsparent = NULL, pabscur = to_abs(pcurrent->offset_lock_list); pabscur; ){
 		tmpobj.set(pabscur);
 		if(tmpobj.check_dead_lock(pcurrent->dev_id, pcurrent->ino_id, pcache, except_flckpid, except_fd)){
-			// retrive target list
+			// retrieve target list
 			if(tmpobj.cutoff_list(pcurrent->offset_lock_list)){
 				// return object to free list
 				if(!tmpobj.insert_list(FlShm::pFlHead->offset_lock_free)){

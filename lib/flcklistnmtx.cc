@@ -49,7 +49,7 @@ void FlListNMtx::dump(std::ostream &out, int level) const
 int FlListNMtx::rawlock(FLCKLOCKTYPE LockType, time_t timeout_usec)
 {
 	if(!pcurrent){
-		ERR_FLCKPRN("Object is not initalized.");
+		ERR_FLCKPRN("Object is not initialized.");
 		return EINVAL;						// EINVAL
 	}
 
@@ -83,7 +83,7 @@ int FlListNMtx::rawlock(FLCKLOCKTYPE LockType, time_t timeout_usec)
 					// On robust mode, need to check deadlock
 					FlShm::CheckMutexDeadLock(NULL, flckpid, flckpid);
 				}else{
-					ERR_FLCKPRN("Could not get mutex by unkown error, error code=%d", result);
+					ERR_FLCKPRN("Could not get mutex by unknown error, error code=%d", result);
 				}
 			}
 		}while(EWOULDBLOCK == result);

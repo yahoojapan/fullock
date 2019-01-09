@@ -43,7 +43,7 @@ fullock (1.0.28) trusty; urgency=low
 
 fullock (1.0.27) trusty; urgency=low
 
-  * Updated make discription script for packaging
+  * Updated make description script for packaging
   * Fixed a bug about packaging for debian
 
  -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 15 May 2018 18:57:18 +0900

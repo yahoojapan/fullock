@@ -104,7 +104,7 @@ class FlShm
 		static PFLHEAD			pFlHead;						// header pointer
 
 	protected:
-		static bool InitializeSingleton(void* phelper);		// MAIN SINGLETON OBJECT(for class variables initializing/destorying)
+		static bool InitializeSingleton(void* phelper);		// MAIN SINGLETON OBJECT(for class variables initializing/destroying)
 		static std::string&	ShmDirPath(void);
 		static std::string&	ShmFileName(void);
 		static std::string&	ShmPath(void);

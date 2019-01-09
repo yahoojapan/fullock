@@ -105,10 +105,10 @@ bool CvtNumberStringToLong(const char* str, long* presult)
 	*presult		= strtol(str, &errptr, 0);
 
 	if((ERANGE == errno && (LONG_MAX == *presult || LONG_MIN == *presult)) || (0 != errno && 0L == *presult)){
-		MSG_FLCKPRN("could not convert %s to long, because unser(or over) flow", str);
+		MSG_FLCKPRN("could not convert %s to long, because under(or over) flow", str);
 		return false;
 	}else if(!errptr){
-		MSG_FLCKPRN("could not convert %s to long, because wrong charactor(%s) in it.", str, errptr);
+		MSG_FLCKPRN("could not convert %s to long, because wrong character(%s) in it.", str, errptr);
 		return false;
 	}
 	return true;
@@ -387,7 +387,7 @@ static bool RawFileLock(int fd, short type, off_t offset, bool block)
 			return true;
 		}
 		if(EINTR == errno){
-			//MSG_FLCKPRN("Signal occurred durling \"%s\" lock, so retrying.", LOCKTYPE_STR(type));
+			//MSG_FLCKPRN("Signal occurred during \"%s\" lock, so retrying.", LOCKTYPE_STR(type));
 		}else{
 			if(!block){
 				if(EACCES != errno && EAGAIN != errno){
@@ -516,7 +516,7 @@ bool flck_fill_zero(int fd, size_t count, off_t offset)
 	for(write_cnt = 0L, one_write = 0L; static_cast<size_t>(write_cnt) < count; write_cnt += one_write){
 		one_write = std::min((count - static_cast<size_t>(write_cnt)), sizeof(bydata));
 		if(-1 == (one_write = flck_pwrite(fd, bydata, one_write, (offset + write_cnt)))){
-			WAN_FLCKPRN("Failed to initlize zero to fd(%d:%jd), errno = %d", fd, static_cast<intmax_t>(offset + write_cnt), errno);
+			WAN_FLCKPRN("Failed to initialize zero to fd(%d:%jd), errno = %d", fd, static_cast<intmax_t>(offset + write_cnt), errno);
 			return false;
 		}
 	}

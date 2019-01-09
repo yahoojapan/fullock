@@ -47,7 +47,7 @@ template<typename T1, typename T2> inline T1 ALIGNMENT(const T1& value, const T2
 	return ((((value) / (size)) + (0 == (value) % (size) ? 0 : 1)) * (size));
 }
 
-// Addtional/Subtruction Pointer
+// Additional/Subtraction Pointer
 template <typename T> inline T* SUBPTR(T* pointer, off_t offset)
 {
 	return reinterpret_cast<T*>(reinterpret_cast<off_t>(pointer) - offset);

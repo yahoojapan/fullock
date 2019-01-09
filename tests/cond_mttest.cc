@@ -134,7 +134,7 @@ static void Help(char* progname)
 	PRN("       -signal(s)                   signal type is one shot");
 	PRN("       -broadcast(b)                signal type is broad cast for all waiter");
 	PRN("       -waiter(w) <waiter count>    waiting thread count for cond");
-	PRN("       -print(p)                    print messgages by each thread.");
+	PRN("       -print(p)                    print messages by each thread.");
 	PRN(NULL);
 }
 

@@ -45,7 +45,7 @@
 // 
 // [USAGE]
 // You can use this templates as following:
-// 1) Hypostatization template classes
+// 1) Shortening template classes
 //		fl_list_base<int>
 //
 // 2) Implement following functions
@@ -84,7 +84,7 @@ namespace fullock
 			oldval2 = oldval1;
 
 			// [NOTE]
-			// we do not call sched_yield but spining loop
+			// we do not call sched_yield but spinning loop
 			//sched_yield();
 		}
 	}
@@ -117,7 +117,7 @@ namespace fullock
 			oldval2 = oldval1;
 
 			// [NOTE]
-			// we do not call sched_yield but spining loop
+			// we do not call sched_yield but spinning loop
 			//sched_yield();
 		}
 	}
@@ -534,7 +534,7 @@ namespace fullock
 			inline st_ptr_type rel_next(void) { return pcurrent->next; }
 			inline bool to_next(void) { if(pcurrent){ pcurrent = to_abs(pcurrent->next); return true; }else{ return false; } }
 			inline bool insert_list(st_ptr_type& preltop);
-			inline bool retreive_list(st_ptr_type& preltop);
+			inline bool retrieve_list(st_ptr_type& preltop);
 			inline bool cutoff_list(st_ptr_type& preltop) const;
 
 			inline bool find(const st_ptr_type pbase, st_ptr_type& preltop);
@@ -595,12 +595,12 @@ namespace fullock
 		return true;
 	}
 
-	// Retreive one list object from top of list.
+	// Retrieve one list object from top of list.
 	//
 	template<typename T>
-	inline bool fl_list_base<T>::retreive_list(st_ptr_type& preltop)
+	inline bool fl_list_base<T>::retrieve_list(st_ptr_type& preltop)
 	{
-		// retreive one from top
+		// retrieve one from top
 		st_ptr_type	oldreltop;
 		st_ptr_type	newreltop;
 		do{

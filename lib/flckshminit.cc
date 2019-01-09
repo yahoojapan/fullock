@@ -200,7 +200,7 @@ bool FlShm::InitializeShm(void)
 	}
 
 	// run epoll thread
-	if(FlShm::IsLowRobust()){
+	if(FlShm::IsRobust()){
 		FlShm::pCheckPidThread = new FlckThread();
 		if(!FlShm::pCheckPidThread->InitializeThread(FlShm::ShmPath().c_str())){
 			ERR_FLCKPRN("Failed to create and initialize pid check thread for file(%s).", FlShm::ShmPath().c_str());

@@ -483,7 +483,7 @@ bool FlShm::CheckFileLockDeadLock(fl_pid_cache_map_t* pcache_map, flckpid_t flck
 	for(PFLFILELOCK pParent = NULL, ptmp = to_abs(FlShm::pFlHead->file_lock_list); ptmp; ){
 		tmpobj.set(ptmp);
 		if(tmpobj.check_dead_lock(pcache_map, except_flckpid)){
-			// retrive target list
+			// retrieve target list
 			if(tmpobj.cutoff_list(FlShm::pFlHead->file_lock_list)){
 				// return object to free list
 				if(!tmpobj.insert_list(FlShm::pFlHead->file_lock_free)){
@@ -608,7 +608,7 @@ bool FlShm::CheckAttach(void)
 int FlShm::RawLock(FLCKLOCKTYPE LockType, const char* pname, time_t timeout_usec)
 {
 	if(!pname){
-		ERR_FLCKPRN("Paramter is wrong.");
+		ERR_FLCKPRN("Parameter is wrong.");
 		return EINVAL;							// EINVAL
 	}
 	// check mapping
@@ -644,7 +644,7 @@ int FlShm::RawLock(FLCKLOCKTYPE LockType, const char* pname, time_t timeout_usec
 
 		if(!tglistobj.find(pname, FlShm::pFlHead->named_mutex_list)){
 			// Not found, so get new file lock and insert it.
-			if(!tglistobj.retreive_list(FlShm::pFlHead->named_mutex_free)){
+			if(!tglistobj.retrieve_list(FlShm::pFlHead->named_mutex_free)){
 				ERR_FLCKPRN("Could not get free named mutex structure.");
 				fl_unlock_lockid(&FlShm::pFlHead->named_mutex_lockid, flckpid);	// unlock lockid
 				return ENOLCK;					// ENOLCK
@@ -715,7 +715,7 @@ int FlShm::RawLock(FLCKLOCKTYPE LockType, int fd, off_t offset, size_t length, t
 		// check free
 		if(FlShm::IsFreeUnitFd()){
 			if(!tglistobj.is_locked()){
-				// retrive target list
+				// retrieve target list
 				if(tglistobj.cutoff_list(FlShm::pFlHead->file_lock_list)){
 					// return object to free list
 					if(!tglistobj.insert_list(FlShm::pFlHead->file_lock_free)){
@@ -731,7 +731,7 @@ int FlShm::RawLock(FLCKLOCKTYPE LockType, int fd, off_t offset, size_t length, t
 		FlListFileLock	tglistobj;
 		if(!tglistobj.find(devid, inodeid, FlShm::pFlHead->file_lock_list)){
 			// Not found, so get new file lock and insert it.
-			if(!tglistobj.retreive_list(FlShm::pFlHead->file_lock_free)){
+			if(!tglistobj.retrieve_list(FlShm::pFlHead->file_lock_free)){
 				ERR_FLCKPRN("Could not get free file lock structure.");
 				fl_unlock_lockid(&FlShm::pFlHead->file_lock_lockid, flckpid);		// unlock lockid
 				return ENOLCK;					// ENOLCK
@@ -767,7 +767,7 @@ int FlShm::RawLock(FLCKLOCKTYPE LockType, int fd, off_t offset, size_t length, t
 						// free all
 						tglistobj.free_offset_lock_list();
 
-						// retrive target list
+						// retrieve target list
 						if(tglistobj.cutoff_list(FlShm::pFlHead->file_lock_list)){
 							// return object to free list
 							if(!tglistobj.insert_list(FlShm::pFlHead->file_lock_free)){
@@ -820,7 +820,7 @@ bool FlShm::IsLocked(int fd, off_t offset, size_t length)
 int FlShm::RawLock(FLCKLOCKTYPE LockType, const char* pcondname, const char* pmutexname, bool is_broadcast, time_t timeout_usec)
 {
 	if(!pcondname){
-		ERR_FLCKPRN("Paramter is wrong.");
+		ERR_FLCKPRN("Parameter is wrong.");
 		return EINVAL;							// EINVAL
 	}
 	// check mapping
@@ -883,7 +883,7 @@ int FlShm::RawLock(FLCKLOCKTYPE LockType, const char* pcondname, const char* pmu
 		FlListNCond		tglistobj;
 		if(!tglistobj.find(pcondname, FlShm::pFlHead->named_cond_list)){
 			// Not found, so get new file lock and insert it.
-			if(!tglistobj.retreive_list(FlShm::pFlHead->named_cond_free)){
+			if(!tglistobj.retrieve_list(FlShm::pFlHead->named_cond_free)){
 				ERR_FLCKPRN("Could not get free named cond structure.");
 				fl_unlock_lockid(&FlShm::pFlHead->named_cond_lockid, flckpid);	// unlock lockid
 				return ENOLCK;					// ENOLCK
@@ -930,7 +930,7 @@ bool FlShm::LoadEnv(void)
 			MSG_FLCKPRN("ENV %s value %s, set to mode: NO.", FlShm::FLCKAUTOINIT, pEnvVal);
 			FlShm::IsAutoInitialize = false;
 		}else{
-			ERR_FLCKPRN("ENV %s value %s is unkown.", FlShm::FLCKAUTOINIT, pEnvVal);
+			ERR_FLCKPRN("ENV %s value %s is unknown.", FlShm::FLCKAUTOINIT, pEnvVal);
 		}
 	}
 
@@ -957,7 +957,7 @@ bool FlShm::LoadEnv(void)
 			MSG_FLCKPRN("ENV %s value %s, set to mode: NOMAP_DENY.", FlShm::FLCKNOMAPMODE, pEnvVal);
 			FlShm::NomapMode = FlShm::NOMAP_DENY;
 		}else{
-			ERR_FLCKPRN("ENV %s value %s is unkown.", FlShm::FLCKNOMAPMODE, pEnvVal);
+			ERR_FLCKPRN("ENV %s value %s is unknown.", FlShm::FLCKNOMAPMODE, pEnvVal);
 		}
 	}
 
@@ -975,7 +975,7 @@ bool FlShm::LoadEnv(void)
 			MSG_FLCKPRN("ENV %s value %s, set to mode: ROBUST_HIGH.", FlShm::FLCKROBUSTMODE, pEnvVal);
 			FlShm::RobustMode = FlShm::ROBUST_HIGH;
 		}else{
-			ERR_FLCKPRN("ENV %s value %s is unkown.", FlShm::FLCKROBUSTMODE, pEnvVal);
+			ERR_FLCKPRN("ENV %s value %s is unknown.", FlShm::FLCKROBUSTMODE, pEnvVal);
 		}
 	}
 
@@ -1141,7 +1141,7 @@ bool FlShm::LoadEnv(void)
 			MSG_FLCKPRN("ENV %s value %s, set to mode: FREE_ALWAYS.", FlShm::FLCKFREEUNITMODE, pEnvVal);
 			FlShm::FreeUnitMode = FlShm::FREE_ALWAYS;		// = FREE_ALWAYS
 		}else{
-			ERR_FLCKPRN("ENV %s value %s is unkown.", FlShm::FLCKFREEUNITMODE, pEnvVal);
+			ERR_FLCKPRN("ENV %s value %s is unknown.", FlShm::FLCKFREEUNITMODE, pEnvVal);
 		}
 	}
 	return true;

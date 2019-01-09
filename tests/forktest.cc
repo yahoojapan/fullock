@@ -92,7 +92,7 @@ int main(int argc, const char** argv)
 	int		childcnt	= DEFAULT_CHILDPROC_CNT;
 	string	fullockpath	= "libfullock.so";
 	if(3 < argc){
-		ERR("Unkown parameter is %s", argv[3]);
+		ERR("Unknown parameter is %s", argv[3]);
 		Help(argv[0]);
 		exit(EXIT_FAILURE);
 	}else if(1 < argc){

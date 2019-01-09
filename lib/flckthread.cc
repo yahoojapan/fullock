@@ -134,7 +134,7 @@ void FlckThread::CleanupHandler(void* arg)
 // This fullock library starts the following worker threads when loading
 // the library, and ends when the library is unloaded.
 // 
-// All worker thread is terminated by calling pthrad_cancel function.
+// All worker thread is terminated by calling pthread_cancel function.
 // As a result, when the library is unloaded with dlclose and when it
 // terminates normally, the worker thread can be terminated by same way.
 // The handle and memory used by the worker thread are post-processed by
@@ -143,7 +143,7 @@ void FlckThread::CleanupHandler(void* arg)
 // Take care for that this library uses the nonportable function as
 // pthread_tryjoin_np to wait for the worker thread to terminate in the
 // main thread.
-// In the main thread, not only pthrad_exit is used to terminate a thread,
+// In the main thread, not only pthread_exit is used to terminate a thread,
 // but also a control flag is detected.
 // 
 // If the process loading the library is forked, this library automatically
@@ -456,9 +456,9 @@ bool FlckThread::Exit(void)
 					nanosleep(&sleeptime, NULL);
 					// last retry
 					if(0 != (result = pthread_tryjoin_np(pthreadid, &pretval))){
-						ERR_FLCKPRN("Failed re-waiting join thread by %s(%d), so give up wor waiting join", (EBUSY == result ? "EBUSY" : EDEADLK == result ? "EDEADLK" : EINVAL == result ? "EINVAL" : EINVAL == result ? "EINVAL" : ESRCH  == result ? "ESRCH" : "unknown"), result);
+						ERR_FLCKPRN("Failed re-waiting join thread by %s(%d), so give up waiting join", (EBUSY == result ? "EBUSY" : EDEADLK == result ? "EDEADLK" : EINVAL == result ? "EINVAL" : EINVAL == result ? "EINVAL" : ESRCH  == result ? "ESRCH" : "unknown"), result);
 					}else{
-						ERR_FLCKPRN("Thread has exited but probabry pthread_exit is not locked.");
+						ERR_FLCKPRN("Thread has exited but probably pthread_exit is not locked.");
 					}
 					break;
 				}

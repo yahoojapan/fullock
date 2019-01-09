@@ -52,7 +52,7 @@ void FlListWaiter::dump(std::ostream &out, int level) const
 int FlListWaiter::rawlock(FLCKLOCKTYPE LockType, time_t timeout_usec)
 {
 	if(!pcurrent){
-		ERR_FLCKPRN("Object is not initalized.");
+		ERR_FLCKPRN("Object is not initialized.");
 		return EINVAL;						// EINVAL
 	}
 

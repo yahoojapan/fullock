@@ -59,7 +59,7 @@ void FlListNCond::dump(std::ostream &out, int level) const
 int FlListNCond::rawlock(FLCKLOCKTYPE LockType, bool is_broadcast, PFLNAMEDMUTEX abs_nmtx, time_t timeout_usec)
 {
 	if(!pcurrent){
-		ERR_FLCKPRN("Object is not initalized.");
+		ERR_FLCKPRN("Object is not initialized.");
 		return EINVAL;						// EINVAL
 	}
 
@@ -109,7 +109,7 @@ int FlListNCond::rawlock(FLCKLOCKTYPE LockType, bool is_broadcast, PFLNAMEDMUTEX
 
 		// Always get new waiter object.
 		FlListWaiter	tglistobj;
-		if(!tglistobj.retreive_list(FlShm::pFlHead->waiter_free)){
+		if(!tglistobj.retrieve_list(FlShm::pFlHead->waiter_free)){
 			ERR_FLCKPRN("Could not get waiter structure.");
 			fl_unlock_lockid(&FlShm::pFlHead->named_cond_lockid, flckpid);			// unlock lockid
 			return ENOLCK;					// ENOLCK
@@ -133,7 +133,7 @@ int FlListNCond::rawlock(FLCKLOCKTYPE LockType, bool is_broadcast, PFLNAMEDMUTEX
 		// do wait
 		result = tglistobj.wait(timeout_usec);
 
-		// retreive waiter from list
+		// retrieve waiter from list
 		fl_lock_lockid(&FlShm::pFlHead->named_cond_lockid, flckpid);				// relock lockid
 		if(tglistobj.cutoff_list(pcurrent->waiter_list)){
 			// put back waiter to free
@@ -141,7 +141,7 @@ int FlListNCond::rawlock(FLCKLOCKTYPE LockType, bool is_broadcast, PFLNAMEDMUTEX
 				ERR_FLCKPRN("Failed to insert waiter to free list, but continue...");
 			}
 		}else{
-			ERR_FLCKPRN("Could not retreive waiter from list, but continue...");
+			ERR_FLCKPRN("Could not retrieve waiter from list, but continue...");
 			if(0 == result){
 				result = ENOLCK;			// ENOLCK
 			}
@@ -163,7 +163,7 @@ bool FlListNCond::check_dead_lock(fl_pid_cache_map_t* pcache, flckpid_t except_f
 	for(PFLWAITER pabsparent = NULL, pabscur = to_abs(pcurrent->waiter_list); pabscur; ){
 		tmpobj.set(pabscur);
 		if(tmpobj.check_dead_lock(pcache, except_flckpid)){
-			// retrive target list
+			// retrieve target list
 			if(tmpobj.cutoff_list(pcurrent->waiter_list)){
 				// return object to free list
 				if(!tmpobj.insert_list(FlShm::pFlHead->waiter_free)){

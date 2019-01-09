@@ -81,7 +81,7 @@ class FlckDbgCntrl
 };
 
 //
-// Class valiables
+// Class variables
 //
 const char*		FlckDbgCntrl::DBGENVNAME = "FLCKDBGMODE";
 const char*		FlckDbgCntrl::DBGENVFILE = "FLCKDBGFILE";

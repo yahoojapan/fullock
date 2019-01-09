@@ -25,7 +25,7 @@
 // FlckThread Class
 //---------------------------------------------------------
 // This class creates one thread for checking process dead.
-// But inotify event can not retun the process id, so if
+// But inotify event can not return the process id, so if
 // the inotify(CLOSE) event occurred, this needs to check
 // all process id.
 // Do not care for it, performance degradation caused by

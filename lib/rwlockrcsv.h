@@ -55,7 +55,7 @@ class FLRwlRcsv
 		static void StackUnlock(void);
 
 		bool compare(const FLRwlRcsv& other) const;
-		inline void move_panding_stack(flrwlrcsv_vec_t& dest, flrwlrcsv_vec_t& src, FLRwlRcsv* pNewMaster)
+		inline void move_pending_stack(flrwlrcsv_vec_t& dest, flrwlrcsv_vec_t& src, FLRwlRcsv* pNewMaster)
 		{
 			for(flrwlrcsv_vec_t::iterator iter = src.begin(); iter != src.end(); iter = src.erase(iter)){
 				(*iter)->pMaster = pNewMaster;

@@ -196,7 +196,7 @@ static void OptionParser(int argc, char** argv, optparams_t& optparams)
 	}
 }
 
-static int OpenStatsFile(const string filepath, size_t& totalsize, bool is_create)
+static int OpenStatsFile(const string& filepath, size_t& totalsize, bool is_create)
 {
 	int	fd;
 
@@ -505,6 +505,10 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
+	if(optparams.end() != (iter = optparams.find("-p")) || optparams.end() != (iter = optparams.find("-print"))){
+		is_print = true;
+	}
+
 	if(optparams.end() != (iter = optparams.find("-waiter")) || optparams.end() != (iter = optparams.find("-w"))){
 		if(!iter->second.is_number){
 			ERR("-waiter(w) option needs integer value.");
@@ -520,10 +524,6 @@ int main(int argc, char** argv)
 		ERR("Parameter \"-waiter(w) <count>\" must be specified.");
 		Help(argv[0]);
 		exit(EXIT_FAILURE);
-	}
-
-	if(optparams.end() != (iter = optparams.find("-p")) || optparams.end() != (iter = optparams.find("-print"))){
-		is_print = true;
 	}
 
 	//--------------------------------------------------
@@ -629,8 +629,8 @@ int main(int argc, char** argv)
 			ERR("Failed to %s cond(%s). return code(error) = %d", is_broadcast ? "broadcast" : "signal", szCondName, result);
 		}
 	}else{
-		int	result;
 		for(int cnt = 0; cnt < waiter_count; ++cnt){
+			int	result;
 			if(0 != (result = flobj.Signal(szCondName))){
 				ERR("Failed to %s cond(%s). return code(error) = %d", is_broadcast ? "broadcast" : "signal", szCondName, result);
 			}

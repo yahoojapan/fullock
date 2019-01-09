@@ -39,7 +39,7 @@ typedef fullock::fl_list_base<FLLOCKER>		fllistbaselocker;
 class FlListLocker : public fllistbaselocker
 {
 	public:
-		FlListLocker(PFLLOCKER ptr = NULL) : fllistbaselocker(ptr) {}
+		explicit FlListLocker(PFLLOCKER ptr = NULL) : fllistbaselocker(ptr) {}
 		FlListLocker(const FlListLocker& other) : fllistbaselocker(other) {}
 		virtual ~FlListLocker() {}
 

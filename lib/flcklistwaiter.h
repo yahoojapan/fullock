@@ -41,7 +41,7 @@ class FlListWaiter : public fllistbasewaiter
 		int rawlock(FLCKLOCKTYPE LockType, time_t timeout_usec);
 
 	public:
-		FlListWaiter(PFLWAITER ptr = NULL) : fllistbasewaiter(ptr) {}
+		explicit FlListWaiter(PFLWAITER ptr = NULL) : fllistbasewaiter(ptr) {}
 		FlListWaiter(const FlListWaiter& other) : fllistbasewaiter(other) {}
 		virtual ~FlListWaiter() {}
 

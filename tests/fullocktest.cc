@@ -459,17 +459,16 @@ static bool deadlock_test(string& strtesttype, const char* procname, bool is_par
 		}
 
 		FlShm	shm;
-		int		result;
 
 		// try read lock
-		if(0 == (result = shm.TryReadLock(fd, 0, 1))){
+		if(0 == shm.TryReadLock(fd, 0, 1)){
 			ERR("Succeed to get read lock, it should block...");
 			shm.Unlock(fd, 0, 1);
 			close(fd);
 			return false;
 		}
 		// timeouted lock
-		if(0 == (result = shm.TimeoutReadLock(fd, 0, 1, 1000))){		// 1ms timeout.
+		if(0 == shm.TimeoutReadLock(fd, 0, 1, 1000)){		// 1ms timeout.
 			ERR("Succeed to get read lock(timeout), it should block...");
 			shm.Unlock(fd, 0, 1);
 			close(fd);
@@ -813,14 +812,13 @@ static bool mutex_deadlock_test(string& strtesttype, const char* procname, bool 
 
 		// try lock
 		FlShm	shm;
-		int		result;
-		if(0 == (result = shm.TryLock("MUTEX_TEST"))){
+		if(0 == shm.TryLock("MUTEX_TEST")){
 			ERR("Succeed to mutex(MUTEX_TEST) lock, it should block...");
 			shm.Unlock("MUTEX_TEST");
 			return false;
 		}
 		// timeouted lock
-		if(0 == (result = shm.TimeoutLock("MUTEX_TEST", 1000))){		// 1ms timeout.
+		if(0 == shm.TimeoutLock("MUTEX_TEST", 1000)){		// 1ms timeout.
 			ERR("Succeed to mutex(MUTEX_TEST) lock(timeout), it should block...");
 			shm.Unlock("MUTEX_TEST");
 			return false;
@@ -1148,14 +1146,14 @@ int main(int argc, char** argv)
 		}
 
 		// do
-		if(optparams.end() != (iter2 = optparams.find("-thread"))){
+		if(optparams.end() != optparams.find("-thread")){
 			// target is thread
 			if(FlShm::ROBUST_HIGH != mode){
 				PRN("NOTICE: Run \"-autorecover\" with \"-thread\" and \"%s\" robust mode, this case is DEADLOCK!", (mode == FlShm::ROBUST_LOW ? "low" : "high"));
 			}
 			result = autorecover_thread_test(strtesttype, argv[0], mode);
 
-		}else if(optparams.end() != (iter2 = optparams.find("-process"))){
+		}else if(optparams.end() != optparams.find("-process")){
 			// target is process
 			FLWORKERTYPE	workertype;
 			if(iter->second.rawstring.empty()){
@@ -1206,14 +1204,14 @@ int main(int argc, char** argv)
 		}
 
 		// do
-		if(optparams.end() != (iter2 = optparams.find("-thread"))){
+		if(optparams.end() != optparams.find("-thread")){
 			// thread
 			if(FlShm::ROBUST_HIGH != mode){
 				PRN("NOTICE: Run \"-mautorecover\" with \"-thread\" and \"%s\" robust mode, this case is DEADLOCK!", (mode == FlShm::ROBUST_LOW ? "low" : "high"));
 			}
 			result = mutex_autorecover_thread_test(strtesttype, argv[0], mode);
 
-		}else if(optparams.end() != (iter2 = optparams.find("-process"))){
+		}else if(optparams.end() != optparams.find("-process")){
 			// process
 			FLWORKERTYPE	workertype;
 			if(iter->second.rawstring.empty()){

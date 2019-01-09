@@ -220,8 +220,8 @@ bool FlShm::InitializeShm(void)
 		// in child process.
 		// Thus we set a handler at forking, and it initializes and runs thread in child process.
 		//
-		int	result;
-		if(0 != (result = pthread_atfork(NULL, NULL, PreforkHandler))){
+		int	result = pthread_atfork(NULL, NULL, PreforkHandler);
+		if(0 != result){
 			ERR_FLCKPRN("Failed to set handler for forking(errno=%d), but continue...", result);
 		}
 	}

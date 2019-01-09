@@ -141,7 +141,6 @@ namespace fullock
 	inline int fl_rdlock_rwlock(flck_rwlock_t* plockval, int max_count = FLCK_ROBUST_CHKCNT_NOLIMIT)
 	{
 		flck_rwlock_t	newval;
-		flck_rwlock_t	afterval;
 		flck_rwlock_t	beforeval;
 		int				cnt = 0;
 		do{
@@ -152,19 +151,18 @@ namespace fullock
 			}
 			beforeval	= *plockval;
 			newval		= beforeval + 1;
-		}while((FLCK_RWLOCK_UNLOCK > beforeval || beforeval != (afterval = __sync_val_compare_and_swap(plockval, beforeval, newval))) && -1 <= sched_yield());
+		}while((FLCK_RWLOCK_UNLOCK > beforeval || beforeval != __sync_val_compare_and_swap(plockval, beforeval, newval)) && -1 <= sched_yield());
 		return 0;
 	}
 
 	inline int fl_tryrdlock_rwlock(flck_rwlock_t* plockval)
 	{
-		flck_rwlock_t	afterval;
 		flck_rwlock_t	beforeval	= *plockval;
 		flck_rwlock_t	newval		= beforeval + 1;
 		if(FLCK_RWLOCK_UNLOCK > beforeval){
 			return EBUSY;
 		}
-		if(beforeval != (afterval = __sync_val_compare_and_swap(plockval, beforeval, newval))){
+		if(beforeval != __sync_val_compare_and_swap(plockval, beforeval, newval)){
 			return EBUSY;
 		}
 		return 0;
@@ -177,14 +175,14 @@ namespace fullock
 			return EBUSY;
 		}
 
-		flck_rwlock_t	newval;
-		flck_rwlock_t	afterval;
-		flck_rwlock_t	beforeval;
 		while(true){
+			flck_rwlock_t	newval;
+			flck_rwlock_t	beforeval;
+
 			beforeval	= *plockval;
 			newval		= beforeval + 1;
 			if(FLCK_RWLOCK_UNLOCK <= beforeval){
-				if(beforeval == (afterval = __sync_val_compare_and_swap(plockval, beforeval, newval))){
+				if(beforeval == __sync_val_compare_and_swap(plockval, beforeval, newval)){
 					break;
 				}
 			}
@@ -244,7 +242,6 @@ namespace fullock
 	inline int fl_unlock_rwlock(flck_rwlock_t* plockval)
 	{
 		flck_rwlock_t	newval;
-		flck_rwlock_t	afterval;
 		flck_rwlock_t	beforeval;
 		do{
 			beforeval		= *plockval;
@@ -257,7 +254,7 @@ namespace fullock
 			}else{
 				newval		= beforeval - 1;
 			}
-		}while(beforeval != (afterval = __sync_val_compare_and_swap(plockval, beforeval, newval)) && -1 <= sched_yield());
+		}while(beforeval != __sync_val_compare_and_swap(plockval, beforeval, newval) && -1 <= sched_yield());
 		return 0;
 	}
 
@@ -418,8 +415,7 @@ namespace fullock
 
 	inline int fl_wait_cond(FLCKLOCKTYPE* plockstatus, FLCKLOCKTYPE waitstatus)
 	{
-		FLCKLOCKTYPE	oldstatus;
-		while(waitstatus != (oldstatus = __sync_val_compare_and_swap(plockstatus, waitstatus, waitstatus))){
+		while(waitstatus != __sync_val_compare_and_swap(plockstatus, waitstatus, waitstatus)){
 			sched_yield();
 		}
 		return 0;
@@ -431,8 +427,7 @@ namespace fullock
 		if(-1 == clock_gettime(CLOCK_MONOTONIC, &starttime)){
 			return EBUSY;
 		}
-		FLCKLOCKTYPE	oldstatus;
-		while(waitstatus != (oldstatus = __sync_val_compare_and_swap(plockstatus, waitstatus, waitstatus))){
+		while(waitstatus != __sync_val_compare_and_swap(plockstatus, waitstatus, waitstatus)){
 			struct timespec	endtime;
 			if(-1 == clock_gettime(CLOCK_MONOTONIC, &endtime)){
 				return EBUSY;
@@ -520,8 +515,8 @@ namespace fullock
 			st_ptr_type					pcurrent;
 
 		public:
-			fl_list_base(const st_ptr_type ptr = nullval) : pcurrent(ptr) {}
-			fl_list_base(const st_type& other) : pcurrent(other.pcurrent) {}
+			explicit fl_list_base(const st_ptr_type ptr = nullval) : pcurrent(ptr) {}
+			explicit fl_list_base(const st_type& other) : pcurrent(other.pcurrent) {}
 			virtual ~fl_list_base() {}
 
 			inline bool initialize(st_ptr_type ptr, size_t count);

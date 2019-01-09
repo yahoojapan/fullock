@@ -375,6 +375,10 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
+	if(optparams.end() != (iter = optparams.find("-p")) || optparams.end() != (iter = optparams.find("-print"))){
+		is_print = true;
+	}
+
 	if(optparams.end() != (iter = optparams.find("-waiter")) || optparams.end() != (iter = optparams.find("-w"))){
 		if(!iter->second.is_number){
 			ERR("-waiter(w) option needs integer value.");
@@ -390,10 +394,6 @@ int main(int argc, char** argv)
 		ERR("Parameter \"-waiter(w) <count>\" must be specified.");
 		Help(argv[0]);
 		exit(EXIT_FAILURE);
-	}
-
-	if(optparams.end() != (iter = optparams.find("-p")) || optparams.end() != (iter = optparams.find("-print"))){
-		is_print = true;
 	}
 
 	//--------------------------------------------------
@@ -415,7 +415,7 @@ int main(int argc, char** argv)
 		}
 	}
 	if(is_failed){
-		delete pParams;
+		delete[] pParams;
 		exit(EXIT_FAILURE);		// no care for threads exiting...
 	}
 
@@ -472,8 +472,8 @@ int main(int argc, char** argv)
 			ERR("Failed to %s cond(%s). return code(error) = %d", is_broadcast ? "broadcast" : "signal", szCondName, result);
 		}
 	}else{
-		int	result;
 		for(int cnt = 0; cnt < waiter_count; ++cnt){
+			int	result;
 			if(0 != (result = flobj.Signal(szCondName))){
 				ERR("Failed to %s cond(%s). return code(error) = %d", is_broadcast ? "broadcast" : "signal", szCondName, result);
 			}
@@ -504,7 +504,7 @@ int main(int argc, char** argv)
 		ABS_TIMESPEC(&tmp_ts, &pParams[cnt].end_ts, &pParams[cnt].start_ts);
 		ADD_TIMESPEC(&total_cumulative_ts, &tmp_ts);
 	}
-	delete pParams;
+	delete[] pParams;
 
 	// end time
 	MONO_TIMESPEC(&end_total_ts);

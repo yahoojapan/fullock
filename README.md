@@ -40,6 +40,6 @@ These provide the functionality of more than pthread_rwlock and pthread_mutex, a
 This software is released under the MIT License, see the license file.
 
 ### AntPickax
-k2hdkc is one of [AntPickax](https://antpick.ax/) products.
+fullock is one of [AntPickax](https://antpick.ax/) products.
 
 Copyright(C) 2015 Yahoo Japan Corporation.

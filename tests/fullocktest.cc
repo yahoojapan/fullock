@@ -545,7 +545,7 @@ static void* reader_waiter_thread(void* param)
 		pthread_exit(NULL);
 	}
 
-	// after exiting writer(without unlocking), automatical recover and reader gets lock.
+	// after exiting writer(without unlocking), automagically recover and reader gets lock.
 	shm.Unlock(fd, 0, 1);
 	close(fd);
 
@@ -660,7 +660,7 @@ static bool reader_waiter_proc(void)
 		return false;
 	}
 
-	// after exiting writer(without unlocking), automatical recover and reader gets lock.
+	// after exiting writer(without unlocking), automagically recover and reader gets lock.
 	shm.Unlock(fd, 0, 1);
 	close(fd);
 
@@ -871,7 +871,7 @@ static void* mutex_waiter_thread(void* param)
 		pthread_exit(NULL);
 	}
 
-	// after exiting exiter(without unlocking), automatical recover and gets lock.
+	// after exiting exiter(without unlocking), automagically recover and gets lock.
 	shm.Unlock("MUTEX_TEST");
 
 	waiter_thread_result = true;
@@ -963,7 +963,7 @@ static bool mutex_waiter_proc(void)
 		return false;
 	}
 
-	// after exiting exiter(without unlocking), automatical recover and waiter gets lock.
+	// after exiting exiter(without unlocking), automagically recover and waiter gets lock.
 	shm.Unlock("MUTEX_TEST");
 
 	return true;

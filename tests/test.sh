@@ -16,55 +16,6 @@
 #
 
 ##############################################################
-### Make result xml function
-###
-### Usage: put_result_xml <result:OK/NG> <output file path>
-###
-
-#function put_result_xml_func()
-put_result_xml_func()
-{
-	if [ $# -ne 2 ]; then
-		return 1
-	fi
-	TESTRESULT=$1
-	XMLOUTPUTFILE=$2
-
-	if [ "X$XMLOUTPUTFILE" != "X" ]; then
-		echo "<?xml version=\"1.0\" encoding='ISO-8859-1' standalone='yes' ?>"	> $XMLOUTPUTFILE
-		echo "<TestRun>"								>> $XMLOUTPUTFILE
-
-		if [ "X$TESTRESULT" != "XOK" ]; then
-			echo "  <FailedTests>"						>> $XMLOUTPUTFILE
-			echo "    <Test id=\"1\">"					>> $XMLOUTPUTFILE
-			echo "      <Name>Test Script</Name>"		>> $XMLOUTPUTFILE
-			echo "    </Test>"							>> $XMLOUTPUTFILE
-			echo "  </FailedTests>"						>> $XMLOUTPUTFILE
-			echo "  <Statistics>"						>> $XMLOUTPUTFILE
-			echo "    <Tests>1</Tests>"					>> $XMLOUTPUTFILE
-			echo "    <FailuresTotal>1</FailuresTotal>"	>> $XMLOUTPUTFILE
-			echo "    <Errors>1</Errors>"				>> $XMLOUTPUTFILE
-			echo "    <Failures>1</Failures>"			>> $XMLOUTPUTFILE
-			echo "  </Statistics>"						>> $XMLOUTPUTFILE
-		else
-			echo "  <SuccessfulTests>"					>> $XMLOUTPUTFILE
-			echo "    <Test id=\"1\">"					>> $XMLOUTPUTFILE
-			echo "      <Name>TestScript</Name>"		>> $XMLOUTPUTFILE
-			echo "    </Test>"							>> $XMLOUTPUTFILE
-			echo "  </SuccessfulTests>"					>> $XMLOUTPUTFILE
-			echo "  <Statistics>"						>> $XMLOUTPUTFILE
-			echo "    <Tests>1</Tests>"					>> $XMLOUTPUTFILE
-			echo "    <FailuresTotal>0</FailuresTotal>"	>> $XMLOUTPUTFILE
-			echo "    <Errors>0</Errors>"				>> $XMLOUTPUTFILE
-			echo "    <Failures>0</Failures>"			>> $XMLOUTPUTFILE
-			echo "  </Statistics>"						>> $XMLOUTPUTFILE
-		fi
-
-		echo "</TestRun>"								>> $XMLOUTPUTFILE
-	fi
-}
-
-##############################################################
 ## library path & programs path
 ##
 if [ "X${SRCTOP}" = "X" ]; then
@@ -113,7 +64,6 @@ ${TESTPROGDIR}/singletest -f $FILEPATH -read >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Simple test for rwlock reader --->> ERROR"
 	echo "Simple test for rwlock reader --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Simple test for rwlock reader --->> OK"
@@ -130,7 +80,6 @@ ${TESTPROGDIR}/singletest -f $FILEPATH -write >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Simple test for rwlock writer --->> ERROR"
 	echo "Simple test for rwlock writer --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Simple test for rwlock writer --->> OK"
@@ -147,7 +96,6 @@ ${TESTPROGDIR}/singletest -m $MUTEXNAME >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Simple test for mutex --->> ERROR"
 	echo "Simple test for mutex --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Simple test for mutex --->> OK"
@@ -164,7 +112,6 @@ ${TESTPROGDIR}/singletest -c $CONDNAME >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Simple test for cond --->> ERROR"
 	echo "Simple test for cond --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Simple test for cond --->> OK"
@@ -181,7 +128,6 @@ ${TESTPROGDIR}/mttest -f $FILEPATH -r 5 -w 5 -l 10 >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Multi thread test for rwlock --->> ERROR"
 	echo "Multi thread test for rwlock --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Multi thread test for rwlock --->> OK"
@@ -198,7 +144,6 @@ ${TESTPROGDIR}/mttest -m $MUTEXNAME -t 5 -l 10 >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Multi thread test for mutex --->> ERROR"
 	echo "Multi thread test for mutex --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Multi thread test for mutex --->> OK"
@@ -215,7 +160,6 @@ ${TESTPROGDIR}/cond_mttest -s -w 10 >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Multi thread test for cond(signal) --->> ERROR"
 	echo "Multi thread test for cond(signal) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Multi thread test for cond(signal) --->> OK"
@@ -230,7 +174,6 @@ ${TESTPROGDIR}/cond_mttest -b -w 10 >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Multi thread test for cond(broadcast) --->> ERROR"
 	echo "Multi thread test for cond(broadcast) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Multi thread test for cond(broadcast) --->> OK"
@@ -247,7 +190,6 @@ ${TESTPROGDIR}/mptest -f $FILEPATH -r 5 -w 5 -l 10 >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Multi process test for rwlock --->> ERROR"
 	echo "Multi process test for rwlock --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Multi process test for rwlock --->> OK"
@@ -264,7 +206,6 @@ ${TESTPROGDIR}/mptest -m $MUTEXNAME -t 5 -l 10 >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Multi process test for mutex --->> ERROR"
 	echo "Multi process test for mutex --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Multi process test for mutex --->> OK"
@@ -281,7 +222,6 @@ ${TESTPROGDIR}/cond_mptest -s -w 10 >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Multi process test for cond(signal) --->> ERROR"
 	echo "Multi process test for cond(signal) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Multi process test for cond(signal) --->> OK"
@@ -296,7 +236,6 @@ ${TESTPROGDIR}/cond_mptest -b -w 10 >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Multi process test for cond(broadcast) --->> ERROR"
 	echo "Multi process test for cond(broadcast) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Multi process test for cond(broadcast) --->> OK"
@@ -313,7 +252,6 @@ ${TESTPROGDIR}/fullocktest -env >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Environment test --->> ERROR"
 	echo "Environment test --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Environment test --->> OK"
@@ -330,7 +268,6 @@ ${TESTPROGDIR}/fullocktest -oac -unit no >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Over area count limit test for rwlock(unit no) --->> ERROR"
 	echo "Over area count limit test for rwlock(unit no) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Over area count limit test for rwlock(unit no) --->> OK"
@@ -347,7 +284,6 @@ ${TESTPROGDIR}/fullocktest -oac -unit fd >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Over area count limit test for rwlock(unit fd) --->> ERROR"
 	echo "Over area count limit test for rwlock(unit fd) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Over area count limit test for rwlock(unit fd) --->> OK"
@@ -364,7 +300,6 @@ ${TESTPROGDIR}/fullocktest -oac -unit offset >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Over area count limit test for rwlock(unit offset) --->> ERROR"
 	echo "Over area count limit test for rwlock(unit offset) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Over area count limit test for rwlock(unit offset) --->> OK"
@@ -381,7 +316,6 @@ ${TESTPROGDIR}/fullocktest -dl >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Deadlock test for rwlock --->> ERROR"
 	echo "Deadlock test for rwlock --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Deadlock test for rwlock --->> OK"
@@ -402,7 +336,6 @@ echo "" >> $LOGFILE
 #	if [ $? -ne 0 ]; then
 #		echo "Automatic recover deadlock thread test for rwlock(robust no) --->> ERROR"
 #		echo "Automatic recover deadlock thread test for rwlock(robust no) --->> ERROR" >> $LOGFILE
-#		put_result_xml_func NG ${XMLRESULTSFILE}
 #		exit 1
 #	fi
 #	echo "Automatic recover deadlock thread test for rwlock(robust no) --->> OK"
@@ -423,7 +356,6 @@ echo "" >> $LOGFILE
 #	if [ $? -ne 0 ]; then
 #		echo "Automatic recover deadlock thread test for rwlock(robust low) --->> ERROR"
 #		echo "Automatic recover deadlock thread test for rwlock(robust low) --->> ERROR" >> $LOGFILE
-#		put_result_xml_func NG ${XMLRESULTSFILE}
 #		exit 1
 #	fi
 #	echo "Automatic recover deadlock thread test for rwlock(robust low) --->> OK"
@@ -440,7 +372,6 @@ ${TESTPROGDIR}/fullocktest -ar -thread -robust high >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Automatic recover deadlock thread test for rwlock(robust high) --->> ERROR"
 	echo "Automatic recover deadlock thread test for rwlock(robust high) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Automatic recover deadlock thread test for rwlock(robust high) --->> OK"
@@ -457,7 +388,6 @@ ${TESTPROGDIR}/fullocktest -ar -process -robust no >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Automatic recover deadlock process test for rwlock(robust no) --->> ERROR"
 	echo "Automatic recover deadlock process test for rwlock(robust no) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Automatic recover deadlock process test for rwlock(robust no) --->> OK"
@@ -474,7 +404,6 @@ ${TESTPROGDIR}/fullocktest -ar -process -robust low >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Automatic recover deadlock process test for rwlock(robust low) --->> ERROR"
 	echo "Automatic recover deadlock process test for rwlock(robust low) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Automatic recover deadlock process test for rwlock(robust low) --->> OK"
@@ -491,7 +420,6 @@ ${TESTPROGDIR}/fullocktest -ar -process -robust high >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Automatic recover deadlock process test for rwlock(robust high) --->> ERROR"
 	echo "Automatic recover deadlock process test for rwlock(robust high) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Automatic recover deadlock process test for rwlock(robust high) --->> OK"
@@ -508,7 +436,6 @@ ${TESTPROGDIR}/fullocktest -moac >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Over area count limit test for mutex --->> ERROR"
 	echo "Over area count limit test for mutex --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Over area count limit test for mutex --->> OK"
@@ -525,7 +452,6 @@ ${TESTPROGDIR}/fullocktest -mdl >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Deadlock test for mutex --->> ERROR"
 	echo "Deadlock test for mutex --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Deadlock test for mutex --->> OK"
@@ -546,7 +472,6 @@ echo "" >> $LOGFILE
 #	if [ $? -ne 0 ]; then
 #		echo "Automatic recover deadlock thread test for mutex(robust no) --->> ERROR"
 #		echo "Automatic recover deadlock thread test for mutex(robust no) --->> ERROR" >> $LOGFILE
-#		put_result_xml_func NG ${XMLRESULTSFILE}
 #		exit 1
 #	fi
 #	echo "Automatic recover deadlock thread test for mutex(robust no) --->> OK"
@@ -567,7 +492,6 @@ echo "" >> $LOGFILE
 #	if [ $? -ne 0 ]; then
 #		echo "Automatic recover deadlock thread test for mutex(robust low) --->> ERROR"
 #		echo "Automatic recover deadlock thread test for mutex(robust low) --->> ERROR" >> $LOGFILE
-#		put_result_xml_func NG ${XMLRESULTSFILE}
 #		exit 1
 #	fi
 #	echo "Automatic recover deadlock thread test for mutex(robust low) --->> OK"
@@ -584,7 +508,6 @@ ${TESTPROGDIR}/fullocktest -mar -thread -robust high >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Automatic recover deadlock thread test for mutex(robust high) --->> ERROR"
 	echo "Automatic recover deadlock thread test for mutex(robust high) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Automatic recover deadlock thread test for mutex(robust high) --->> OK"
@@ -601,7 +524,6 @@ ${TESTPROGDIR}/fullocktest -mar -process -robust no >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Automatic recover deadlock process test for mutex(robust no) --->> ERROR"
 	echo "Automatic recover deadlock process test for mutex(robust no) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Automatic recover deadlock process test for mutex(robust no) --->> OK"
@@ -618,7 +540,6 @@ ${TESTPROGDIR}/fullocktest -mar -process -robust low >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Automatic recover deadlock process test for mutex(robust low) --->> ERROR"
 	echo "Automatic recover deadlock process test for mutex(robust low) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Automatic recover deadlock process test for mutex(robust low) --->> OK"
@@ -635,7 +556,6 @@ ${TESTPROGDIR}/fullocktest -mar -process -robust high >> $LOGFILE
 if [ $? -ne 0 ]; then
 	echo "Automatic recover deadlock process test for mutex(robust high) --->> ERROR"
 	echo "Automatic recover deadlock process test for mutex(robust high) --->> ERROR" >> $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Automatic recover deadlock process test for mutex(robust high) --->> OK"
@@ -655,7 +575,6 @@ if [ $? -ne 0 ]; then
 	echo ""
 	echo "---------------- Test process log ----------------"
 	cat $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Over area count limit test for cond --->> OK"
@@ -683,7 +602,6 @@ if [ $? -ne 0 ]; then
 	echo ""
 	echo "---------------- Test forking log ----------------"
 	cat $LOGFILE
-	put_result_xml_func NG ${XMLRESULTSFILE}
 	exit 1
 fi
 echo "Test forking --->> OK"
@@ -698,11 +616,6 @@ rm -f $FILEPATH
 echo "All test --->> OK"
 echo "All test --->> OK" >> $LOGFILE
 echo "" >> $LOGFILE
-
-##############################################################
-### put result xml
-###
-put_result_xml_func OK ${XMLRESULTSFILE}
 
 exit 0
 

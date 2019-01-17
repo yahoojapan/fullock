@@ -1,3 +1,13 @@
+fullock (1.0.35) trusty; urgency=low
+
+  * Fixed misspelling, and etc - #26
+  * Added check using cppcheck - #25
+  * Changed method name from IsLowRobust to IsRobust - #24
+  * Reflected the spelling check result for all sources - #23
+  * Fixed Typo and Comment - #22
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 17 Jan 2019 07:48:09 +0900
+
 fullock (1.0.34) trusty; urgency=low
 
   * some small fix(typo and optimize code) - #15

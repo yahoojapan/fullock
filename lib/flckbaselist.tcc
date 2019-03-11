@@ -298,13 +298,12 @@ namespace fullock
 	inline int fl_trylock_mutex(flck_mutex_t* plockval, int* plockcnt, flckpid_t lockid)
 	{
 		// do lock
-		flck_mutex_t	oldval;
 		if(lockid == *plockval){
 			// already locked --> count up lockcnt
 			int	oldcnt = __sync_fetch_and_add(plockcnt, 1);
 			if(0 <= oldcnt){
 				// success to count up --> check lockval(this is failed but get old value)
-				if(lockid == (oldval = __sync_val_compare_and_swap(plockval, lockid, lockid))){
+				if(lockid == __sync_val_compare_and_swap(plockval, lockid, lockid)){
 					// success to lock
 					return 0;
 				}
@@ -314,7 +313,7 @@ namespace fullock
 
 		}else{
 			// try lock
-			if(FLCK_MUTEX_UNLOCK == (oldval = __sync_val_compare_and_swap(plockval, FLCK_MUTEX_UNLOCK, lockid))){
+			if(FLCK_MUTEX_UNLOCK == __sync_val_compare_and_swap(plockval, FLCK_MUTEX_UNLOCK, lockid)){
 				// get lock --> count up lockcnt
 				__sync_fetch_and_add(plockcnt, 1);		// not need to check return value
 				return 0;
@@ -461,8 +460,7 @@ namespace fullock
 	template<typename T>
 	inline bool flck_trylock_noshared_mutex(T* plockval)
 	{
-		T	oldval;
-		if(static_cast<T>(FLCK_NOSHARED_MUTEX_VAL_UNLOCKED) != (oldval = __sync_val_compare_and_swap(plockval, static_cast<T>(FLCK_NOSHARED_MUTEX_VAL_UNLOCKED), static_cast<T>(FLCK_NOSHARED_MUTEX_VAL_LOCKED)))){
+		if(static_cast<T>(FLCK_NOSHARED_MUTEX_VAL_UNLOCKED) != __sync_val_compare_and_swap(plockval, static_cast<T>(FLCK_NOSHARED_MUTEX_VAL_UNLOCKED), static_cast<T>(FLCK_NOSHARED_MUTEX_VAL_LOCKED))){
 			return false;
 		}
 		return true;

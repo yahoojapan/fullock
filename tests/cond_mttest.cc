@@ -172,6 +172,8 @@ static void OptionParser(int argc, char** argv, optparams_t& optparams)
 						break;
 					}
 				}
+				// cppcheck-suppress unmatchedSuppression
+				// cppcheck-suppress knownConditionTrueFalse
 				if(param.is_number){
 					param.num_value = atoi(pparam);
 				}
@@ -323,6 +325,7 @@ static void* RunThread(void* param)
 		pParam->result			= result;
 		MONO_TIMESPEC(&pParam->end_ts);
 		pthread_exit(NULL);
+		return NULL;
 	}
 	pParam->is_start_wait = true;
 

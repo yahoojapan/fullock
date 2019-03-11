@@ -218,6 +218,8 @@ static void OptionParser(int argc, char** argv, optparams_t& optparams)
 						break;
 					}
 				}
+				// cppcheck-suppress unmatchedSuppression
+				// cppcheck-suppress knownConditionTrueFalse
 				if(param.is_number){
 					param.num_value = atoi(pparam);
 				}
@@ -603,10 +605,10 @@ int main(int argc, char** argv)
 	// Set Parameters
 	optparams_t::iterator	iter;
 	int						proccount = 0;
-	if(optparams.end() != (iter = optparams.find("-p")) || optparams.end() != (iter = optparams.find("-print"))){
+	if(optparams.end() != optparams.find("-p") || optparams.end() != optparams.find("-print")){
 		is_print = true;
 	}
-	if(optparams.end() != (iter = optparams.find("-h")) || optparams.end() != (iter = optparams.find("-help"))){
+	if(optparams.end() != optparams.find("-h") || optparams.end() != optparams.find("-help")){
 		Help(argv[0]);
 		exit(EXIT_SUCCESS);
 

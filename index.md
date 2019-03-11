@@ -15,7 +15,9 @@ arrow_link_environments: <a href="environments.html" class="link-title"><span cl
 
 # **FULLOCK**
 **FULLOCK** (Fast User Level LOCK library) is a low-level lock library that provides secure, fast locking from multi-process, multi-threading.  
-**FULLOCK** is one of [AntPickax](https://antpick.ax/)'s open source product by Yahoo! JAPAN.
+**FULLOCK** is one of [AntPickax](https://antpick.ax/)'s open source product by Yahoo! JAPAN.  
+
+![FULLOCK](images/top_fullock.png)
 
 ## {{ page.arrow_link_overview }}
 [Overview](home.html) about **FULLOCK** library.

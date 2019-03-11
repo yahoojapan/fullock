@@ -15,7 +15,9 @@ arrow_link_environments: <a href="environmentsja.html" class="link-title"><span 
 
 # **FULLOCK**
 **FULLOCK**（**F**ast **U**ser **L**evel **LOCK** library）は、マルチプロセス、マルチスレッドから安全で、高速なロック機能を提供する低レベルのロックライブラリです。  
-**FULLOCK** は、Yahoo! JAPANがオープンソースとして公開するプロダクト [AntPickax](https://antpick.ax/indexja.html) のひとつです。
+**FULLOCK** は、Yahoo! JAPANがオープンソースとして公開するプロダクト [AntPickax](https://antpick.ax/indexja.html) のひとつです。  
+
+![FULLOCK](images/top_fullock.png)
 
 ## {{ page.arrow_link_overview }}
 **FULLOCK** の[概要](homeja.html)について説明します。  

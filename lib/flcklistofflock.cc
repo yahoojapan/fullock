@@ -243,7 +243,6 @@ bool FlListOffLock::check_dead_lock(dev_t devid, ino_t inoid, fl_pid_cache_map_t
 	}
 
 	FlListLocker	tmpobj;
-	int				result = 0;
 
 	// check reader list
 	for(PFLLOCKER pabsparent = NULL, pabscur = to_abs(pcurrent->reader_list); pabscur; ){
@@ -254,7 +253,8 @@ bool FlListOffLock::check_dead_lock(dev_t devid, ino_t inoid, fl_pid_cache_map_t
 			if(tmpobj.cutoff_list(pcurrent->reader_list)){
 				if(tmpobj.is_locked()){
 					// do unlock
-					if(0 != (result = fl_unlock_rwlock(&(pcurrent->lockval)))){
+					int	result = fl_unlock_rwlock(&(pcurrent->lockval));
+					if(0 != result){
 						ERR_FLCKPRN("Could not unlock rwlock object(error code=%d), but continue....", result);
 					}
 				}
@@ -285,7 +285,8 @@ bool FlListOffLock::check_dead_lock(dev_t devid, ino_t inoid, fl_pid_cache_map_t
 			if(tmpobj.cutoff_list(pcurrent->writer_list)){
 				if(tmpobj.is_locked()){
 					// do unlock
-					if(0 != (result = fl_unlock_rwlock(&(pcurrent->lockval)))){
+					int	result = fl_unlock_rwlock(&(pcurrent->lockval));
+					if(0 != result){
 						ERR_FLCKPRN("Could not unlock rwlock object(error code=%d), but continue....", result);
 					}
 				}

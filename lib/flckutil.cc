@@ -158,7 +158,7 @@ bool GetRealPath(const char* pPath, string& strreal)
 		if((*iter) == "."){
 			// nothing to do
 		}else if((*iter) == ".."){
-			if(0 >= rawpathleaf.size()){
+			if(rawpathleaf.empty()){
 				WAN_FLCKPRN("Path is wrong(over the root).");
 				return false;
 			}

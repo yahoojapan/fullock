@@ -455,7 +455,8 @@ bool FlckThread::Exit(void)
 					sleeptime.tv_nsec = 20 * 1000 * 1000;	// 20ms
 					nanosleep(&sleeptime, NULL);
 					// last retry
-					if(0 != (result = pthread_tryjoin_np(pthreadid, &pretval))){
+					result = pthread_tryjoin_np(pthreadid, &pretval);
+					if(0 != result){
 						ERR_FLCKPRN("Failed re-waiting join thread by %s(%d), so give up waiting join", (EBUSY == result ? "EBUSY" : EDEADLK == result ? "EDEADLK" : EINVAL == result ? "EINVAL" : EINVAL == result ? "EINVAL" : ESRCH  == result ? "ESRCH" : "unknown"), result);
 					}else{
 						ERR_FLCKPRN("Thread has exited but probably pthread_exit is not locked.");

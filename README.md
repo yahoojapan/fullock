@@ -18,6 +18,8 @@ One is shared reader/writer lock like that provided by fcntl, another is shared 
   
 These provide the functionality of more than pthread_rwlock and pthread_mutex, and is faster than fcntl.  
 
+![FULLOCK](https://fullock.antpick.ax/images/top_fullock.png)
+
 ### Feature
   - Support multi-threading
   - Support multi-processing

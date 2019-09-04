@@ -251,7 +251,7 @@ void* FlckThread::WorkerProc(void* param)
 
 			}else if(-1 >= eventcnt){
 				if(EINTR != errno){
-					ERR_FLCKPRN("Something error occured in waiting event(errno=%d): inotifyfd(%d) watchfd(%d) event fd(%d)", errno, FlckThread::InotifyFd, FlckThread::WatchFd, FlckThread::EventFd);
+					ERR_FLCKPRN("Something error occurred in waiting event(errno=%d): inotifyfd(%d) watchfd(%d) event fd(%d)", errno, FlckThread::InotifyFd, FlckThread::WatchFd, FlckThread::EventFd);
 					break;
 				}
 				// signal occurred.

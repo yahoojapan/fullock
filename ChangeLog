@@ -1,3 +1,11 @@
+fullock (1.0.37) trusty; urgency=low
+
+  * Switched Travis CI to Github actions and extended supported OS - #34
+  * Fixed bugs detected by cppcheck - #33
+  * Fixes typos. - #32
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 13 Nov 2020 16:15:21 +0900
+
 fullock (1.0.36) trusty; urgency=low
 
   * Fixed codes for cppcheck 1.87 - #29

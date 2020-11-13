@@ -1,6 +1,6 @@
 fullock
 -------
-[![Build Status](https://travis-ci.org/yahoojapan/fullock.svg?branch=master)](https://travis-ci.org/yahoojapan/fullock)
+[![C/C++ AntPickax CI](https://github.com/yahoojapan/fullock/workflows/C/C++%20AntPickax%20CI/badge.svg)](https://github.com/yahoojapan/fullock/actions)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/yahoojapan/fullock/master/COPYING)
 [![GitHub forks](https://img.shields.io/github/forks/yahoojapan/fullock.svg)](https://github.com/yahoojapan/fullock/network)
 [![GitHub stars](https://img.shields.io/github/stars/yahoojapan/fullock.svg)](https://github.com/yahoojapan/fullock/stargazers)

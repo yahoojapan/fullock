@@ -107,8 +107,10 @@ void FlckThread::CleanupHandler(void* arg)
 
 	// free allocated data
 	FlckThread::pThreadParam = NULL;		// pparam == FlckThread::pThreadParam
-	FLCK_Free(pparam->pfilepath);
-	FLCK_Delete(pparam);
+	if(pparam){
+		FLCK_Free(pparam->pfilepath);
+		FLCK_Delete(pparam);
+	}
 
 	// close handles
 	if(FLCK_INVALID_HANDLE != FlckThread::WatchFd){
@@ -232,6 +234,8 @@ void* FlckThread::WorkerProc(void* param)
 				for(int cnt = 0; cnt < eventcnt; cnt++){
 					pthread_testcancel();									// check cancel
 					// check flag
+					// cppcheck-suppress unmatchedSuppression
+					// cppcheck-suppress knownConditionTrueFalse
 					if(FlckThread::FLCK_THCNTL_EXIT <= *pThFlag){
 						break;
 					}
@@ -287,8 +291,14 @@ bool FlckThread::CheckEvent(int InotifyFd, int WatchFd)
 	// do for type
 	struct inotify_event*	in_event= NULL;
 	bool					retval	= false;
-	for(unsigned char* ptr = pevent; (ptr + sizeof(struct inotify_event)) <= (pevent + bytes); ptr += sizeof(struct inotify_event) + in_event->len){
+	uint32_t				ev_len	= 0;
+	for(unsigned char* ptr = pevent; (ptr + sizeof(struct inotify_event)) <= (pevent + bytes); ptr += sizeof(struct inotify_event) + ev_len){
 		in_event = reinterpret_cast<struct inotify_event*>(ptr);
+		if(!in_event){
+			ev_len = 0;
+			continue;
+		}
+		ev_len   = in_event->len;
 
 		if(WatchFd != in_event->wd){
 			continue;

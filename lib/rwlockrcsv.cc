@@ -432,7 +432,7 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 			}
 		}
 		// re-lock pending list(and put into global stack)
-		for(flrwlrcsv_vec_t::iterator iter = PendingStack.begin(); iter != PendingStack.end(); iter = PendingStack.erase(iter)){
+		for(flrwlrcsv_vec_t::iterator iter = PendingStack.begin(); iter != PendingStack.end(); ++iter){
 			(*iter)->has_locker	= false;
 			(*iter)->is_locked	= false;
 			(*iter)->pMaster	= NULL;
@@ -441,6 +441,7 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 				ERR_FLCKPRN("Failed to re-lock for recovering.");
 			}
 		}
+		PendingStack.clear();
 		has_locker	= false;
 		is_locked	= false;
 

@@ -472,13 +472,13 @@ int main(int argc, char** argv)
 	if(is_broadcast){
 		int	result;
 		if(0 != (result = flobj.Broadcast(szCondName))){
-			ERR("Failed to %s cond(%s). return code(error) = %d", is_broadcast ? "broadcast" : "signal", szCondName, result);
+			ERR("Failed to broadcast cond(%s). return code(error) = %d", szCondName, result);
 		}
 	}else{
 		for(int cnt = 0; cnt < waiter_count; ++cnt){
 			int	result;
 			if(0 != (result = flobj.Signal(szCondName))){
-				ERR("Failed to %s cond(%s). return code(error) = %d", is_broadcast ? "broadcast" : "signal", szCondName, result);
+				ERR("Failed to signal cond(%s). return code(error) = %d", szCondName, result);
 			}
 		}
 	}

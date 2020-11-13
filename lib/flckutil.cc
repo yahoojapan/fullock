@@ -108,7 +108,7 @@ bool CvtNumberStringToLong(const char* str, long* presult)
 		MSG_FLCKPRN("could not convert %s to long, because under(or over) flow", str);
 		return false;
 	}else if(!errptr){
-		MSG_FLCKPRN("could not convert %s to long, because wrong character(%s) in it.", str, errptr);
+		MSG_FLCKPRN("could not convert %s to long, because wrong character in it.", str);
 		return false;
 	}
 	return true;

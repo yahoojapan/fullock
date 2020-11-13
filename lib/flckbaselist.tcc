@@ -269,13 +269,12 @@ namespace fullock
 			}
 
 			// do lock
-			flck_mutex_t	oldval;
 			if(lockid == *plockval){
 				// already locked --> count up lockcnt
 				int	oldcnt = __sync_fetch_and_add(plockcnt, 1);
 				if(0 <= oldcnt){
 					// success to count up --> check lockval(this is failed but get old value)
-					if(lockid == (oldval = __sync_val_compare_and_swap(plockval, lockid, lockid))){
+					if(lockid == __sync_val_compare_and_swap(plockval, lockid, lockid)){
 						// success to lock
 						break;
 					}
@@ -285,7 +284,7 @@ namespace fullock
 
 			}else{
 				// try lock
-				if(FLCK_MUTEX_UNLOCK == (oldval = __sync_val_compare_and_swap(plockval, FLCK_MUTEX_UNLOCK, lockid))){
+				if(FLCK_MUTEX_UNLOCK == __sync_val_compare_and_swap(plockval, FLCK_MUTEX_UNLOCK, lockid)){
 					// get lock --> count up lockcnt
 					__sync_fetch_and_add(plockcnt, 1);		// not need to check return value
 					break;
@@ -331,13 +330,12 @@ namespace fullock
 
 		do{
 			// do lock
-			flck_mutex_t	oldval;
 			if(lockid == *plockval){
 				// already locked --> count up lockcnt
 				int	oldcnt = __sync_fetch_and_add(plockcnt, 1);
 				if(0 <= oldcnt){
 					// success to count up --> check lockval(this is failed but get old value)
-					if(lockid == (oldval = __sync_val_compare_and_swap(plockval, lockid, lockid))){
+					if(lockid == __sync_val_compare_and_swap(plockval, lockid, lockid)){
 						// success to lock
 						break;
 					}
@@ -347,7 +345,7 @@ namespace fullock
 
 			}else{
 				// try lock
-				if(FLCK_MUTEX_UNLOCK == (oldval = __sync_val_compare_and_swap(plockval, FLCK_MUTEX_UNLOCK, lockid))){
+				if(FLCK_MUTEX_UNLOCK == __sync_val_compare_and_swap(plockval, FLCK_MUTEX_UNLOCK, lockid)){
 					// get lock --> count up lockcnt
 					__sync_fetch_and_add(plockcnt, 1);		// not need to check return value
 					break;

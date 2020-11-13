@@ -57,10 +57,11 @@ class FLRwlRcsv
 		bool compare(const FLRwlRcsv& other) const;
 		inline void move_pending_stack(flrwlrcsv_vec_t& dest, flrwlrcsv_vec_t& src, FLRwlRcsv* pNewMaster)
 		{
-			for(flrwlrcsv_vec_t::iterator iter = src.begin(); iter != src.end(); iter = src.erase(iter)){
+			for(flrwlrcsv_vec_t::iterator iter = src.begin(); iter != src.end(); ++iter){
 				(*iter)->pMaster = pNewMaster;
 				dest.push_back(*iter);
 			}
+			src.clear();
 		}
 
 		bool RawUnlock(bool& is_mutex_locked);

@@ -378,8 +378,7 @@ static bool overareacnt_test(string& strtesttype, const char* procname, bool is_
 		int	lockcnt;
 		for(lockcnt = 0; lockcnt < 100; ++lockcnt){
 			FlShm	shm;
-			int		result;
-			if(0 != (result = shm.ReadLock(fd, static_cast<off_t>(lockcnt), 1))){
+			if(0 != shm.ReadLock(fd, static_cast<off_t>(lockcnt), 1)){
 				//PRN("FAILED READ LOCK - No.%d, error=%d", lockcnt, result);
 				break;
 			}

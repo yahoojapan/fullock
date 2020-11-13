@@ -391,11 +391,11 @@ static bool RawFileLock(int fd, short type, off_t offset, bool block)
 		}else{
 			if(!block){
 				if(EACCES != errno && EAGAIN != errno){
-					//MSG_FLCKPRN("Could not \"%s\" lock because something unnormal wrong occured. errno=%d", LOCKTYPE_STR(type), errno);
+					//MSG_FLCKPRN("Could not \"%s\" lock because something unnormal wrong occurred. errno=%d", LOCKTYPE_STR(type), errno);
 				}
 				break;
 			}else{
-				//MSG_FLCKPRN("Could not \"%s\" lock because something unnormal wrong occured. errno=%d", LOCKTYPE_STR(type), errno);
+				//MSG_FLCKPRN("Could not \"%s\" lock because something unnormal wrong occurred. errno=%d", LOCKTYPE_STR(type), errno);
 				break;
 			}
 		}

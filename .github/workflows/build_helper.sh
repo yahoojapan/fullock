@@ -18,8 +18,8 @@
 # the license file that was distributed with this source code.
 #
 # AUTHOR:   Takeshi Nakatani
-# CREATE:   Fri, Nov 13 2020
-# REVISION:	1.0
+# CREATE:   Mon, Nov 16 2020
+# REVISION:	1.1
 #
 
 #---------------------------------------------------------------------
@@ -556,7 +556,7 @@ echo "[INFO] ${PRGNAME} : Build - run autogen."
 run_cmd ./autogen.sh
 
 echo "[INFO] ${PRGNAME} : Build - run configure."
-run_cmd ./configure --prefix=/usr ${CONFIGUREOPT}
+run_cmd ./configure --prefix=/usr ${CONFIGURE_EXT_OPT}
 
 echo "[INFO] ${PRGNAME} : Build - run cppcheck."
 run_cmd make cppcheck
@@ -586,8 +586,8 @@ else
 	if [ ${IS_PUBLISH} -ne 1 ]; then
 		DEBUILD_OPT="-nodebuild"
 	fi
-	prn_cmd CONFIGUREOPT=${CONFIGUREOPT} ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} -disttype ${DIST_TAG} ${DEBUILD_OPT} -y
-	CONFIGUREOPT=${CONFIGUREOPT} ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} -disttype ${DIST_TAG} ${DEBUILD_OPT} -y
+	prn_cmd CONFIGUREOPT=${CONFIGURE_EXT_OPT} ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} -disttype ${DIST_TAG} ${DEBUILD_OPT} -y
+	CONFIGUREOPT=${CONFIGURE_EXT_OPT} ./buildutils/debian_build.sh -buildnum ${BUILD_NUMBER} -disttype ${DIST_TAG} ${DEBUILD_OPT} -y
 fi
 if [ $? -ne 0 ]; then
 	echo "[ERROR] ${PRGNAME} : Failed to build packages"

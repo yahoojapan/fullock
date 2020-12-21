@@ -19,13 +19,19 @@ This chapter instructs how to build **FULLOCK** and install it and its header fi
 
 ## 1. Install prerequisites
 
-For DebianStretch or Ubuntu(Bionic Beaver) users, follow the steps below.
+For recent Debian-based Linux distributions users, follow the steps below:
 ```
 $ sudo apt-get update -y
 $ sudo apt install git autoconf automake libtool g++ -y
 ```
 
-For Fedora28 or CentOS7.x(6.x) users, follow the steps below.
+For users who use supported Fedora other than latest version, follow the steps below:
+```
+$ sudo dnf makecache
+$ sudo dnf install git gcc-c++ make libtool -y
+```
+
+For other recent RPM-based Linux distributions users, follow the steps below:
 ```
 $ sudo yum makecache
 $ sudo yum install git gcc-c++ make libtool -y

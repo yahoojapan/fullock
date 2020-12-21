@@ -19,13 +19,19 @@ next_string: Developer
 
 ## 1.ビルド環境の構築
 
-DebianStretchまたはUbuntu（Bionic Beaver）をお使いの場合は、以下の手順に従ってください。
+最近のDebianベースLinuxの利用者は、以下の手順に従ってください。
 ```
 $ sudo apt-get update -y
 $ sudo apt install git autoconf automake libtool g++ -y
 ```
 
-Fedora28またはCentOS7.x（6.x）ユーザーの場合は、以下の手順に従ってください。
+Fedoraの利用者は、以下の手順に従ってください。
+```
+$ sudo dnf makecache
+$ sudo dnf install git gcc-c++ make libtool -y
+```
+
+その他最近のRPMベースのLinuxの場合は、以下の手順に従ってください。
 ```
 $ sudo yum makecache
 $ sudo yum install git gcc-c++ make libtool -y

@@ -15,6 +15,9 @@ next_string: Usage
 
 # Feature
 
+## Flexible installation
+We provide suitable FULLOCK installation for your OS. If you use Ubuntu, CentOS, Fedora or Debian, you can easily install it from [packagecloud.io] (https://packagecloud.io/antpickax/stable). Even if you use none of them, you can use it by [Build] (https://fullock.antpick.ax/build.html) by yourself.
+
 ## Provided functions
 FULLOCK provides the following locking mechanism.
 

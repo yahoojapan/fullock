@@ -15,6 +15,9 @@ next_string: Usage
 
 # FULLOCKの特徴
 
+## 柔軟なインストール
+FULLOCKは、あなたのOSに応じて、柔軟にインストールが可能です。あなたのOSが、Ubuntu、CentOS、Fedora、Debianなら、[packagecloud.io](https://packagecloud.io/antpickax/stable)からソースコードをビルドすることなく、簡単にインストールできます。それ以外のOSであっても、自身で[ビルド](https://fullock.antpick.ax/buildja.html)して使うことができます。
+
 ## 提供機能
 FULLOCKは以下の機能を提供します。
 

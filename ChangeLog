@@ -1,3 +1,11 @@
+fullock (1.0.40) trusty; urgency=low
+
+  * Fixed ci.yml for Docker image build/push - #45
+  * Added docker build and push in Github Actions - #43
+  * Functional improvements and bug fixes - #42
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 06 Aug 2021 20:48:16 +0900
+
 fullock (1.0.39) trusty; urgency=low
 
   * Fixed centos8 build and removed centos6 build - #38

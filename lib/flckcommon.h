@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 //---------------------------------------------------------
 // Macros for compiler

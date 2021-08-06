@@ -40,7 +40,8 @@ using namespace fullock;
 //---------------------------------------------------------
 #define	FLCK_INITIAL_LOADED_VERSION				1
 
-#define	DEFAULT_SHM_DIRPATH						"/tmp/.fullock"
+#define	DEFAULT_SHM_ANTPICKAX_DIRPATH			"/var/lib/antpickax/.fullock"
+#define	DEFAULT_SHM_SUB_DIRPATH					"/tmp/.fullock"
 #define	DEFAULT_SHM_FILENAME					"fullock.shm"
 
 #define	FLCK_FLCKAUTOINIT_YES_STR				"YES"
@@ -227,10 +228,27 @@ bool FlShm::InitializeObject(bool is_load_env)
 {
 	FlShm::ShmPath().erase();
 
-	// Load environment
+	// Load debug environment
 	if(is_load_env && !LoadFlckDbgEnv()){
 		// continue...
 	}
+
+	// Initialize working directory
+	if(MakeWorkDirectory(DEFAULT_SHM_ANTPICKAX_DIRPATH)){
+		MSG_FLCKPRN("Set working directory: %s", DEFAULT_SHM_ANTPICKAX_DIRPATH);
+		FlShm::ShmDirPath() = DEFAULT_SHM_ANTPICKAX_DIRPATH;
+	}else{
+		WAN_FLCKPRN("Could not create or find %s working directory, then try to check next directory.", DEFAULT_SHM_ANTPICKAX_DIRPATH);
+
+		if(MakeWorkDirectory(DEFAULT_SHM_SUB_DIRPATH)){
+			MSG_FLCKPRN("Set working directory: %s", DEFAULT_SHM_SUB_DIRPATH);
+			FlShm::ShmDirPath() = DEFAULT_SHM_SUB_DIRPATH;
+		}else{
+			WAN_FLCKPRN("Could not create or find %s sub working directory.", DEFAULT_SHM_SUB_DIRPATH);
+		}
+	}
+
+	// Load environment
 	if(is_load_env && !FlShm::LoadEnv()){
 		return false;
 	}
@@ -300,13 +318,33 @@ bool FlShm::ReInitializeObject(const char* dirname, const char* filename, size_t
 		return false;
 	}
 
+	// Check default directory path for shm
+	if(MakeWorkDirectory(DEFAULT_SHM_ANTPICKAX_DIRPATH)){
+		MSG_FLCKPRN("Set working directory: %s", DEFAULT_SHM_ANTPICKAX_DIRPATH);
+		FlShm::ShmDirPath() = DEFAULT_SHM_ANTPICKAX_DIRPATH;
+	}else{
+		WAN_FLCKPRN("Could not create or find %s working directory, then try to check next directory.", DEFAULT_SHM_ANTPICKAX_DIRPATH);
+
+		if(MakeWorkDirectory(DEFAULT_SHM_SUB_DIRPATH)){
+			MSG_FLCKPRN("Set working directory: %s", DEFAULT_SHM_SUB_DIRPATH);
+			FlShm::ShmDirPath() = DEFAULT_SHM_SUB_DIRPATH;
+		}else{
+			WAN_FLCKPRN("Could not create or find %s sub working directory.", DEFAULT_SHM_SUB_DIRPATH);
+		}
+	}
+
 	// set count values as default
-	FlShm::ShmDirPath()			= DEFAULT_SHM_DIRPATH;
 	FlShm::ShmFileName()		= DEFAULT_SHM_FILENAME;
 	FlShm::FileLockAreaCount	= FLCK_FLCKFILECNT_DEFAULT;
 	FlShm::OffLockAreaCount		= FLCK_FLCKOFFETCNT_DEFAULT;
 	FlShm::LockerAreaCount		= FLCK_FLCKLOCKERCNT_DEFAULT;
 	FlShm::NMtxAreaCount		= FLCK_FLCKNMTXCNT_DEFAULT;
+
+	// Re-check directory path for shm
+	if(!MakeWorkDirectory(FlShm::ShmDirPath().c_str())){
+		ERR_FLCKPRN("%s working directory is not existed.", FlShm::ShmDirPath().c_str());
+		return false;
+	}
 
 	// Load environment manually
 	if(!FlShm::LoadEnv()){
@@ -1015,7 +1053,6 @@ bool FlShm::LoadEnv(void)
 	// FLCKDIRPATH
 	if(NULL == (pEnvVal = getenv(FlShm::FLCKDIRPATH))){
 		MSG_FLCKPRN("%s ENV is not set.", FlShm::FLCKDIRPATH);
-		FlShm::ShmDirPath() = DEFAULT_SHM_DIRPATH;
 	}else{
 		string	toppath;
 		if(!GetRealPath(pEnvVal, toppath)){

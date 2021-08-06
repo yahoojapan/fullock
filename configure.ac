@@ -168,7 +168,8 @@ AC_CONFIG_FILES([Makefile
 		buildutils/Makefile
 		buildutils/control
 		buildutils/copyright
-		buildutils/libfullock.spec])
+		buildutils/libfullock.spec
+		buildutils/Dockerfile.templ])
 
 AC_OUTPUT
 

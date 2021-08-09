@@ -66,8 +66,8 @@ WORKDIR /
 RUN set -x && \
 	mkdir -p /usr/local/lib/pkgconfig && \
 	mkdir -p /usr/local/include/@PACKAGE_NAME@ && \
-	mkdir -p /var/run/antpickax && \
-	chmod 0777 /var/run/antpickax
+	mkdir -p /var/lib/antpickax && \
+	chmod 0777 /var/lib/antpickax
 
 COPY --from=@PACKAGE_NAME@-builder /usr/local/include/@PACKAGE_NAME@/*           /usr/local/include/@PACKAGE_NAME@/
 COPY --from=@PACKAGE_NAME@-builder /usr/local/lib/pkgconfig/lib@PACKAGE_NAME@.pc /usr/local/lib/pkgconfig/
@@ -91,8 +91,8 @@ RUN set -x && \
 	%%PKG_UPDATE%% && \
 	%%PKG_INSTALL_BIN%% && \
 	mkdir -p /usr/local/lib && \
-	mkdir -p /var/run/antpickax && \
-	chmod 0777 /var/run/antpickax
+	mkdir -p /var/lib/antpickax && \
+	chmod 0777 /var/lib/antpickax
 
 COPY --from=@PACKAGE_NAME@-builder /lib@PACKAGE_NAME@.tgz /lib@PACKAGE_NAME@.tgz
 

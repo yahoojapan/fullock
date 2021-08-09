@@ -86,7 +86,8 @@ stamp-h1
 #
 Makefile.in
 Makefile
-
+Dockerfile
+buildutils/Dockerfile.templ
 
 #
 # archive files and backups
@@ -132,10 +133,36 @@ debian_build
 debian_build/*
 
 #
+# buildutils
+#
+buildutils/custom/*_Makefile
+buildutils/custom/*.yicf
+
+#
+# yahoo build
+#
+x86_64-linux-gcc
+x86_64-linux-gcc/*
+x86_64-linux-gcc.gcov
+x86_64-linux-gcc.gcov/*
+*/x86_64-linux-gcc
+*/x86_64-linux-gcc/*
+*/x86_64-linux-gcc.gcov
+*/x86_64-linux-gcc.gcov/*
+*.gcov
+*.gcno
+*.gcov.html
+rhel.*.package
+rhel.*.package*/*
+rhel.*.depend
+coverage
+coverage/*
+tests/results.xml
+
+#
 # project custom
 #
 lib/fullockversion.cc
-tests/results.xml
 tests/fullocktest
 tests/singletest
 tests/mttest

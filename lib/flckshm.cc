@@ -40,8 +40,9 @@ using namespace fullock;
 //---------------------------------------------------------
 #define	FLCK_INITIAL_LOADED_VERSION				1
 
-#define	DEFAULT_SHM_ANTPICKAX_DIRPATH			"/var/lib/antpickax/.fullock"
-#define	DEFAULT_SHM_SUB_DIRPATH					"/tmp/.fullock"
+#define	DEFAULT_SHM_ANTPICKAX_DIRPATH			"/var/lib/antpickax"
+#define	DEFAULT_SHM_SUB_DIRPATH					"/tmp"
+#define	DEFAULT_SHM_DIRNAME						".fullock"
 #define	DEFAULT_SHM_FILENAME					"fullock.shm"
 
 #define	FLCK_FLCKAUTOINIT_YES_STR				"YES"
@@ -232,23 +233,6 @@ bool FlShm::InitializeObject(bool is_load_env)
 	if(is_load_env && !LoadFlckDbgEnv()){
 		// continue...
 	}
-
-	// Initialize working directory
-	if(MakeWorkDirectory(DEFAULT_SHM_ANTPICKAX_DIRPATH)){
-		MSG_FLCKPRN("Set working directory: %s", DEFAULT_SHM_ANTPICKAX_DIRPATH);
-		FlShm::ShmDirPath() = DEFAULT_SHM_ANTPICKAX_DIRPATH;
-	}else{
-		WAN_FLCKPRN("Could not create or find %s working directory, then try to check next directory.", DEFAULT_SHM_ANTPICKAX_DIRPATH);
-
-		if(MakeWorkDirectory(DEFAULT_SHM_SUB_DIRPATH)){
-			MSG_FLCKPRN("Set working directory: %s", DEFAULT_SHM_SUB_DIRPATH);
-			FlShm::ShmDirPath() = DEFAULT_SHM_SUB_DIRPATH;
-		}else{
-			WAN_FLCKPRN("Could not create or find %s sub working directory.", DEFAULT_SHM_SUB_DIRPATH);
-		}
-	}
-
-	// Load environment
 	if(is_load_env && !FlShm::LoadEnv()){
 		return false;
 	}
@@ -258,6 +242,26 @@ bool FlShm::InitializeObject(bool is_load_env)
 	}
 
 	if(FlShm::ShmPath().empty()){
+		// Check working directory path
+		if(FlShm::ShmDirPath().empty()){
+			string	toppath;
+			struct stat	st;
+			if(0 != stat(DEFAULT_SHM_ANTPICKAX_DIRPATH, &st)){
+				MSG_FLCKPRN("Not found %s directory, then use %s directory as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH, DEFAULT_SHM_SUB_DIRPATH);
+				toppath = DEFAULT_SHM_SUB_DIRPATH;
+			}else{
+				if(0 == (st.st_mode & S_IFDIR)){
+					MSG_FLCKPRN("%s is not directory, then use %s directory as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH, DEFAULT_SHM_SUB_DIRPATH);
+					toppath = DEFAULT_SHM_SUB_DIRPATH;
+				}else{
+					MSG_FLCKPRN("Found %s directory, then use it as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH);
+					toppath = DEFAULT_SHM_ANTPICKAX_DIRPATH;
+				}
+			}
+			toppath				+= "/" DEFAULT_SHM_DIRNAME;
+			FlShm::ShmDirPath()	 = toppath;
+		}
+
 		// Set & Check working directory
 		if(!MakeWorkDirectory(FlShm::ShmDirPath().c_str())){
 			ERR_FLCKPRN("Failed to make working directory(%s).", FlShm::ShmPath().c_str());
@@ -318,19 +322,24 @@ bool FlShm::ReInitializeObject(const char* dirname, const char* filename, size_t
 		return false;
 	}
 
-	// Check default directory path for shm
-	if(MakeWorkDirectory(DEFAULT_SHM_ANTPICKAX_DIRPATH)){
-		MSG_FLCKPRN("Set working directory: %s", DEFAULT_SHM_ANTPICKAX_DIRPATH);
-		FlShm::ShmDirPath() = DEFAULT_SHM_ANTPICKAX_DIRPATH;
-	}else{
-		WAN_FLCKPRN("Could not create or find %s working directory, then try to check next directory.", DEFAULT_SHM_ANTPICKAX_DIRPATH);
-
-		if(MakeWorkDirectory(DEFAULT_SHM_SUB_DIRPATH)){
-			MSG_FLCKPRN("Set working directory: %s", DEFAULT_SHM_SUB_DIRPATH);
-			FlShm::ShmDirPath() = DEFAULT_SHM_SUB_DIRPATH;
+	// set dirpath as default
+	{
+		string	toppath;
+		struct stat	st;
+		if(0 != stat(DEFAULT_SHM_ANTPICKAX_DIRPATH, &st)){
+			MSG_FLCKPRN("Not found %s directory, then use %s directory as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH, DEFAULT_SHM_SUB_DIRPATH);
+			toppath = DEFAULT_SHM_SUB_DIRPATH;
 		}else{
-			WAN_FLCKPRN("Could not create or find %s sub working directory.", DEFAULT_SHM_SUB_DIRPATH);
+			if(0 == (st.st_mode & S_IFDIR)){
+				MSG_FLCKPRN("%s is not directory, then use %s directory as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH, DEFAULT_SHM_SUB_DIRPATH);
+				toppath = DEFAULT_SHM_SUB_DIRPATH;
+			}else{
+				MSG_FLCKPRN("Found %s directory, then use it as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH);
+				toppath = DEFAULT_SHM_ANTPICKAX_DIRPATH;
+			}
 		}
+		toppath				+= "/" DEFAULT_SHM_DIRNAME;
+		FlShm::ShmDirPath()	 = toppath;
 	}
 
 	// set count values as default
@@ -339,12 +348,6 @@ bool FlShm::ReInitializeObject(const char* dirname, const char* filename, size_t
 	FlShm::OffLockAreaCount		= FLCK_FLCKOFFETCNT_DEFAULT;
 	FlShm::LockerAreaCount		= FLCK_FLCKLOCKERCNT_DEFAULT;
 	FlShm::NMtxAreaCount		= FLCK_FLCKNMTXCNT_DEFAULT;
-
-	// Re-check directory path for shm
-	if(!MakeWorkDirectory(FlShm::ShmDirPath().c_str())){
-		ERR_FLCKPRN("%s working directory is not existed.", FlShm::ShmDirPath().c_str());
-		return false;
-	}
 
 	// Load environment manually
 	if(!FlShm::LoadEnv()){
@@ -1051,6 +1054,7 @@ bool FlShm::LoadEnv(void)
 	}
 
 	// FLCKDIRPATH
+	bool	isSetDir = false;
 	if(NULL == (pEnvVal = getenv(FlShm::FLCKDIRPATH))){
 		MSG_FLCKPRN("%s ENV is not set.", FlShm::FLCKDIRPATH);
 	}else{
@@ -1062,9 +1066,35 @@ bool FlShm::LoadEnv(void)
 			if(!MakeWorkDirectory(toppath.c_str())){
 				ERR_FLCKPRN("%s ENV path(%s) is invalid or no such directory(could not make it).", FlShm::FLCKDIRPATH, pEnvVal);
 			}else{
-				FlShm::ShmDirPath()	= toppath;
 				MSG_FLCKPRN("Set shmfile directory path(%s) by ENV(%s=%s).", FlShm::ShmDirPath().c_str(), FlShm::FLCKDIRPATH, pEnvVal);
+				FlShm::ShmDirPath()	= toppath;
+				isSetDir			= true;
 			}
+		}
+	}
+	if(!isSetDir){
+		// Not set dirpath, then check default paths
+		string	toppath;
+		struct stat	st;
+		if(0 != stat(DEFAULT_SHM_ANTPICKAX_DIRPATH, &st)){
+			MSG_FLCKPRN("Not found %s directory, then use %s directory as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH, DEFAULT_SHM_SUB_DIRPATH);
+			toppath = DEFAULT_SHM_SUB_DIRPATH;
+		}else{
+			if(0 == (st.st_mode & S_IFDIR)){
+				MSG_FLCKPRN("%s is not directory, then use %s directory as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH, DEFAULT_SHM_SUB_DIRPATH);
+				toppath = DEFAULT_SHM_SUB_DIRPATH;
+			}else{
+				MSG_FLCKPRN("Found %s directory, then use it as default.", DEFAULT_SHM_ANTPICKAX_DIRPATH);
+				toppath = DEFAULT_SHM_ANTPICKAX_DIRPATH;
+			}
+		}
+		toppath += "/" DEFAULT_SHM_DIRNAME;
+
+		if(!MakeWorkDirectory(toppath.c_str())){
+			ERR_FLCKPRN("Could not create %s working directory.", toppath.c_str());
+		}else{
+			MSG_FLCKPRN("Set working directory: %s", toppath.c_str());
+			FlShm::ShmDirPath() = toppath;
 		}
 	}
 

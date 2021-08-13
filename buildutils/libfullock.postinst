@@ -1,9 +1,10 @@
+#!/bin/sh
 #
 # FULLOCK - Fast User Level LOCK library
 #
 # Utility tools for building configure/packages by AntPickax
 #
-# Copyright 2018 Yahoo Japan Corporation.
+# Copyright 2021 Yahoo Japan Corporation.
 #
 # AntPickax provides utility tools for supporting autotools
 # builds.
@@ -19,22 +20,21 @@
 # the license file that was distributed with this source code.
 #
 # AUTHOR:   Takeshi Nakatani
-# CREATE:   Fri, Apr 13 2018
+# CREATE:   Fri, Aug 13 2021
 # REVISION:
 #
 
-EXTRA_DIST =make_variables.sh \
-			make_release_version_file.sh \
-			make_commit_hash.sh \
-			make_commit_hash_source.sh \
-			make_rpm_changelog.sh \
-			make_description.sh \
-			debian_build.sh \
-			rpm_build.sh \
-			libfullock.postinst
+#
+# Create /var/lib/antpickax directory
+#
+mkdir -p /var/lib/antpickax
+chmod 0777 /var/lib/antpickax
 
 #
-# VIM modelines
-#
-# vim:set ts=4 fenc=utf-8:
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim600: expandtab sw=4 ts=4 fdm=marker
+# vim<600: expandtab sw=4 ts=4
 #

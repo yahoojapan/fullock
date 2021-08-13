@@ -1,3 +1,9 @@
+fullock (1.0.42) trusty; urgency=low
+
+  * Fixed to create /var/lib/antpickax at installation - #48
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 13 Aug 2021 22:35:21
+
 fullock (1.0.41) trusty; urgency=low
 
   * Fixed a bug in Dockerfile.templ.in and updated .gitignore - #46

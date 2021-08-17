@@ -18,16 +18,20 @@
 # [NOTE]
 # This file expects the following variables to be expanded by autoconf.
 #	GIT_DOMAIN
-#	GIT_ORG
-#	GIT_REPO
 #	PACKAGE_NAME
 #
 # Also, replace the following variables.
-#	DOCKER_IMAGE_BASE		(ex. "docker.io/alpine:3.13.5")
-#	PKG_UPDATE				(ex. "apk update -q --no-progress")
-#	PKG_INSTALL_BUILDER		(ex. "apk add -q --no-progress --no-cache git build-base openssl libtool automake autoconf procps")
-#	PKG_INSTALL_BIN			(ex. "apk add -q --no-progress --no-cache libstdc++")
-#	BUILD_ENV				(ex, "ENV DEBIAN_FRONTEND=noninteractive")
+#	DOCKER_IMAGE_BASE			(ex. "docker.io/alpine:3.13.5")
+#	DOCKER_IMAGE_DEV_BASE		(ex. "docker.io/alpine:3.13.5")
+#	DOCKER_GIT_ORGANIZATION		(ex. "antpickax")
+#	DOCKER_GIT_REPOSITORY		(ex. "xxxxx")
+#	DOCKER_GIT_BRANCH			(ex. "yyyyy")
+#	PKG_UPDATE					(ex. "apk update -q --no-progress")
+#	PKG_INSTALL_BUILDER			(ex. "apk add -q --no-progress --no-cache git build-base openssl libtool automake autoconf procps")
+#	PKG_INSTALL_BIN				(ex. "apk add -q --no-progress --no-cache libstdc++")
+#	CONFIGURE_FLAG				(ex. "")
+#	BUILD_FLAGS					(ex. "CXXFLAGS=")
+#	BUILD_ENV					(ex, "ENV DEBIAN_FRONTEND=noninteractive")
 #
 
 #
@@ -44,11 +48,12 @@ RUN set -x && \
 	%%PKG_UPDATE%% && \
 	%%PKG_INSTALL_BUILDER%% && \
 	cd / && \
-	git clone https://@GIT_DOMAIN@/@GIT_ORG@/@GIT_REPO@.git && \
-	cd @GIT_REPO@ && \
+	git clone https://@GIT_DOMAIN@/%%DOCKER_GIT_ORGANIZATION%%/%%DOCKER_GIT_REPOSITORY%%.git && \
+	cd %%DOCKER_GIT_REPOSITORY%% && \
+	git checkout %%DOCKER_GIT_BRANCH%% && \
 	./autogen.sh && \
-	./configure && \
-	make && \
+	./configure %%CONFIGURE_FLAG%% && \
+	make %%BUILD_FLAGS%% && \
 	make check && \
 	make install && \
 	cd / && \
@@ -58,7 +63,7 @@ RUN set -x && \
 #
 # Image for development
 #
-FROM %%DOCKER_IMAGE_BASE%% AS lib@PACKAGE_NAME@-dev
+FROM %%DOCKER_IMAGE_DEV_BASE%% AS lib@PACKAGE_NAME@-dev
 
 MAINTAINER antpickax
 WORKDIR /

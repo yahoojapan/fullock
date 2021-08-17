@@ -45,7 +45,11 @@ func_usage()
 	echo "      antpickax/image:1.0.0-alpine  (imagetag is \"alpine\")"
 	echo "      antpickax/image:1.0.0         (imagetag is not specified)"
 	echo ""
-	echo "    This program uses the GITHUB_REF and GITHUB_EVENT_NAME environment variable internally."
+	echo "    This program uses folowing environment variable internally."
+	echo "      GITHUB_REPOSITORY"
+	echo "      GITHUB_REF"
+	echo "      GITHUB_EVENT_NAME"
+	echo "      GITHUB_EVENT_PATH"
 	echo ""
 }
 
@@ -194,13 +198,14 @@ else
 	#
 	DOCKER_IMAGE_INFO=$(echo ${DOCKER_IMAGE_INFO} | sed -e 's#,# #g')
 	DOCKER_IMAGE_BASE=$(echo ${DOCKER_IMAGE_INFO} | awk '{print $1}')
-	DOCKER_IMAGE_OSTYPE=$(echo ${DOCKER_IMAGE_INFO} | awk '{print $2}')
-	DOCKER_IMAGE_DEFAULT_TAG=$(echo ${DOCKER_IMAGE_INFO} | awk '{print $3}')
+	DOCKER_IMAGE_DEV_BASE=$(echo ${DOCKER_IMAGE_INFO} | awk '{print $2}')
+	DOCKER_IMAGE_OSTYPE=$(echo ${DOCKER_IMAGE_INFO} | awk '{print $3}')
+	DOCKER_IMAGE_DEFAULT_TAG=$(echo ${DOCKER_IMAGE_INFO} | awk '{print $4}')
 
 	#
 	# DOCKER_IMAGE_BASE
 	#
-	if [ "X${DOCKER_IMAGE_BASE}" = "X" ]; then
+	if [ "X${DOCKER_IMAGE_BASE}" = "X" ] || [ "X${DOCKER_IMAGE_DEV_BASE}" = "X" ] ; then
 		echo "[ERROR] ${PRGNAME} : The \"--imageinfo(-i)\" option value does not have base image name."
 		exit 1
 	fi
@@ -234,24 +239,27 @@ fi
 #
 # Version
 #
-GITHUB_REF_VERSION=
+TAGGED_VERSION=
 if [ "X${GITHUB_REF}" != "X" ]; then
 	echo ${GITHUB_REF} | grep 'refs/tags/' >/dev/null 2>&1
 	if [ $? -eq 0 ]; then
-		GITHUB_REF_VERSION=$(echo ${GITHUB_REF} | sed -e 's#refs/tags/v##g' -e 's#refs/tags/##g')
+		TAGGED_VERSION=$(echo ${GITHUB_REF} | sed -e 's#refs/tags/v##g' -e 's#refs/tags/##g')
 	fi
 fi
 if [ "X${IMAGE_VERSION}" = "X" ]; then
-	if [ "X${GITHUB_REF_VERSION}" != "X" ]; then
+	if [ "X${TAGGED_VERSION}" != "X" ]; then
 		#
 		# From Github ref
 		#
-		IMAGE_VERSION=${GITHUB_REF_VERSION}
+		IMAGE_VERSION=${TAGGED_VERSION}
 	else
 		#
 		# From RELEASE_VERSION file
 		#
-		IMAGE_VERSION=$(${MAKE_VAR_TOOL} -pkg_version | sed -e 's#refs/tags/v##g' -e 's#refs/tags/##g')
+		cd ${SRCTOP}
+		./autogen.sh
+
+		IMAGE_VERSION=$(${MAKE_VAR_TOOL} -pkg_version)
 		if [ "X${IMAGE_VERSION}" = "X" ]; then
 			IMAGE_VERSION="0.0.0"
 		fi
@@ -280,12 +288,57 @@ else
 	if [ "X${GITHUB_EVENT_NAME}" = "Xschedule" ]; then
 		DO_PUSH=0
 	else
-		if [ "X${GITHUB_REF_VERSION}" != "X" ]; then
+		if [ "X${TAGGED_VERSION}" != "X" ]; then
 			DO_PUSH=1
 		else
 			DO_PUSH=0
 		fi
 	fi
+fi
+
+#
+# Base Repository/SHA1 for creating Docker images
+#
+if [ "X${GITHUB_EVENT_NAME}" = "Xpull_request" ]; then
+	# [NOTE]
+	# In the PR case, GITHUB_REPOSITORY and GITHUB_REF cannot be used
+	# because they are the information on the merging side.
+	# Then the Organization/Repository/branch(or SHA1) of the PR source
+	# is fetched from the file(json) indicated by the GITHUB_EVENT_PATH
+	# environment variable.
+	#	ex.
+	#		{
+	#		  "pull_request": {
+	#		    "head": {
+	#		      "repo": {
+	#		        "full_name": "org/repo",
+	#		      },
+	#		      "sha": "776........",
+	#		    },
+	#		  },
+	#		}
+	#
+	if [ ! -f ${GITHUB_EVENT_PATH} ]; then
+		echo "[ERROR] ${PRGNAME} : \"GITHUB_EVENT_PATH\" environment is empty or not file path."
+		exit 1
+	fi
+
+	# [NOTE]
+	# we need "jq" for parsing json
+	#
+	PR_GITHUB_REPOSITORY=$(jq -r '.pull_request.head.repo.full_name' ${GITHUB_EVENT_PATH})
+	DOCKER_GIT_ORGANIZATION=$(echo ${PR_GITHUB_REPOSITORY} | sed 's#/# #g' | awk '{print $1}')
+	DOCKER_GIT_REPOSITORY=$(echo ${PR_GITHUB_REPOSITORY} | sed 's#/# #g' | awk '{print $2}')
+	DOCKER_GIT_BRANCH=$(jq -r '.pull_request.head.sha' ${GITHUB_EVENT_PATH})
+
+else
+	DOCKER_GIT_ORGANIZATION=$(echo ${GITHUB_REPOSITORY} | sed 's#/# #g' | awk '{print $1}')
+	DOCKER_GIT_REPOSITORY=$(echo ${GITHUB_REPOSITORY} | sed 's#/# #g' | awk '{print $2}')
+	DOCKER_GIT_BRANCH=$(echo ${GITHUB_REF} | sed 's#^refs/.*/##g')
+fi
+if [ "X${DOCKER_GIT_ORGANIZATION}" = "X" ] || [ "X${DOCKER_GIT_REPOSITORY}" = "X" ] || [ "X${DOCKER_GIT_BRANCH}" = "X" ]; then
+	echo "[ERROR] ${PRGNAME} : Not found Organization/Repository/branch(or SHA1)."
+	exit 1
 fi
 
 #
@@ -297,6 +350,80 @@ fi
 if [ -f ${IMAGEVAR_FILE} ]; then
 	echo "[INFO] ${PRGNAME} : Load ${IMAGEVAR_FILE} for local variables."
 	. ${IMAGEVAR_FILE}
+fi
+
+#---------------------------------------------------------------------
+# Print information
+#---------------------------------------------------------------------
+echo "[INFO] ${PRGNAME} : All local variables."
+echo "  PRGNAME                  = ${PRGNAME}"
+echo "  MYSCRIPTDIR              = ${MYSCRIPTDIR}"
+echo "  BUILDUTILS_DIR           = ${BUILDUTILS_DIR}"
+echo "  MAKE_VAR_TOOL            = ${MAKE_VAR_TOOL}"
+echo "  DOCKER_TEMPL_FILE        = ${DOCKER_TEMPL_FILE}"
+echo "  DOCKER_FILE              = ${DOCKER_FILE}"
+echo "  IMAGEVAR_FILE            = ${IMAGEVAR_FILE}"
+echo "  DOCKER_IMAGE_INFO        = ${DOCKER_IMAGE_INFO}"
+echo "  DOCKER_IMAGE_BASE        = ${DOCKER_IMAGE_BASE}"
+echo "  DOCKER_IMAGE_DEV_BASE    = ${DOCKER_IMAGE_DEV_BASE}"
+echo "  DOCKER_IMAGE_OSTYPE      = ${DOCKER_IMAGE_OSTYPE}"
+echo "  DOCKER_GIT_ORGANIZATION  = ${DOCKER_GIT_ORGANIZATION}"
+echo "  DOCKER_GIT_REPOSITORY    = ${DOCKER_GIT_REPOSITORY}"
+echo "  DOCKER_GIT_BRANCH        = ${DOCKER_GIT_BRANCH}"
+echo "  DEFAULT_IMAGE_TAGGING    = ${DEFAULT_IMAGE_TAGGING}"
+echo "  DOCKER_HUB_ORG           = ${DOCKER_HUB_ORG}"
+echo "  IMAGE_NAMES              = ${IMAGE_NAMES}"
+echo "  IMAGE_VERSION            = ${IMAGE_VERSION}"
+echo "  FORCE_PUSH               = ${FORCE_PUSH}"
+echo "  DO_PUSH                  = ${DO_PUSH}"
+echo "  PKGMGR_NAME              = ${PKGMGR_NAME}"
+echo "  PKGMGR_UPDATE_OPT        = ${PKGMGR_UPDATE_OPT}"
+echo "  PKGMGR_INSTALL_OPT       = ${PKGMGR_INSTALL_OPT}"
+echo "  PKG_INSTALL_LIST_BUILDER = ${PKG_INSTALL_LIST_BUILDER}"
+echo "  PKG_INSTALL_LIST_BIN     = ${PKG_INSTALL_LIST_BIN}"
+echo "  BUILDER_CONFIGURE_FLAG   = ${BUILDER_CONFIGURE_FLAG}"
+echo "  BUILDER_MAKE_FLAGS       = ${BUILDER_MAKE_FLAGS}"
+echo "  BUILDER_ENVIRONMENT      = ${BUILDER_ENVIRONMENT}"
+echo "  RUNNER_INSTALL_PACKAGES  = ${RUNNER_INSTALL_PACKAGES}"
+
+#---------------------------------------------------------------------
+# Initialize Runner for creating Dockerfile
+#---------------------------------------------------------------------
+# [NOTE]
+# Github Actions Runner uses Ubuntu to create Docker images.
+# Therefore, the below code is written here assuming that Ubuntu is used.
+#
+
+#
+# Update pacakges
+#
+echo "[INFO] ${PRGNAME} : Update local packages and caches"
+
+export DEBIAN_FRONTEND=noninteractive 
+sudo apt-get update -y -qq
+
+#
+# Setup packagecloud.io repository
+#
+echo "[INFO] ${PRGNAME} : Setup packagecloud.io repository."
+
+curl --version >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+	sudo apt-get install -y -qq curl
+fi
+
+sudo /bin/sh -c "curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.deb.sh | bash"
+if [ $? -ne 0 ]; then
+	echo "[ERROR] ${PRGNAME} : could not add packagecloud.io repository."
+	exit 1
+fi
+
+#
+# Install packages
+#
+echo "[INFO] ${PRGNAME} : Install packages for Github Actions Runner."
+if [ "X${RUNNER_INSTALL_PACKAGES}" != "X" ]; then
+	sudo apt-get install -y -qq ${RUNNER_INSTALL_PACKAGES}
 fi
 
 #---------------------------------------------------------------------
@@ -345,9 +472,15 @@ fi
 
 cat ${BUILDUTILS_DIR}/${DOCKER_TEMPL_FILE} |							\
 	sed -e "s#%%DOCKER_IMAGE_BASE%%#${DOCKER_IMAGE_BASE}#g"				\
+		-e "s#%%DOCKER_IMAGE_DEV_BASE%%#${DOCKER_IMAGE_DEV_BASE}#g"		\
+		-e "s#%%DOCKER_GIT_ORGANIZATION%%#${DOCKER_GIT_ORGANIZATION}#g"	\
+		-e "s#%%DOCKER_GIT_REPOSITORY%%#${DOCKER_GIT_REPOSITORY}#g"		\
+		-e "s#%%DOCKER_GIT_BRANCH%%#${DOCKER_GIT_BRANCH}#g"				\
 		-e "s#%%PKG_UPDATE%%#${PKGMGR_NAME} ${PKGMGR_UPDATE_OPT}#g"		\
 		-e "s#%%PKG_INSTALL_BUILDER%%#${PKG_INSTALL_BUILDER_COMMAND}#g"	\
 		-e "s#%%PKG_INSTALL_BIN%%#${PKG_INSTALL_BIN_COMMAND}#g"			\
+		-e "s#%%CONFIGURE_FLAG%%#${BUILDER_CONFIGURE_FLAG}#g"			\
+		-e "s#%%BUILD_FLAGS%%#${BUILDER_MAKE_FLAGS}#g"					\
 		-e "s#%%BUILD_ENV%%#${BUILDER_ENVIRONMENT}#g"					> ${SRCTOP}/${DOCKER_FILE}
 if [ $? -ne 0 ]; then
 	echo "[ERROR] ${PRGNAME} : Failed to creating ${DOCKER_FILE} from ${DOCKER_TEMPL_FILE}."

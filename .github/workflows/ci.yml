@@ -154,15 +154,16 @@ jobs:
       matrix:
         #
         # Specify the "baseimage" in the following format:
-        #    <base docker image tag>,<OS tag name>(,<default tag flag>)
+        #    <base image tag>,<base dev image tag>,<OS tag name>(,<default tag flag>)
         #
-        # <base docker image tag>:  specify the Docker image name(ex. "alpine:latest")
-        # <OS tag name>:            OS tag attached to the created Docker image
-        # <default tag flag>:       If you want to use the created Docker image as the default image, specify "default".
+        # <base image tag>:     specify the Docker image name(ex. "alpine:latest")
+        # <base dev image tag>: specify the Docker image name(ex. "alpine:latest")
+        # <OS tag name>:        OS tag attached to the created Docker image
+        # <default tag flag>:   If you want to use the created Docker image as the default image, specify "default".
         #
         imageinfo:
-          - alpine:3.13.5,alpine,default
-          - ubuntu:20.04,ubuntu
+          - alpine:3.13.5,alpine:3.13.5,alpine,default
+          - ubuntu:20.04,ubuntu:20.04,ubuntu
 
     #
     # Run building and pushing helper

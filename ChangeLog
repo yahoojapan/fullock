@@ -1,3 +1,9 @@
+fullock (1.0.43) trusty; urgency=low
+
+  * Fixed a bug in Docker image build - #50
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 17 Aug 2021 13:56:14 +0900
+
 fullock (1.0.42) trusty; urgency=low
 
   * Fixed to create /var/lib/antpickax at installation - #48

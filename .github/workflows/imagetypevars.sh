@@ -48,6 +48,7 @@ PKG_INSTALL_LIST_BIN=
 BUILDER_CONFIGURE_FLAG=
 BUILDER_MAKE_FLAGS=
 BUILDER_ENVIRONMENT=
+UPDATE_LIBPATH=
 
 #
 # List the package names that contain pacakgecloud.io to install on Github Actions Runner.
@@ -70,6 +71,7 @@ elif [ "X${DOCKER_IMAGE_OSTYPE}" = "Xubuntu" ]; then
 	PKGMGR_INSTALL_OPT="install -qq -y"
 	PKG_INSTALL_LIST_BUILDER="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config procps"
 	PKG_INSTALL_LIST_BIN=""
+	UPDATE_LIBPATH="ldconfig"
 
 	#
 	# For installing tzdata with another package(ex. git)

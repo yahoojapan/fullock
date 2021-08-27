@@ -31,7 +31,8 @@
 #	PKG_INSTALL_BIN				(ex. "apk add -q --no-progress --no-cache libstdc++")
 #	CONFIGURE_FLAG				(ex. "")
 #	BUILD_FLAGS					(ex. "CXXFLAGS=")
-#	BUILD_ENV					(ex, "ENV DEBIAN_FRONTEND=noninteractive")
+#	BUILD_ENV					(ex. "ENV DEBIAN_FRONTEND=noninteractive")
+#	UPDATE_LIBPATH				(ex. "ldconfig", if want no-operation, specify ":")
 #
 
 #
@@ -80,7 +81,8 @@ COPY --from=@PACKAGE_NAME@-builder /lib@PACKAGE_NAME@-dev.tgz                   
 
 RUN cd / && \
 	tar xvzf lib@PACKAGE_NAME@-dev.tgz && \
-	rm /lib@PACKAGE_NAME@-dev.tgz
+	rm /lib@PACKAGE_NAME@-dev.tgz && \
+	%%UPDATE_LIBPATH%%
 
 CMD ["/bin/sh"]
 
@@ -103,7 +105,8 @@ COPY --from=@PACKAGE_NAME@-builder /lib@PACKAGE_NAME@.tgz /lib@PACKAGE_NAME@.tgz
 
 RUN cd / && \
 	tar xvzf lib@PACKAGE_NAME@.tgz && \
-	rm /lib@PACKAGE_NAME@.tgz
+	rm /lib@PACKAGE_NAME@.tgz && \
+	%%UPDATE_LIBPATH%%
 
 CMD ["/bin/sh"]
 

@@ -85,6 +85,7 @@ AC_CONFIG_MACRO_DIR([m4])
 #
 AC_CHECK_FILE([configure.custom],
 	[
+		configure_custom_file="configure.custom"
 		custom_git_domain="$(grep '^\s*GIT_DOMAIN\s*=' configure.custom | sed -e 's|^\s*GIT_DOMAIN\s*=\s*||g' -e 's|^\s*||g' -e 's|\s*$||g')"
 		custom_git_org="$(grep '^\s*GIT_ORG\s*=' configure.custom | sed -e 's|^\s*GIT_ORG\s*=\s*||g' -e 's|^\s*||g' -e 's|\s*$||g')"
 		custom_git_repo="$(grep '^\s*GIT_REPO\s*=' configure.custom | sed -e 's|^\s*GIT_REPO\s*=\s*||g' -e 's|^\s*||g' -e 's|\s*$||g')"
@@ -93,6 +94,7 @@ AC_CHECK_FILE([configure.custom],
 		custom_dev_name="$(grep '^\s*DEB_NAME\s*=' configure.custom | sed -e 's|^\s*DEB_NAME\s*=\s*||g' -e 's|^\s*||g' -e 's|\s*$||g')"
 	],
 	[
+		configure_custom_file=""
 		custom_git_domain="github.com"
 		custom_git_org="yahoojapan"
 		custom_git_repo="fullock"
@@ -105,6 +107,7 @@ AC_CHECK_FILE([configure.custom],
 #
 # Symbols for buildutils
 #
+AC_SUBST([CONFIGURECUSTOM], "${configure_custom_file}")
 AC_SUBST([GIT_DOMAIN], "${custom_git_domain}")
 AC_SUBST([GIT_ORG], "${custom_git_org}")
 AC_SUBST([GIT_REPO], "${custom_git_repo}")

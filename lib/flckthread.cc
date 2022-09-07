@@ -172,10 +172,10 @@ void* FlckThread::WorkerProc(void* param)
 		pthread_testcancel();												// check cancel
 		pthread_exit(NULL);
 	}
-	FlckThread::pThreadParam			= param;							// for forking
-	volatile THCNTLFLAG*	pThFlag		= pparam->pThFlag;
-	int						intervalms	= pparam->intervalms;
-	char*					pfilepath	= pparam->pfilepath;
+	FlckThread::pThreadParam				= param;						// for forking
+	volatile const THCNTLFLAG*	pThFlag		= pparam->pThFlag;
+	int							intervalms	= pparam->intervalms;
+	char*						pfilepath	= pparam->pfilepath;
 
 	//
 	// set cleanup handler

@@ -130,7 +130,7 @@ namespace fullock
 		return true;
 	}
 
-	inline bool fl_islock_lockid(flckpid_t* pflckpid)
+	inline bool fl_islock_lockid(const flckpid_t* pflckpid)
 	{
 		if(pflckpid && FLCK_INVALID_ID != *pflckpid){
 			return true;

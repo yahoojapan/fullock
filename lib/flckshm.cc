@@ -199,7 +199,7 @@ int					FlShm::EventFd				= FLCK_INVALID_HANDLE;
 // [NOTE]
 // To avoid static object initialization order problem(SIOF)
 //
-bool FlShm::InitializeSingleton(void* phelper)
+bool FlShm::InitializeSingleton(const void* phelper)
 {
 	if(phelper){
 		return true;

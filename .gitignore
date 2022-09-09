@@ -139,27 +139,6 @@ buildutils/custom/*_Makefile
 buildutils/custom/*.yicf
 
 #
-# yahoo build
-#
-x86_64-linux-gcc
-x86_64-linux-gcc/*
-x86_64-linux-gcc.gcov
-x86_64-linux-gcc.gcov/*
-*/x86_64-linux-gcc
-*/x86_64-linux-gcc/*
-*/x86_64-linux-gcc.gcov
-*/x86_64-linux-gcc.gcov/*
-*.gcov
-*.gcno
-*.gcov.html
-rhel.*.package
-rhel.*.package*/*
-rhel.*.depend
-coverage
-coverage/*
-tests/results.xml
-
-#
 # project custom
 #
 lib/fullockversion.cc
@@ -174,7 +153,10 @@ tests/cond_mttest
 tests/forktest
 
 #
-# VIM modelines
-#
-# vim:set ts=4 fenc=utf-8:
+# Local variables:
+# tab-width: 4
+# c-basic-offset: 4
+# End:
+# vim600: noexpandtab sw=4 ts=4 fdm=marker
+# vim<600: noexpandtab sw=4 ts=4
 #

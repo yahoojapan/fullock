@@ -70,7 +70,7 @@ class FLRwlRcsv
 		bool Set(int fd, off_t offset, size_t length, bool is_read, bool& is_mutex_locked);
 
 	public:
-		FLRwlRcsv(int fd = FLCK_INVALID_HANDLE, off_t offset = 0, size_t length = 0);
+		explicit FLRwlRcsv(int fd = FLCK_INVALID_HANDLE, off_t offset = 0, size_t length = 0);
 		FLRwlRcsv(int fd, off_t offset, size_t length, bool is_read);
 		virtual ~FLRwlRcsv(void);
 

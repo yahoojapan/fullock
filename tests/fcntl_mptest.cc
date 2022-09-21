@@ -66,6 +66,8 @@ typedef struct proc_common{
 }COMPROCPARAM, *PCOMPROCPARAM;
 
 typedef struct proc_rwlock{
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress unusedStructMember
 	COMPROCPARAM	common;
 	char			filename[PATH_MAX];
 	int				loop_count;
@@ -77,6 +79,8 @@ typedef struct proc_rwlock{
 }RWLPROCPARAM, *PRWLPROCPARAM;
 
 typedef struct proc_mutex{
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress unusedStructMember
 	COMPROCPARAM	common;
 	char			mutexname[FLCK_NAMED_MUTEX_MAXLENGTH + 1];
 	int				loop_count;

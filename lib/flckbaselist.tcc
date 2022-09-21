@@ -604,6 +604,9 @@ namespace fullock
 		}while(oldreltop != __sync_val_compare_and_swap(&preltop, oldreltop, newreltop));
 
 		pcurrent		= to_abs(oldreltop);
+		if(!pcurrent){
+			return false;
+		}
 		pcurrent->next	= nullval;
 
 		return true;

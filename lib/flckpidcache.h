@@ -30,7 +30,7 @@ typedef struct fl_pid_cache_key{
 	tid_t	tid;
 	int		fd;
 
-	fl_pid_cache_key(pid_t in_pid = FLCK_INVALID_ID, tid_t in_tid = FLCK_INVALID_ID, int in_fd = FLCK_INVALID_HANDLE) : pid(in_pid), tid(in_tid), fd(in_fd) {}
+	explicit fl_pid_cache_key(pid_t in_pid = FLCK_INVALID_ID, tid_t in_tid = FLCK_INVALID_ID, int in_fd = FLCK_INVALID_HANDLE) : pid(in_pid), tid(in_tid), fd(in_fd) {}
 	fl_pid_cache_key(const fl_pid_cache_key& other) : pid(other.pid), tid(other.tid), fd(other.fd) {}
 
 	fl_pid_cache_key& operator=(const fl_pid_cache_key& other)
@@ -77,7 +77,7 @@ typedef struct fl_pid_cache_value{
 	ino_t	inodeid;
 	bool	is_run;
 
-	fl_pid_cache_value(dev_t in_devid = FLCK_INVALID_ID, ino_t in_inodeid = FLCK_INVALID_ID, bool in_is_run = true) : devid(in_devid), inodeid(in_inodeid), is_run(in_is_run) {}
+	explicit fl_pid_cache_value(dev_t in_devid = FLCK_INVALID_ID, ino_t in_inodeid = FLCK_INVALID_ID, bool in_is_run = true) : devid(in_devid), inodeid(in_inodeid), is_run(in_is_run) {}
 	fl_pid_cache_value(const fl_pid_cache_value& other) : devid(other.devid), inodeid(other.inodeid), is_run(other.is_run) {}
 
 	fl_pid_cache_value& operator=(const fl_pid_cache_value& other)

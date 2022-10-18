@@ -125,22 +125,13 @@ COMMIT_HASH
 *.spec
 buildutils/control
 buildutils/copyright
+buildutils/rules
 rpmbuild
 rpmbuild/*
 debian
 debian/*
 debian_build
 debian_build/*
-
-#
-# buildutils
-#
-buildutils/custom/*_Makefile
-buildutils/custom/*.yicf
-
-#
-# project custom
-#
 lib/fullockversion.cc
 tests/fullocktest
 tests/singletest
@@ -151,6 +142,9 @@ tests/fcntl_mptest
 tests/cond_mptest
 tests/cond_mttest
 tests/forktest
+tests/test-suite.log
+tests/test.sh.log
+tests/test.sh.trs
 
 #
 # Local variables:

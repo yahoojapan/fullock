@@ -111,23 +111,23 @@ AC_SUBST([CONFIGURECUSTOM], "${configure_custom_file}")
 AC_SUBST([GIT_DOMAIN], "${custom_git_domain}")
 AC_SUBST([GIT_ORG], "${custom_git_org}")
 AC_SUBST([GIT_REPO], "${custom_git_repo}")
-AC_SUBST([CURRENTREV], "$($(pwd)/buildutils/make_commit_hash.sh -o "${custom_git_org}" -r "${custom_git_repo}" -ep "${custom_git_endpoint}" -short)")
+AC_SUBST([CURRENTREV], "$($(pwd)/buildutils/make_commit_hash.sh -o "${custom_git_org}" -r "${custom_git_repo}" -ep "${custom_git_endpoint}" -s)")
 AC_SUBST([DEV_EMAIL], "$(echo ${DEBEMAIL:-"${custom_dev_email}"})")
 AC_SUBST([DEV_NAME], "$(echo ${DEBFULLNAME:-"${custom_dev_name}"})")
 #
 AC_SUBST([RPMCHANGELOG], "`$(pwd)/buildutils/make_rpm_changelog.sh $(pwd)/ChangeLog`")
-AC_SUBST([SHORTDESC], "`$(pwd)/buildutils/make_description.sh $(pwd)/docs/fullock.3 -short`")
-AC_SUBST([LONGDESC], "`$(pwd)/buildutils/make_description.sh $(pwd)/docs/fullock.3 -long`")
-AC_SUBST([ESCLONGDESC], "`$(pwd)/buildutils/make_description.sh $(pwd)/docs/fullock.3 -esclong`")
-AC_SUBST([DEBLONGDESC], "`$(pwd)/buildutils/make_description.sh $(pwd)/docs/fullock.3 -deblong`")
-AC_SUBST([PKG_VERSION], "`$(pwd)/buildutils/make_variables.sh -pkg_version`")
-AC_SUBST([LIB_VERSION_INFO], "`$(pwd)/buildutils/make_variables.sh -lib_version_info`")
-AC_SUBST([LIB_VERSION_LINK], "`$(pwd)/buildutils/make_variables.sh -lib_version_for_link`")
-AC_SUBST([LIB_MAJOR_NUMBER], "`$(pwd)/buildutils/make_variables.sh -major_number`")
+AC_SUBST([SHORTDESC], "`$(pwd)/buildutils/make_description.sh $(pwd)/docs/fullock.3 --short`")
+AC_SUBST([LONGDESC], "`$(pwd)/buildutils/make_description.sh $(pwd)/docs/fullock.3 --long`")
+AC_SUBST([ESCLONGDESC], "`$(pwd)/buildutils/make_description.sh $(pwd)/docs/fullock.3 --esclong`")
+AC_SUBST([DEBLONGDESC], "`$(pwd)/buildutils/make_description.sh $(pwd)/docs/fullock.3 --deblong`")
+AC_SUBST([PKG_VERSION], "`$(pwd)/buildutils/make_variables.sh --pkg_version`")
+AC_SUBST([LIB_VERSION_INFO], "`$(pwd)/buildutils/make_variables.sh --lib_version_info`")
+AC_SUBST([LIB_VERSION_LINK], "`$(pwd)/buildutils/make_variables.sh --lib_version_for_link`")
+AC_SUBST([LIB_MAJOR_NUMBER], "`$(pwd)/buildutils/make_variables.sh --major_number`")
 AC_SUBST([PKGLICENSE], "`grep License COPYING | sed 's/ License//g'`")
 AC_SUBST([DEBCOPYING], "`tail -n +5 COPYING | sed 's/^$/./g' | sed 's/^/ /g'`")
-AC_SUBST([DEBHELPER_DEP], "`$(pwd)/buildutils/make_variables.sh -debhelper_dep`")
-AC_SUBST([RPMPKG_GROUP], ["`$(pwd)/buildutils/make_variables.sh -rpmpkg_group | sed 's#NEEDRPMGROUP#Group: Applications/Databases#g'`"])
+AC_SUBST([DEBHELPER_DEP], "`$(pwd)/buildutils/make_variables.sh --debhelper_dep`")
+AC_SUBST([RPMPKG_GROUP], ["`$(pwd)/buildutils/make_variables.sh --rpmpkg_group | sed 's#NEEDRPMGROUP#Group: Applications/Databases#g'`"])
 AC_SUBST([CONFIGUREWITHOPT], "")
 AM_SUBST_NOTMAKE([CURRENTREV])
 AM_SUBST_NOTMAKE([RPMCHANGELOG])
@@ -194,6 +194,7 @@ AC_CONFIG_FILES([Makefile
 		buildutils/Makefile
 		buildutils/control
 		buildutils/copyright
+		buildutils/rules
 		buildutils/libfullock.spec
 		buildutils/Dockerfile.templ])
 

@@ -77,7 +77,6 @@ IS_OS_ALPINE=0
 #----------------------------------------------------------
 # Variables for each OS Type
 #----------------------------------------------------------
-
 if [ -z "${CI_OSTYPE}" ]; then
 	#
 	# Unknown OS : Nothing to do
@@ -162,16 +161,6 @@ elif [ "${CI_OSTYPE}" = "centos:7" ] || [ "${CI_OSTYPE}" = "centos:centos7" ]; t
 	PKG_OUTPUT_DIR="."
 	PKG_EXT="rpm"
 	IS_OS_CENTOS=1
-
-elif [ "${CI_OSTYPE}" = "fedora:32" ]; then
-	DIST_TAG="fedora/32"
-	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
-	CONFIGURE_EXT_OPT=
-	INSTALLER_BIN="dnf"
-	INSTALL_QUIET_ARG="-q"
-	PKG_OUTPUT_DIR="."
-	PKG_EXT="rpm"
-	IS_OS_FEDORA=1
 
 elif [ "${CI_OSTYPE}" = "fedora:36" ]; then
 	DIST_TAG="fedora/36"

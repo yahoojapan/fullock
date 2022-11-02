@@ -950,9 +950,9 @@ echo ""
 PRNSUCCESS "Show execution environment variables"
 
 #==============================================================
-# Install packages
+# Install all packages
 #==============================================================
-PRNTITLE "Install packages for building/packaging"
+PRNTITLE "Update repository and Install curl"
 
 #
 # Update local packages
@@ -961,19 +961,6 @@ PRNINFO "Update local packages"
 if ({ RUNCMD "${INSTALLER_BIN}" update -y "${INSTALL_QUIET_ARG}" || echo > "${PIPEFAILURE_FILE}"; } | sed -e 's/^/    /g') && rm "${PIPEFAILURE_FILE}" >/dev/null 2>&1; then
 	PRNERR "Failed to update local packages"
 	exit 1
-fi
-
-#
-# Install packages
-#
-if [ -n "${INSTALL_PKG_LIST}" ]; then
-	PRNINFO "Install packages"
-	if ({ RUNCMD "${INSTALLER_BIN}" install -y "${INSTALL_QUIET_ARG}" "${INSTALL_PKG_LIST}" || echo > "${PIPEFAILURE_FILE}"; } | sed -e 's/^/    /g') && rm "${PIPEFAILURE_FILE}" >/dev/null 2>&1; then
-		PRNERR "Failed to install packages"
-		exit 1
-	fi
-else
-	PRNINFO "Specified no packages for installing. "
 fi
 
 #
@@ -989,8 +976,10 @@ if ! CURLCMD=$(command -v curl); then
 		PRNERR "Not found curl command"
 		exit 1
 	fi
+else
+	PRNINFO "Already curl is insatlled."
 fi
-PRNSUCCESS "Install packages for building/packaging"
+PRNSUCCESS "Update repository and Install curl"
 
 #--------------------------------------------------------------
 # Set package repository for packagecloud.io
@@ -1021,6 +1010,23 @@ else
 	PRNINFO "Not set packagecloud.io repository."
 fi
 PRNSUCCESS "Set package repository for packagecloud.io"
+
+#--------------------------------------------------------------
+# Install packages
+#--------------------------------------------------------------
+PRNTITLE "Install packages for building/packaging"
+
+if [ -n "${INSTALL_PKG_LIST}" ]; then
+	PRNINFO "Install packages"
+	if ({ RUNCMD "${INSTALLER_BIN}" install -y "${INSTALL_QUIET_ARG}" "${INSTALL_PKG_LIST}" || echo > "${PIPEFAILURE_FILE}"; } | sed -e 's/^/    /g') && rm "${PIPEFAILURE_FILE}" >/dev/null 2>&1; then
+		PRNERR "Failed to install packages"
+		exit 1
+	fi
+else
+	PRNINFO "Specified no packages for installing. "
+fi
+
+PRNSUCCESS "Install packages for building/packaging"
 
 #--------------------------------------------------------------
 # Install published tools for uploading packages to packagecloud.io

@@ -1,8 +1,6 @@
 #!/bin/sh
 #
-# FULLOCK - Fast User Level LOCK library
-#
-# Utility tools for building configure/packages by AntPickax
+# Utility helper tools for Github Actions by AntPickax
 #
 # Copyright 2018 Yahoo Japan Corporation.
 #

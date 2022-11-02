@@ -754,7 +754,7 @@ CREATE_PACKAGE_TOOL_OTHER=""
 
 CREATE_PACKAGE_TOOL_OPT_AUTO="-y"
 CREATE_PACKAGE_TOOL_OPT_RPM=""
-CREATE_PACKAGE_TOOL_OPT_DEBIAN="__USE_DEFAULT_DISTTYPE_PARAMTER__"
+CREATE_PACKAGE_TOOL_OPT_DEBIAN=""
 CREATE_PACKAGE_TOOL_OPT_ALPINE=""
 CREATE_PACKAGE_TOOL_OPT_OTHER=""
 
@@ -779,18 +779,6 @@ fi
 if [ -z "${DIST_TAG}" ]; then
 	PRNERR "Distro/Version is not set, please check ${CI_OSTYPE_VARS_FILE} and check \"DIST_TAG\" varibale."
 	exit 1
-fi
-
-#
-# Check special command parameters
-#
-# [NOTE]
-# If the "CREATE_PACKAGE_TOOL_OPT_DEBIAN" variable is
-# "__USE_DEFAULT_DISTTYPE_PARAMTER__", consider it not overridden
-# and reset it here using the value of "DIST_TAG".
-#
-if [ -n "${CREATE_PACKAGE_TOOL_OPT_DEBIAN}" ] && [ "${CREATE_PACKAGE_TOOL_OPT_DEBIAN}" = "__USE_DEFAULT_DISTTYPE_PARAMTER__" ]; then
-	CREATE_PACKAGE_TOOL_OPT_DEBIAN="--disttype ${DIST_TAG}"
 fi
 
 #

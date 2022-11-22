@@ -721,7 +721,7 @@ fi
 #
 PRNINFO "Install packages for Github Actions Runner."
 if [ -n "${RUNNER_INSTALL_PACKAGES}" ]; then
-	if ({ RUNCMD "sudo apt-get install -y -q ${RUNNER_INSTALL_PACKAGES} | sudo bash" || echo > "${PIPEFAILURE_FILE}"; } | sed -e 's/^/    /g') && rm "${PIPEFAILURE_FILE}" >/dev/null 2>&1; then
+	if ({ RUNCMD "sudo apt-get install -y -q ${RUNNER_INSTALL_PACKAGES}" || echo > "${PIPEFAILURE_FILE}"; } | sed -e 's/^/    /g') && rm "${PIPEFAILURE_FILE}" >/dev/null 2>&1; then
 		PRNERR "Failed to install packages"
 		exit 1
 	fi

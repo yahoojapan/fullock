@@ -171,6 +171,70 @@ elif [ "${CI_OSTYPE}" = "fedora:35" ]; then
 	PKG_OUTPUT_DIR="."
 	PKG_EXT="rpm"
 	IS_OS_FEDORA=1
+
+#
+# [NOTICE]
+# The OS from here onwards will be used until a new version is created, but we will drop support for it soon.
+# Newer versions will only support the OSes mentioned before this line.
+#
+elif [ "${CI_OSTYPE}" = "ubuntu:16.04" ] || [ "${CI_OSTYPE}" = "ubuntu:xenial" ]; then
+	DIST_TAG="ubuntu/xenial"
+	INSTALL_PKG_LIST="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration procps"
+	INSTALLER_BIN="apt-get"
+	INSTALL_QUIET_ARG="-qq"
+	PKG_OUTPUT_DIR="debian_build"
+	PKG_EXT="deb"
+	IS_OS_UBUNTU=1
+
+elif [ "${CI_OSTYPE}" = "debian:9" ] || [ "${CI_OSTYPE}" = "debian:stretch" ]; then
+	DIST_TAG="debian/stretch"
+	INSTALL_PKG_LIST="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration procps"
+	INSTALLER_BIN="apt-get"
+	INSTALL_QUIET_ARG="-qq"
+	PKG_OUTPUT_DIR="debian_build"
+	PKG_EXT="deb"
+	IS_OS_DEBIAN=1
+
+elif [ "${CI_OSTYPE}" = "centos:8" ] || [ "${CI_OSTYPE}" = "centos:centos8" ]; then
+	DIST_TAG="el/8"
+	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
+	INSTALLER_BIN="dnf"
+	INSTALL_QUIET_ARG="-qq"
+	PKG_OUTPUT_DIR="."
+	PKG_EXT="rpm"
+	IS_OS_CENTOS=1
+
+	#
+	# Change mirrorlist
+	#
+	sed -i -e 's|^mirrorlist|#mirrorlist|g' -e 's|^#baseurl=http://mirror|baseurl=http://vault|g' /etc/yum.repos.d/CentOS-*repo
+
+elif [ "${CI_OSTYPE}" = "fedora:32" ]; then
+	DIST_TAG="fedora/32"
+	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
+	INSTALLER_BIN="dnf"
+	INSTALL_QUIET_ARG="-qq"
+	PKG_OUTPUT_DIR="."
+	PKG_EXT="rpm"
+	IS_OS_FEDORA=1
+
+elif [ "${CI_OSTYPE}" = "fedora:31" ]; then
+	DIST_TAG="fedora/31"
+	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
+	INSTALLER_BIN="dnf"
+	INSTALL_QUIET_ARG="-qq"
+	PKG_OUTPUT_DIR="."
+	PKG_EXT="rpm"
+	IS_OS_FEDORA=1
+
+elif [ "${CI_OSTYPE}" = "fedora:30" ]; then
+	DIST_TAG="fedora/30"
+	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
+	INSTALLER_BIN="dnf"
+	INSTALL_QUIET_ARG="-qq"
+	PKG_OUTPUT_DIR="."
+	PKG_EXT="rpm"
+	IS_OS_FEDORA=1
 fi
 
 #---------------------------------------------------------------

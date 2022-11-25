@@ -1238,11 +1238,13 @@ PRNSUCCESS "Install shellcheck"
 #
 # Change current directory
 #
+PRNTITLE "Change current directory"
+
 if ! RUNCMD cd "${SRCTOP}"; then
 	PRNERR "Failed to chnage current directory to ${SRCTOP}"
 	exit 1
 fi
-PRNSUCCESS "Copy source code to temporary directory"
+PRNSUCCESS "Changed current directory"
 
 #--------------------------------------------------------------
 # Configuration

@@ -234,7 +234,6 @@ void* FlckThread::WorkerProc(void* param)
 				for(int cnt = 0; cnt < eventcnt; cnt++){
 					pthread_testcancel();									// check cancel
 					// check flag
-					// cppcheck-suppress unmatchedSuppression
 					// cppcheck-suppress knownConditionTrueFalse
 					if(FlckThread::FLCK_THCNTL_EXIT <= *pThFlag){
 						break;

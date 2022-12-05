@@ -66,7 +66,6 @@ typedef struct proc_common{
 }COMPROCPARAM, *PCOMPROCPARAM;
 
 typedef struct proc_rwlock{
-	// cppcheck-suppress unmatchedSuppression
 	// cppcheck-suppress unusedStructMember
 	COMPROCPARAM	common;
 	char			filename[PATH_MAX];
@@ -79,7 +78,6 @@ typedef struct proc_rwlock{
 }RWLPROCPARAM, *PRWLPROCPARAM;
 
 typedef struct proc_mutex{
-	// cppcheck-suppress unmatchedSuppression
 	// cppcheck-suppress unusedStructMember
 	COMPROCPARAM	common;
 	char			mutexname[FLCK_NAMED_MUTEX_MAXLENGTH + 1];
@@ -228,7 +226,6 @@ static void OptionParser(int argc, char** argv, optparams_t& optparams)
 						break;
 					}
 				}
-				// cppcheck-suppress unmatchedSuppression
 				// cppcheck-suppress knownConditionTrueFalse
 				if(param.is_number){
 					param.num_value = atoi(pparam);

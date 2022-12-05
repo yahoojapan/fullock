@@ -446,7 +446,6 @@ ssize_t flck_read(int fd, unsigned char** ppbuff)
 				readsize = 0;
 				continue;
 			}
-			// cppcheck-suppress unmatchedSuppression
 			// cppcheck-suppress invalidPrintfArgType_sint
 			ERR_FLCKPRN("Failed to read from fd(%d: %zd: %zd). errno=%d", fd, pos, pagesize, errno);
 			FLCK_Free(pbuff);

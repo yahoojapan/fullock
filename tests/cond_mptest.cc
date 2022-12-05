@@ -186,7 +186,6 @@ static void OptionParser(int argc, char** argv, optparams_t& optparams)
 						break;
 					}
 				}
-				// cppcheck-suppress unmatchedSuppression
 				// cppcheck-suppress knownConditionTrueFalse
 				if(param.is_number){
 					param.num_value = atoi(pparam);
@@ -597,7 +596,6 @@ int main(int argc, char** argv)
 	// run all child
 	//--------------------------------------------------
 	// start to run
-	// cppcheck-suppress unmatchedSuppression
 	// cppcheck-suppress redundantAssignment
 	st_pcomparam->is_run = true;
 

@@ -27,9 +27,17 @@ EXTRA_DIST=RELEASE_VERSION @CONFIGURECUSTOM@
 # Versions of cppcheck below 1.8 perform poorly and the test is
 # skipped if those versions are installed.
 #
+# [NOTICE]
+# The same structures etc. are defined in the source code for each
+# test in the "/tests" directory.
+# Using the "--cppcheck-build-dir" option will check these files
+# at the same time, and it detects "ctuOneDefinitionRuleViolation".
+# This repository specifies "--suppress=ctuOneDefinitionRuleViolation"
+# to suppress this output.
+#
 CPPCHECK_NG_VERSION		= -e \^0\\. -e \^1\\.[0-7]
 CPPCHECK_CMD			= cppcheck
-CPPCHECK_TARGET			= lib test
+CPPCHECK_TARGET			= lib tests
 CPPCHECK_BUILD_DIR		= /tmp/cppcheck
 CPPCHECK_BASE_OPT		= --quiet \
 						  --error-exitcode=1 \
@@ -38,10 +46,11 @@ CPPCHECK_BASE_OPT		= --quiet \
 						  --std=c++03 \
 						  --xml
 CPPCHECK_ENABLE_OPT		= --enable=warning,style,information,missingInclude
-CPPCHECK_IGNORE_OPT		= --suppress=unmatchedSuppression
+CPPCHECK_IGNORE_OPT		= --suppress=unmatchedSuppression \
+						  --suppress=ctuOneDefinitionRuleViolation
 
 cppcheck:
-	if command -v $(CPPCHECK_CMD) >/dev/null 2>&1; then \
+	@if command -v $(CPPCHECK_CMD) >/dev/null 2>&1; then \
 		if ($(CPPCHECK_CMD) --version | sed -e 's|Cppcheck[[:space:]]*||gi' | grep -q $(CPPCHECK_NG_VERSION)); then \
 			echo "*** [INFO] cppcheck version below 1.8, so skip to run cppcheck."; \
 		else \

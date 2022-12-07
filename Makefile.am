@@ -37,7 +37,7 @@ EXTRA_DIST=RELEASE_VERSION @CONFIGURECUSTOM@
 #
 CPPCHECK_NG_VERSION		= -e \^0\\. -e \^1\\.[0-7]
 CPPCHECK_CMD			= cppcheck
-CPPCHECK_TARGET			= lib tests
+CPPCHECK_TARGET			= $(SUBDIRS)
 CPPCHECK_BUILD_DIR		= /tmp/cppcheck
 CPPCHECK_BASE_OPT		= --quiet \
 						  --error-exitcode=1 \
@@ -48,6 +48,7 @@ CPPCHECK_BASE_OPT		= --quiet \
 CPPCHECK_ENABLE_OPT		= --enable=warning,style,information,missingInclude
 CPPCHECK_IGNORE_OPT		= --suppress=unmatchedSuppression \
 						  --suppress=ctuOneDefinitionRuleViolation
+CPPCHECK_DEFINE_OPT		=
 
 cppcheck:
 	@if command -v $(CPPCHECK_CMD) >/dev/null 2>&1; then \
@@ -59,7 +60,7 @@ cppcheck:
 				rm -rf $(CPPCHECK_BUILD_DIR); \
 			fi; \
 			mkdir -p $(CPPCHECK_BUILD_DIR); \
-			$(CPPCHECK_CMD) $(CPPCHECK_BASE_OPT) $(CPPCHECK_ENABLE_OPT) $(CPPCHECK_IGNORE_OPT) --cppcheck-build-dir=$(CPPCHECK_BUILD_DIR) $(CPPCHECK_TARGET); \
+			$(CPPCHECK_CMD) $(CPPCHECK_BASE_OPT) $(CPPCHECK_DEFINE_OPT) $(CPPCHECK_ENABLE_OPT) $(CPPCHECK_IGNORE_OPT) --cppcheck-build-dir=$(CPPCHECK_BUILD_DIR) $(CPPCHECK_TARGET); \
 			rm -rf $(CPPCHECK_BUILD_DIR); \
 		fi; \
 	else \

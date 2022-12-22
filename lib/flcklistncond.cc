@@ -188,7 +188,10 @@ bool FlListNCond::check_dead_lock(fl_pid_cache_map_t* pcache, flckpid_t except_f
 }
 
 /*
- * VIM modelines
- *
- * vim:set ts=4 fenc=utf-8:
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noexpandtab sw=4 ts=4 fdm=marker
+ * vim<600: noexpandtab sw=4 ts=4
  */

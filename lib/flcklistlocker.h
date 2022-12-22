@@ -107,7 +107,10 @@ inline int fl_compare_list_base(const PFLLOCKER psrc1, const PFLLOCKER psrc2)
 #endif	// FLCKLISTLOCKER_H
 
 /*
- * VIM modelines
- *
- * vim:set ts=4 fenc=utf-8:
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noexpandtab sw=4 ts=4 fdm=marker
+ * vim<600: noexpandtab sw=4 ts=4
  */

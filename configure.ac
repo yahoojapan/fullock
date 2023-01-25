@@ -143,8 +143,18 @@ AM_SUBST_NOTMAKE([CONFIGUREWITHOPT])
 #
 # CFLAGS/CXXFLAGS
 #
-CFLAGS="-Wall $CFLAGS"
-CXXFLAGS="-Wall $CXXFLAGS"
+# [NOTE]
+# CFLAGS is given "-flto=auto" depending on some OS(Rocky Linux 9, Fedora 36,
+# Ubuntu 22.04) and GCC version(GCC 11), packaging tools(rpmbuild).
+# We have confirmed a case where Segmentation Fault occurs when calling from
+# PHP on Fedora 36 and Rocky Linux 9 when using a library with Link Time
+# Optimization(-flto) enabled.
+# Thus, we have determined that this option does not have a significant
+# advantage in fullock, so we will add the "-fno_lto" option to avoid using
+# it.
+#
+CFLAGS="-Wall $CFLAGS -fno-lto"
+CXXFLAGS="-Wall $CXXFLAGS -fno-lto"
 
 #
 # Checking Libraries

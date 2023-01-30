@@ -12,54 +12,29 @@
 #
 # AUTHOR:   Takeshi Nakatani
 # CREATE:   Tue, Aug 3 2021
-# REVISION:	1.0
+# REVISION:	1.1
 #
 
 # [NOTE]
 # This file expects the following variables to be expanded by autoconf.
-#	GIT_DOMAIN
 #	PACKAGE_NAME
 #
 # Also, replace the following variables.
-#	DOCKER_IMAGE_BASE			(ex. "docker.io/alpine:3.13.5")
-#	DOCKER_IMAGE_DEV_BASE		(ex. "docker.io/alpine:3.13.5")
-#	DOCKER_GIT_ORGANIZATION		(ex. "antpickax")
-#	DOCKER_GIT_REPOSITORY		(ex. "xxxxx")
-#	DOCKER_GIT_BRANCH			(ex. "yyyyy")
+#	DOCKER_IMAGE_BASE			(ex. "docker.io/alpine:3.17")
+#	DOCKER_IMAGE_DEV_BASE		(ex. "docker.io/alpine:3.17")
+#	PRE_PROCESS					(ex. ":")
+#	POST_PROCESS				(ex. ":")
+#	IMAGE_CMD_BASE				(ex. "['/bin/sh', '-c', 'tail -f /dev/null']" as default)
+#	IMAGE_CMD_DEV				(ex. "['/bin/sh', '-c', 'tail -f /dev/null']" as default)
 #	PKG_UPDATE					(ex. "apk update -q --no-progress")
-#	PKG_INSTALL_BUILDER			(ex. "apk add -q --no-progress --no-cache git build-base openssl libtool automake autoconf procps")
-#	PKG_INSTALL_BIN				(ex. "apk add -q --no-progress --no-cache libstdc++")
-#	CONFIGURE_FLAG				(ex. "")
-#	BUILD_FLAGS					(ex. "CXXFLAGS=")
-#	BUILD_ENV					(ex. "ENV DEBIAN_FRONTEND=noninteractive")
+#	PKG_INSTALL_CURL			(ex. "apk add -q --no-progress --no-cache git build-base openssl libtool automake autoconf procps")
+#	PKG_INSTALL_BASE			(ex. "apk add -q --no-progress --no-cache antpickax-package...")
+#	PKG_INSTALL_DEV				(ex. "apk add -q --no-progress --no-cache antpickax-dev-package...")
+#	SETUP_PC_REPO				(ex. "curl -s https://packagecloud.io/install/repositories/yahoojapan/stable/script.alpine.sh | sh")
+#	SETUP_ENV					(ex. "ENV DEBIAN_FRONTEND=noninteractive")
 #	UPDATE_LIBPATH				(ex. "ldconfig", if want no-operation, specify ":")
-#
-
-#
-# Builder
-#
-FROM %%DOCKER_IMAGE_BASE%% AS @PACKAGE_NAME@-builder
-
-MAINTAINER antpickax
-WORKDIR /
-
-%%BUILD_ENV%%
-
-RUN set -x && \
-	%%PKG_UPDATE%% && \
-	%%PKG_INSTALL_BUILDER%% && \
-	cd / && \
-	git clone https://@GIT_DOMAIN@/%%DOCKER_GIT_ORGANIZATION%%/%%DOCKER_GIT_REPOSITORY%%.git && \
-	cd %%DOCKER_GIT_REPOSITORY%% && \
-	git checkout %%DOCKER_GIT_BRANCH%% && \
-	./autogen.sh && \
-	./configure %%CONFIGURE_FLAG%% && \
-	make %%BUILD_FLAGS%% && \
-	make check && \
-	make install && \
-	cd / && \
-	tar cvzf lib@PACKAGE_NAME@-dev.tgz /usr/local/lib/lib@PACKAGE_NAME@.la* /usr/local/lib/lib@PACKAGE_NAME@.a* /usr/local/lib/lib@PACKAGE_NAME@.so* && \
-	tar cvzf lib@PACKAGE_NAME@.tgz /usr/local/lib/lib@PACKAGE_NAME@.so*
+#	PKG_UNINSTALL_BASE			(ex. "apk del package...")
+#	PKG_UNINSTALL_DEV			(ex. "apk del package...")
 
 #
 # Image for development
@@ -69,22 +44,21 @@ FROM %%DOCKER_IMAGE_DEV_BASE%% AS lib@PACKAGE_NAME@-dev
 MAINTAINER antpickax
 WORKDIR /
 
+%%SETUP_ENV%%
+
 RUN set -x && \
-	mkdir -p /usr/local/lib/pkgconfig && \
-	mkdir -p /usr/local/include/@PACKAGE_NAME@ && \
+	%%PRE_PROCESS%% && \
+	%%PKG_UPDATE%% && \
+	%%PKG_INSTALL_CURL%% && \
+	%%SETUP_PC_REPO%% && \
+	%%PKG_INSTALL_DEV%% && \
+	%%UPDATE_LIBPATH%% && \
 	mkdir -p /var/lib/antpickax && \
-	chmod 0777 /var/lib/antpickax
+	chmod 0777 /var/lib/antpickax && \
+	%%PKG_UNINSTALL_DEV%% && \
+	%%POST_PROCESS%%
 
-COPY --from=@PACKAGE_NAME@-builder /usr/local/include/@PACKAGE_NAME@/*           /usr/local/include/@PACKAGE_NAME@/
-COPY --from=@PACKAGE_NAME@-builder /usr/local/lib/pkgconfig/lib@PACKAGE_NAME@.pc /usr/local/lib/pkgconfig/
-COPY --from=@PACKAGE_NAME@-builder /lib@PACKAGE_NAME@-dev.tgz                    /lib@PACKAGE_NAME@-dev.tgz
-
-RUN cd / && \
-	tar xvzf lib@PACKAGE_NAME@-dev.tgz && \
-	rm /lib@PACKAGE_NAME@-dev.tgz && \
-	%%UPDATE_LIBPATH%%
-
-CMD ["/bin/sh"]
+CMD %%IMAGE_CMD_DEV%%
 
 #
 # Image for main
@@ -94,21 +68,21 @@ FROM %%DOCKER_IMAGE_BASE%% AS lib@PACKAGE_NAME@
 MAINTAINER antpickax
 WORKDIR /
 
+%%SETUP_ENV%%
+
 RUN set -x && \
+	%%PRE_PROCESS%% && \
 	%%PKG_UPDATE%% && \
-	%%PKG_INSTALL_BIN%% && \
-	mkdir -p /usr/local/lib && \
+	%%PKG_INSTALL_CURL%% && \
+	%%SETUP_PC_REPO%% && \
+	%%PKG_INSTALL_BASE%% && \
+	%%UPDATE_LIBPATH%% && \
 	mkdir -p /var/lib/antpickax && \
-	chmod 0777 /var/lib/antpickax
+	chmod 0777 /var/lib/antpickax && \
+	%%PKG_UNINSTALL_BASE%% && \
+	%%POST_PROCESS%%
 
-COPY --from=@PACKAGE_NAME@-builder /lib@PACKAGE_NAME@.tgz /lib@PACKAGE_NAME@.tgz
-
-RUN cd / && \
-	tar xvzf lib@PACKAGE_NAME@.tgz && \
-	rm /lib@PACKAGE_NAME@.tgz && \
-	%%UPDATE_LIBPATH%%
-
-CMD ["/bin/sh"]
+CMD %%IMAGE_CMD_BASE%%
 
 #
 # Local variables:

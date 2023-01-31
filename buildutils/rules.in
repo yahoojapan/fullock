@@ -37,7 +37,7 @@ override_dh_auto_install:
 	rm -rf debian/lib@PACKAGE_NAME@/usr/lib/x86_64-linux-gnu/pkgconfig
 	rm -rf debian/lib@PACKAGE_NAME@/usr/lib/x86_64-linux-gnu/*.a
 	rm -rf debian/lib@PACKAGE_NAME@/usr/lib/x86_64-linux-gnu/*.la
-	rm -rf debian/lib@PACKAGE_NAME@/usr/lib/x86_64-linux-gnu/*.so*
+	rm -rf debian/lib@PACKAGE_NAME@/usr/lib/x86_64-linux-gnu/*.so
 	rm -rf debian/lib@PACKAGE_NAME@-dev/usr/bin
 	rm -rf debian/lib@PACKAGE_NAME@-dev/usr/share/man
 	rm -rf debian/lib@PACKAGE_NAME@-dev/usr/lib/x86_64-linux-gnu/*.a

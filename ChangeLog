@@ -1,3 +1,36 @@
+fullock (1.0.45) unstable; urgency=low
+
+  * Supported fedora 37 and dropped support for fedora 35dropped - #81
+  * Changed CI process flow/OSs and added Alpine OS - #80
+  * Fixed a bug in rule.in file for debian packaging - #79
+  * Added gcc -fno-lto option - #78
+  * [gh-pages] Updated header and footer in comment lines - #77
+  * Updated header and footer in comment lines - #76
+  * Updated issue/pullrequest templates - #75
+  * Updated Makefile.am about cppcheck - #74
+  * Updated Makefile.am about cppcheck - #73
+  * Added ShellCheck processing and reviewed cppcheck - #72
+  * Fixed a bug in build_helper.sh - #71
+  * Eliminated unnecessary copies in build_helper.sh - #70
+  * Updated docker/login-action from v1 to v2 - #69
+  * Fixed a bug in docker_helper.sh and ci.yml - #68
+  * Shared Docker image build logic with other products - #67
+  * Re-updated github actions process(3) - #66
+  * Re-updated github actions process(2) - #65
+  * Re-updated github actions process - #64
+  * Updated github actions process and support os, and fixed bugs - #63
+  * Updated debian_build.sh for changing grep parameter - #62
+  * Updated common build scripts - #61
+  * Updated Antpickax common scripts and tools under the buildutils directory - #60
+  * Fixed errors reported by cppcheck 2.9 - #59
+  * Updated .gitignore Makefile.am configure.ac - #58
+  * Fixed build error on CentOS8 - #57
+  * Fixed configure.ac for making dist archive - #56
+  * Fixed code for cppcheck 2.7 error - #55
+  * Enabled external customization of variables in configure.ac - #54
+
+ -- Takeshi Nakatani <nakatani@yahoo-corp.jp>  Thu, 02 Feb 2023 10:12:49 +0900
+
 fullock (1.0.44) unstable; urgency=low
 
   * Fixed Dockerfile template for calling ldconfig - #52

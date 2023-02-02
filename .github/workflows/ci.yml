@@ -69,8 +69,8 @@ jobs:
           - centos:centos7
           - rockylinux:9
           - rockylinux:8
+          - fedora:37
           - fedora:36
-          - fedora:35
           - alpine:3.17
 
     container:

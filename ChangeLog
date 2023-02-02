@@ -1,5 +1,6 @@
 fullock (1.0.45) unstable; urgency=low
 
+  * Fixed a bug about publishing in build_helper.sh - #83
   * Supported fedora 37 and dropped support for fedora 35dropped - #81
   * Changed CI process flow/OSs and added Alpine OS - #80
   * Fixed a bug in rule.in file for debian packaging - #79
@@ -29,7 +30,7 @@ fullock (1.0.45) unstable; urgency=low
   * Fixed code for cppcheck 2.7 error - #55
   * Enabled external customization of variables in configure.ac - #54
 
- -- Takeshi Nakatani <nakatani@yahoo-corp.jp>  Thu, 02 Feb 2023 10:12:49 +0900
+ -- Takeshi Nakatani <nakatani@yahoo-corp.jp>  Thu, 02 Feb 2023 11:18:18 +0900
 
 fullock (1.0.44) unstable; urgency=low
 

@@ -51,7 +51,7 @@ fi
 PRGNAME=$(basename "$0")
 SCRIPTDIR=$(dirname "$0")
 SCRIPTDIR=$(cd "${SCRIPTDIR}" || exit 1; pwd)
-SRCTOP=$(cd "${SCRIPTDIR}"/.. || exit 1; pwd)
+SRCTOP=$(cd "${SCRIPTDIR}"/../.. || exit 1; pwd)
 
 #
 # Message variables

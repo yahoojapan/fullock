@@ -206,8 +206,8 @@ elif [ "${CI_OSTYPE}" = "centos:7" ] || [ "${CI_OSTYPE}" = "centos:centos7" ]; t
 	PKG_EXT="rpm"
 	IS_OS_CENTOS=1
 
-elif [ "${CI_OSTYPE}" = "fedora:36" ]; then
-	DIST_TAG="fedora/36"
+elif [ "${CI_OSTYPE}" = "fedora:37" ]; then
+	DIST_TAG="fedora/37"
 	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
 	INSTALLER_BIN="dnf"
 	UPDATE_CMD="update"
@@ -220,8 +220,8 @@ elif [ "${CI_OSTYPE}" = "fedora:36" ]; then
 	PKG_EXT="rpm"
 	IS_OS_FEDORA=1
 
-elif [ "${CI_OSTYPE}" = "fedora:35" ]; then
-	DIST_TAG="fedora/35"
+elif [ "${CI_OSTYPE}" = "fedora:36" ]; then
+	DIST_TAG="fedora/36"
 	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
 	INSTALLER_BIN="dnf"
 	UPDATE_CMD="update"

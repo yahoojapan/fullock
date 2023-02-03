@@ -88,7 +88,7 @@ elif [ "${CI_DOCKER_IMAGE_OSTYPE}" = "alpine" ]; then
 	PKGMGR_UNINSTALL_OPT="del -q --purge --no-progress --no-cache"
 	PKG_INSTALL_CURL="curl"
 	PKG_INSTALL_BASE="libfullock"
-	PKG_INSTALL_DEV="libfullock-dev"
+	PKG_INSTALL_DEV="libfullock libfullock-dev"
 
 elif [ "${CI_DOCKER_IMAGE_OSTYPE}" = "ubuntu" ]; then
 	PKGMGR_NAME="apt-get"

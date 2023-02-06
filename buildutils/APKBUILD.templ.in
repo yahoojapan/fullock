@@ -55,8 +55,11 @@ url="https://fullock.antpick.ax/"
 arch="x86_64"
 license="MIT"
 
-depends=""
+depends="
+	libstdc++
+"
 depends_dev="
+	libstdc++
 	autoconf
 	automake
 	libtool

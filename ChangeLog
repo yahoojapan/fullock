@@ -1,8 +1,14 @@
+fullock (1.0.47) unstable; urgency=low
+
+  * Fixed package dependency for ALPINE package - #87
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 06 Feb 2023 12:26:53 +0900
+
 fullock (1.0.46) unstable; urgency=low
 
   * Fixed bugs in build_helper.sh and imagetypevars.sh - #85
 
- -- Takeshi Nakatani <nakatani@yahoo-corp.jp>  Fri, 03 Feb 2023 15:25:31 +0900
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 03 Feb 2023 15:25:31 +0900
 
 fullock (1.0.45) unstable; urgency=low
 
@@ -36,7 +42,7 @@ fullock (1.0.45) unstable; urgency=low
   * Fixed code for cppcheck 2.7 error - #55
   * Enabled external customization of variables in configure.ac - #54
 
- -- Takeshi Nakatani <nakatani@yahoo-corp.jp>  Thu, 02 Feb 2023 11:18:18 +0900
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 02 Feb 2023 11:18:18 +0900
 
 fullock (1.0.44) unstable; urgency=low
 

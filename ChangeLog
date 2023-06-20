@@ -1,3 +1,9 @@
+fullock (1.0.51) unstable; urgency=low
+
+  * Fixed .gitignore to exclude APKBUILD.templ - #95
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 20 Jun 2023 19:32:12 +0900
+
 fullock (1.0.50) unstable; urgency=low
 
   * Updated build helper scripts on CI process - #93

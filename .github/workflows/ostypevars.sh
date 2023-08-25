@@ -137,7 +137,7 @@ elif [ "${CI_OSTYPE}" = "ubuntu:18.04" ] || [ "${CI_OSTYPE}" = "ubuntu:bionic" ]
 	IS_OS_UBUNTU=1
 
 elif [ "${CI_OSTYPE}" = "debian:12" ] || [ "${CI_OSTYPE}" = "debian:bookworm" ]; then
-	DIST_TAG="debian/bullseye"
+	DIST_TAG="debian/bookworm"
 	INSTALL_PKG_LIST="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration procps"
 	INSTALLER_BIN="apt-get"
 	UPDATE_CMD="update"

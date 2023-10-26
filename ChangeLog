@@ -1,3 +1,9 @@
+fullock (1.0.54) unstable; urgency=low
+
+  * Changed support OS (fedora and ubuntu) - #101
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 26 Oct 2023 11:23:26 +0900
+
 fullock (1.0.53) unstable; urgency=low
 
   * Fixed a bug about packaging - #99

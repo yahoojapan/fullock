@@ -1,3 +1,9 @@
+fullock (1.0.55) unstable; urgency=low
+
+  * Fixed build_helper.sh for upgrading ruby required package_cloud - #103
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 27 Oct 2023 09:16:09 +0900
+
 fullock (1.0.54) unstable; urgency=low
 
   * Changed support OS (fedora and ubuntu) - #101

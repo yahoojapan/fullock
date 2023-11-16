@@ -1,4 +1,4 @@
-fullock (1.0.55) unstable; urgency=low
+fullock (1.0.56) unstable; urgency=low
 
   * Fixed a bug in build_helper.sh - #105
 

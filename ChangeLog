@@ -1,3 +1,10 @@
+fullock (1.0.58) unstable; urgency=low
+
+  * Fixed cppcheck error and Makefile.am - #111
+  * Changed support OS (fedora and alpine) - #110
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 07 Mar 2024 11:57:00 +0900
+
 fullock (1.0.57) unstable; urgency=low
 
   * Fixed build_helper.sh for ruby 2.7 required package_cloud - #108

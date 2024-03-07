@@ -65,7 +65,7 @@ class FlListOffLock : public fllistbaseofflock
 				}
 			}
 		}
-		inline void initialize(PFLOFFLOCK ptr, size_t count) { fllistbaseofflock::initialize(ptr, count); }
+		virtual bool initialize(PFLOFFLOCK ptr, size_t count) { return fllistbaseofflock::initialize(ptr, count); }
 		inline void initialize(bool is_all) { initialize(static_cast<off_t>(0), static_cast<size_t>(0), is_all); }
 		virtual void initialize(void) { initialize(static_cast<off_t>(0), static_cast<size_t>(0), true); }
 		virtual void dump(std::ostream& out, int level) const;

@@ -55,8 +55,8 @@ CPPCHECK_DEFINE_OPT		=
 # There are cases where you use options that do not exist in older
 # versions.
 #
-CPPCHECK_GT203_VER		= 2003
-CPPCHECK_GT203_ADD_OPT	= --suppress=ctuOneDefinitionRuleViolation
+CPPCHECK_GT207_VER		= 2007
+CPPCHECK_GT207_ADD_OPT	= --suppress=ctuOneDefinitionRuleViolation
 CPPCHECK_GE211_VER		= 2011
 CPPCHECK_GE211_ADD_OPT	= --check-level=exhaustive \
 						  --suppress=missingIncludeSystem
@@ -72,12 +72,12 @@ cppcheck:
 				rm -rf $(CPPCHECK_BUILD_DIR); \
 			fi; \
 			mkdir -p $(CPPCHECK_BUILD_DIR); \
-			if test `$(CPPCHECK_CMD) --version | sed -e 's/\./ /g' | awk '{print ($$2 * 1000 + $$3)}'` -le $(CPPCHECK_GT203_VER); then \
+			if test `$(CPPCHECK_CMD) --version | sed -e 's/\./ /g' | awk '{print ($$2 * 1000 + $$3)}'` -le $(CPPCHECK_GT207_VER); then \
 				$(CPPCHECK_CMD) $(CPPCHECK_BASE_OPT) $(CPPCHECK_DEFINE_OPT) $(CPPCHECK_INCDIR_OPT) $(CPPCHECK_ENABLE_OPT) $(CPPCHECK_IGNORE_OPT) --cppcheck-build-dir=$(CPPCHECK_BUILD_DIR) $(CPPCHECK_TARGET); \
 			elif test `$(CPPCHECK_CMD) --version | sed -e 's/\./ /g' | awk '{print ($$2 * 1000 + $$3)}'` -lt $(CPPCHECK_GE211_VER); then \
-				$(CPPCHECK_CMD) $(CPPCHECK_BASE_OPT) $(CPPCHECK_DEFINE_OPT) $(CPPCHECK_INCDIR_OPT) $(CPPCHECK_ENABLE_OPT) $(CPPCHECK_IGNORE_OPT) $(CPPCHECK_GT203_ADD_OPT) --cppcheck-build-dir=$(CPPCHECK_BUILD_DIR) $(CPPCHECK_TARGET); \
+				$(CPPCHECK_CMD) $(CPPCHECK_BASE_OPT) $(CPPCHECK_DEFINE_OPT) $(CPPCHECK_INCDIR_OPT) $(CPPCHECK_ENABLE_OPT) $(CPPCHECK_IGNORE_OPT) $(CPPCHECK_GT207_ADD_OPT) --cppcheck-build-dir=$(CPPCHECK_BUILD_DIR) $(CPPCHECK_TARGET); \
 			else \
-				$(CPPCHECK_CMD) $(CPPCHECK_BASE_OPT) $(CPPCHECK_DEFINE_OPT) $(CPPCHECK_INCDIR_OPT) $(CPPCHECK_ENABLE_OPT) $(CPPCHECK_IGNORE_OPT) $(CPPCHECK_GT203_ADD_OPT) $(CPPCHECK_GE211_ADD_OPT) --cppcheck-build-dir=$(CPPCHECK_BUILD_DIR) $(CPPCHECK_TARGET); \
+				$(CPPCHECK_CMD) $(CPPCHECK_BASE_OPT) $(CPPCHECK_DEFINE_OPT) $(CPPCHECK_INCDIR_OPT) $(CPPCHECK_ENABLE_OPT) $(CPPCHECK_IGNORE_OPT) $(CPPCHECK_GT207_ADD_OPT) $(CPPCHECK_GE211_ADD_OPT) --cppcheck-build-dir=$(CPPCHECK_BUILD_DIR) $(CPPCHECK_TARGET); \
 			fi; \
 			rm -rf $(CPPCHECK_BUILD_DIR); \
 		fi; \

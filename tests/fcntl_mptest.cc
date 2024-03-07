@@ -272,6 +272,8 @@ static int OpenStatsFile(const string& filepath, size_t& totalsize, bool is_crea
 		// truncate & clean up
 		if(0 != ftruncate(fd, totalsize)){
 			ERR("Could not truncate file(%s) to %zu, errno = %d", filepath.c_str(), totalsize, errno);
+			// cppcheck-suppress unmatchedSuppression
+			// cppcheck-suppress unreadVariable
 			FLCK_CLOSE(fd);
 			return -1;
 		}
@@ -282,6 +284,8 @@ static int OpenStatsFile(const string& filepath, size_t& totalsize, bool is_crea
 			onewrote = min(static_cast<size_t>(sizeof(unsigned char) * 1024), (totalsize - static_cast<size_t>(wrote)));
 			if(-1 == flck_pwrite(fd, szBuff, onewrote, wrote)){
 				ERR("Failed to write initializing file(%s), errno = %d", filepath.c_str(), errno);
+				// cppcheck-suppress unmatchedSuppression
+				// cppcheck-suppress unreadVariable
 				FLCK_CLOSE(fd);
 				return -1;
 			}
@@ -573,6 +577,8 @@ static int RunChild(string filepath, int max_child)
 	if(!pChparam){
 		ERR("Not found own data.");
 		munmap(pShm, ShmTotalSize);
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress unreadVariable
 		FLCK_CLOSE(ShmFd);
 		return EXIT_FAILURE;
 	}
@@ -886,6 +892,8 @@ int main(int argc, char** argv)
 	fprintf(stdout, "=====================================================================\n");
 
 	munmap(pShm, ShmTotalSize);
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress unreadVariable
 	FLCK_CLOSE(ShmFd);
 	unlink(ShmFilePath.c_str());
 

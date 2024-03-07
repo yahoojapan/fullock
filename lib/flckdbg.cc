@@ -121,7 +121,7 @@ bool FlckDbgCntrl::FlckDbgCntrlLoadEnvName(void)
 
 bool FlckDbgCntrl::FlckDbgCntrlLoadEnvFile(void)
 {
-	char*	pEnvVal;
+	const char*	pEnvVal;
 	if(NULL == (pEnvVal = getenv(FlckDbgCntrl::DBGENVFILE))){
 		MSG_FLCKPRN("%s ENV is not set.", FlckDbgCntrl::DBGENVFILE);
 		return true;

@@ -386,6 +386,8 @@ bool FlShm::Destroy(void)
 		FLCK_Delete(FlShm::pCheckPidThread);
 	}
 
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress knownConditionTrueFalse
 	if(!FlShm::Detach()){
 		ERR_FLCKPRN("Could not detach shm file, but continue...");
 	}

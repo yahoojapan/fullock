@@ -68,7 +68,7 @@ class FlListNMtx : public fllistbasenmtx
 				}
 			}
 		}
-		inline void initialize(PFLNAMEDMUTEX ptr, size_t count) { fllistbasenmtx::initialize(ptr, count); }
+		virtual bool initialize(PFLNAMEDMUTEX ptr, size_t count) { return fllistbasenmtx::initialize(ptr, count); }
 		inline void initialize(bool is_all) { initialize(NULL, is_all); }
 		virtual void initialize(void) { initialize(NULL, true); }
 		virtual void dump(std::ostream& out, int level) const;

@@ -196,7 +196,7 @@ inline tid_t decompose_tid(flckpid_t flckpid)
 //---------------------------------------------------------
 // Utility Functions(timespec)
 //---------------------------------------------------------
-inline void SUB_TIMESPEC(struct timespec* start, const struct timespec* end, struct timespec* result)
+inline void SUB_TIMESPEC(const struct timespec* start, const struct timespec* end, struct timespec* result)
 {
 	if((end)->tv_nsec < (start)->tv_nsec){
 		if(1 > (end)->tv_sec){
@@ -212,7 +212,7 @@ inline void SUB_TIMESPEC(struct timespec* start, const struct timespec* end, str
 	}
 }
 
-inline bool IS_OVER_TIMESPEC(struct timespec* start, const struct timespec* end, const struct timespec* limit)
+inline bool IS_OVER_TIMESPEC(const struct timespec* start, const struct timespec* end, const struct timespec* limit)
 {
 	struct timespec	subtime;
 	SUB_TIMESPEC(start, end, &subtime);

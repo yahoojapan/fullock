@@ -92,6 +92,8 @@ int FlListOffLock::rawlock(FLCKLOCKTYPE LockType, dev_t devid, ino_t inoid, flck
 		}
 
 		// do unlock
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress knownConditionTrueFalse
 		if(0 != (result = fl_unlock_rwlock(&(pcurrent->lockval)))){
 			ERR_FLCKPRN("Could not unlock rwlock object(error code=%d) for pid(%d), tid(%d), fd(%d).", result, decompose_pid(flckpid), decompose_tid(flckpid), fd);
 			return result;
@@ -253,8 +255,11 @@ bool FlListOffLock::check_dead_lock(dev_t devid, ino_t inoid, fl_pid_cache_map_t
 			if(tmpobj.cutoff_list(pcurrent->reader_list)){
 				if(tmpobj.is_locked()){
 					// do unlock
-					int	result = fl_unlock_rwlock(&(pcurrent->lockval));
-					if(0 != result){
+					int	result;
+					// cppcheck-suppress unmatchedSuppression
+					// cppcheck-suppress knownConditionTrueFalse
+					// cppcheck-suppress unreadVariable
+					if(0 != (result = fl_unlock_rwlock(&(pcurrent->lockval)))){
 						ERR_FLCKPRN("Could not unlock rwlock object(error code=%d), but continue....", result);
 					}
 				}
@@ -285,8 +290,11 @@ bool FlListOffLock::check_dead_lock(dev_t devid, ino_t inoid, fl_pid_cache_map_t
 			if(tmpobj.cutoff_list(pcurrent->writer_list)){
 				if(tmpobj.is_locked()){
 					// do unlock
-					int	result = fl_unlock_rwlock(&(pcurrent->lockval));
-					if(0 != result){
+					int	result;
+					// cppcheck-suppress unmatchedSuppression
+					// cppcheck-suppress knownConditionTrueFalse
+					// cppcheck-suppress unreadVariable
+					if(0 != (result = fl_unlock_rwlock(&(pcurrent->lockval)))){
 						ERR_FLCKPRN("Could not unlock rwlock object(error code=%d), but continue....", result);
 					}
 				}

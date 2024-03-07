@@ -166,6 +166,8 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 	if(pMaster){
 		// this lock object is pending, remove it from master list
 		for(flrwlrcsv_vec_t::iterator iter = pMaster->PendingStack.begin(); iter != pMaster->PendingStack.end(); ++iter){
+			// cppcheck-suppress unmatchedSuppression
+			// cppcheck-suppress useStlAlgorithm
 			if(this == (*iter)){
 				// found own
 				pMaster->PendingStack.erase(iter);
@@ -177,6 +179,8 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 	}else{
 		// search same lock in stack
 		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ++iter){
+			// cppcheck-suppress unmatchedSuppression
+			// cppcheck-suppress useStlAlgorithm
 			if(this == (*iter)){
 				// erase own
 				FLRwlRcsv::Stack().erase(iter);
@@ -190,6 +194,8 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 
 			// check pending stack, and search writer
 			for(flrwlrcsv_vec_t::iterator iter = PendingStack.begin(); iter != PendingStack.end(); ++iter){
+				// cppcheck-suppress unmatchedSuppression
+				// cppcheck-suppress useStlAlgorithm
 				if(FLCK_WRITE_LOCK == (*iter)->lock_type){
 					pNewMaster = *iter;
 					PendingStack.erase(iter);
@@ -279,6 +285,8 @@ bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 
 	// check all status in global stack
 	for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ++iter){
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress useStlAlgorithm
 		if(compare(*(*iter))){
 			// found same tid read or write lock
 			if(!(*iter)->is_locked){
@@ -313,6 +321,8 @@ bool FLRwlRcsv::RawReadLock(bool& is_mutex_locked)
 		}
 		// remove own from global stack
 		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ++iter){
+			// cppcheck-suppress unmatchedSuppression
+			// cppcheck-suppress useStlAlgorithm
 			if(this == (*iter)){
 				FLRwlRcsv::Stack().erase(iter);
 				break;
@@ -426,6 +436,8 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 		}
 		// remove own from global stack
 		for(flrwlrcsv_vec_t::iterator iter = FLRwlRcsv::Stack().begin(); iter != FLRwlRcsv::Stack().end(); ++iter){
+			// cppcheck-suppress unmatchedSuppression
+			// cppcheck-suppress useStlAlgorithm
 			if(this == (*iter)){
 				FLRwlRcsv::Stack().erase(iter);
 				break;

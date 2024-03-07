@@ -166,7 +166,7 @@ class FlShm
 
 	public:
 		// Constructor/Destructor
-		explicit FlShm(void* phelper = NULL) { InitializeSingleton(phelper); }
+		explicit FlShm(const void* phelper = NULL) { InitializeSingleton(phelper); }
 		virtual ~FlShm(void) {}
 
 		//

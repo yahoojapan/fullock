@@ -66,7 +66,7 @@ class FlListNCond : public fllistbasencond
 				}
 			}
 		}
-		inline void initialize(PFLNAMEDCOND ptr, size_t count) { fllistbasencond::initialize(ptr, count); }
+		virtual bool initialize(PFLNAMEDCOND ptr, size_t count) { return fllistbasencond::initialize(ptr, count); }
 		inline void initialize(bool is_all) { initialize(NULL, is_all); }
 		virtual void initialize(void) { initialize(NULL, true); }
 		virtual void dump(std::ostream& out, int level) const;

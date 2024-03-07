@@ -56,7 +56,7 @@ class FlListWaiter : public fllistbasewaiter
 				pcurrent->named_mutex	= to_rel(abs_nmtx);
 			}
 		}
-		inline void initialize(PFLWAITER ptr, size_t count) { fllistbasewaiter::initialize(ptr, count); }
+		virtual bool initialize(PFLWAITER ptr, size_t count) { return fllistbasewaiter::initialize(ptr, count); }
 		inline void initialize(bool is_all) { initialize(FLCK_INVALID_ID, FLCK_NCOND_UP, NULL, is_all); }
 		virtual void initialize(void) { initialize(FLCK_INVALID_ID, FLCK_NCOND_UP, NULL, true); }
 		virtual void dump(std::ostream& out, int level) const;

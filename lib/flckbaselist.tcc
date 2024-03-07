@@ -515,7 +515,7 @@ namespace fullock
 			explicit fl_list_base(const st_type& other) : pcurrent(other.pcurrent) {}
 			virtual ~fl_list_base() {}
 
-			inline bool initialize(st_ptr_type ptr, size_t count);
+			virtual bool initialize(st_ptr_type ptr, size_t count);
 			virtual void initialize(void);
 			inline void set(const st_ptr_type ptr) { pcurrent = ptr; }
 
@@ -541,7 +541,7 @@ namespace fullock
 	const typename fl_list_base<T>::st_ptr_type	fl_list_base<T>::nullval = NULL;
 
 	template<typename T>
-	inline bool fl_list_base<T>::initialize(st_ptr_type ptr, size_t count)
+	bool fl_list_base<T>::initialize(st_ptr_type ptr, size_t count)
 	{
 		if(!ptr || 0 == count){
 			return false;
@@ -576,6 +576,8 @@ namespace fullock
 			return false;
 		}
 		// insert current before top.
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress knownConditionTrueFalse
 		st_ptr_type	newreltop = to_rel(pcurrent);
 		st_ptr_type	oldreltop;
 		do{
@@ -599,6 +601,8 @@ namespace fullock
 			if(!oldreltop){
 				return false;
 			}
+			// cppcheck-suppress unmatchedSuppression
+			// cppcheck-suppress knownConditionTrueFalse
 			newreltop = to_abs(oldreltop)->next;
 
 		}while(oldreltop != __sync_val_compare_and_swap(&preltop, oldreltop, newreltop));
@@ -619,6 +623,8 @@ namespace fullock
 			return false;
 		}
 		// search current in list
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress knownConditionTrueFalse
 		st_ptr_type		oldrelnext	= to_rel(pcurrent);
 		st_ptr_type		newrelnext;
 		st_ptr_type*	ptroldnext	= &preltop;
@@ -657,6 +663,8 @@ namespace fullock
 		if(!pbase || !preltop){
 			return false;
 		}
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress knownConditionTrueFalse
 		for(st_ptr_type pabstarget = to_abs(preltop); pabstarget; pabstarget = to_abs(pabstarget->next)){
 			if(0 == fl_compare_list_base(pbase, pabstarget)){
 				// set current
@@ -674,6 +682,8 @@ namespace fullock
 			return false;
 		}
 		st_ptr_type	lastfound = nullval;
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress knownConditionTrueFalse
 		for(st_ptr_type pabstarget = to_abs(preltop); pabstarget; pabstarget = to_abs(pabstarget->next)){
 			if(0 == fl_compare_list_base(pbase, pabstarget)){
 				lastfound = pabstarget;

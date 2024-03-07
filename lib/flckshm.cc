@@ -204,6 +204,9 @@ bool FlShm::InitializeSingleton(const void* phelper)
 	if(phelper){
 		return true;
 	}
+
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress knownConditionTrueFalse
 	return FlShmHelper::Initialize();
 }
 
@@ -233,6 +236,8 @@ bool FlShm::InitializeObject(bool is_load_env)
 	if(is_load_env && !LoadFlckDbgEnv()){
 		// continue...
 	}
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress knownConditionTrueFalse
 	if(is_load_env && !FlShm::LoadEnv()){
 		return false;
 	}
@@ -350,6 +355,8 @@ bool FlShm::ReInitializeObject(const char* dirname, const char* filename, size_t
 	FlShm::NMtxAreaCount		= FLCK_FLCKNMTXCNT_DEFAULT;
 
 	// Load environment manually
+	// cppcheck-suppress unmatchedSuppression
+	// cppcheck-suppress knownConditionTrueFalse
 	if(!FlShm::LoadEnv()){
 		ERR_FLCKPRN("Failed to load environment.");
 		return false;

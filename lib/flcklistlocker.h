@@ -54,7 +54,7 @@ class FlListLocker : public fllistbaselocker
 				pcurrent->locked		= locked;
 			}
 		}
-		inline void initialize(PFLLOCKER ptr, size_t count) { fllistbaselocker::initialize(ptr, count); }
+		virtual bool initialize(PFLLOCKER ptr, size_t count) { return fllistbaselocker::initialize(ptr, count); }
 		inline void initialize(bool is_all) { initialize(FLCK_INVALID_ID, FLCK_INVALID_HANDLE, false, is_all); }
 		virtual void initialize(void) { initialize(FLCK_INVALID_ID, FLCK_INVALID_HANDLE, false, true); }
 		virtual void dump(std::ostream& out, int level) const;

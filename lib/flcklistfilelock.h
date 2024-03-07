@@ -57,7 +57,7 @@ class FlListFileLock : public fllistbasefilelock
 				pcurrent->protect			= protect;
 			}
 		}
-		inline void initialize(PFLFILELOCK ptr, size_t count) { fllistbasefilelock::initialize(ptr, count); }
+		virtual bool initialize(PFLFILELOCK ptr, size_t count) { return fllistbasefilelock::initialize(ptr, count); }
 		inline void initialize(bool is_all) { initialize(static_cast<dev_t>(FLCK_INVALID_ID), static_cast<ino_t>(FLCK_INVALID_ID), is_all); }
 		virtual void initialize(void) { initialize(static_cast<dev_t>(FLCK_INVALID_ID), static_cast<ino_t>(FLCK_INVALID_ID), true); }
 		virtual void dump(std::ostream& out, int level) const;

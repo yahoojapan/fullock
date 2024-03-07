@@ -1,9 +1,10 @@
 fullock (1.0.58) unstable; urgency=low
 
+  * Updated docker/login-action from v2 to v3 - #113
   * Fixed cppcheck error and Makefile.am - #111
   * Changed support OS (fedora and alpine) - #110
 
- -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 07 Mar 2024 11:57:00 +0900
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Thu, 07 Mar 2024 13:03:10 +0900
 
 fullock (1.0.57) unstable; urgency=low
 

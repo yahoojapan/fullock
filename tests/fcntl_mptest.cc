@@ -540,7 +540,7 @@ static bool MtReadWriteLock(PPROCPARAM pProcparam, PCHPARAM pParams)
 	return true;
 }
 
-static bool MtMutexLock(PPROCPARAM pProcparam, PCHPARAM pParams)
+static bool MtMutexLock(const PPROCPARAM pProcparam, const PCHPARAM pParams)
 {
 	ERR("Do not support Mutex Lock for fcntl.");
 	return false;

@@ -1,3 +1,9 @@
+fullock (1.0.60) unstable; urgency=low
+
+  * Changed supported OS and modified some codes - #117
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Wed, 16 Oct 2024 18:36:00 +0900
+
 fullock (1.0.59) unstable; urgency=low
 
   * Fixed Makefile.am about cppcheck version - #115

@@ -73,6 +73,8 @@ namespace fullock
 
 				if(!FindThreadProcess(pid, tid)){
 					// thread(process) does not run, so force to set this tid.
+					// cppcheck-suppress unmatchedSuppression
+					// cppcheck-suppress redundantAssignment
 					oldval2 = oldval1;
 					if(oldval2 == (oldval1 = __sync_val_compare_and_swap(pflckpid, oldval2, newid))){
 						// success to switch newid.
@@ -106,6 +108,8 @@ namespace fullock
 
 				if(!FindThreadProcess(pid, tid)){
 					// thread(process) does not run, so force to set this tid.
+					// cppcheck-suppress unmatchedSuppression
+					// cppcheck-suppress redundantAssignment
 					oldval2 = oldval1;
 					if(oldval2 == (oldval1 = __sync_val_compare_and_swap(pflckpid, oldval2, FLCK_INVALID_ID))){
 						// success to switch newid.
@@ -367,7 +371,6 @@ namespace fullock
 	{
 		do{
 			// do unlock
-			flck_mutex_t	oldval;
 			if(FLCK_MUTEX_UNLOCK == *plockval){
 				// already unlocked
 				break;
@@ -383,6 +386,7 @@ namespace fullock
 						__sync_val_compare_and_swap(plockcnt, oldcnt, 0);	// not check result
 					}
 					// try unlock
+					flck_mutex_t	oldval;
 					if(lockid == (oldval = __sync_val_compare_and_swap(plockval, lockid, FLCK_MUTEX_UNLOCK)) || FLCK_MUTEX_UNLOCK == oldval){
 						// succeed to unlock
 						break;

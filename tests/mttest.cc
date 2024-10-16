@@ -446,7 +446,7 @@ static bool MtReadWriteLock(PTHPARAM pParams)
 	return true;
 }
 
-static bool MtMutexLock(PTHPARAM pParams)
+static bool MtMutexLock(const PTHPARAM pParams)
 {
 	if(!pParams){
 		ERR("Parameter is wrong.");

@@ -25,10 +25,14 @@
 #
 
 #
-# Create /var/lib/antpickax directory
+# Create /var/run/antpickax, /var/lib/antpickax, /etc/antpickax directory
 #
 mkdir -p /var/lib/antpickax
 chmod 0777 /var/lib/antpickax
+mkdir -p /var/run/antpickax
+chmod 0777 /var/run/antpickax
+mkdir -p /etc/antpickax
+chmod 0777 /etc/antpickax
 
 #
 # Local variables:

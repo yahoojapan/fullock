@@ -69,6 +69,8 @@ BuildRequires: git-core gcc-c++ make libtool
 %make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 mkdir -p %{buildroot}/var/lib/antpickax
+mkdir -p %{buildroot}/var/run/antpickax
+mkdir -p %{buildroot}/etc/antpickax
 
 %if %{make_check}
 %check
@@ -98,6 +100,8 @@ rm -rf %{buildroot}
 %{_libdir}/libfullock.so.1*
 %{_mandir}/man3/*
 %dir %attr(0777,root,root) /var/lib/antpickax
+%dir %attr(0777,root,root) /var/run/antpickax
+%dir %attr(0777,root,root) /etc/antpickax
 
 #
 # devel package

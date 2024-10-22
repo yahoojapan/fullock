@@ -55,6 +55,10 @@ RUN set -x && \
 	%%UPDATE_LIBPATH%% && \
 	mkdir -p /var/lib/antpickax && \
 	chmod 0777 /var/lib/antpickax && \
+	mkdir -p /var/run/antpickax && \
+	chmod 0777 /var/run/antpickax && \
+	mkdir -p /etc/antpickax && \
+	chmod 0777 /etc/antpickax && \
 	%%PKG_UNINSTALL_DEV%% && \
 	%%POST_PROCESS%%
 
@@ -79,6 +83,10 @@ RUN set -x && \
 	%%UPDATE_LIBPATH%% && \
 	mkdir -p /var/lib/antpickax && \
 	chmod 0777 /var/lib/antpickax && \
+	mkdir -p /var/run/antpickax && \
+	chmod 0777 /var/run/antpickax && \
+	mkdir -p /etc/antpickax && \
+	chmod 0777 /etc/antpickax && \
 	%%PKG_UNINSTALL_BASE%% && \
 	%%POST_PROCESS%%
 

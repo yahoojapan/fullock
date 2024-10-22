@@ -106,9 +106,11 @@ package() {
 	make DESTDIR="$pkgdir" install
 
 	#
-	# Create /var/lib/antpickax directory
+	# Create /var/run/antpickax, /var/lib/antpickax, /etc/antpickax directory
 	#
+	install -v -m 0777 -d "$pkgdir"/var/run/antpickax
 	install -v -m 0777 -d "$pkgdir"/var/lib/antpickax
+	install -v -m 0777 -d "$pkgdir"/etc/antpickax
 }
 
 # [NOTE]

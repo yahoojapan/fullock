@@ -1,3 +1,9 @@
+fullock (1.0.61) unstable; urgency=low
+
+  * Added a directory to be created by the package - #120
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 22 Oct 2024 11:20:54 +0900
+
 fullock (1.0.60) unstable; urgency=low
 
   * Changed supported OS and modified some codes - #117

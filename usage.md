@@ -26,7 +26,7 @@ The FULLOCK library publishes [packages](https://packagecloud.io/app/antpickax/s
 The package of the FULLOCK library is released in the form of Debian package, RPM package.  
 Since the installation method differs depending on your OS, please check the following procedure and install it.  
 
-#### For recent Debian-based Linux distributions users, follow the steps below:
+#### For Debian-based Linux distributions users, follow the steps below:
 ```
 $ sudo apt-get update -y
 $ sudo apt-get install curl -y
@@ -38,7 +38,7 @@ To install the developer package, please install the following package.
 $ sudo apt-get install libfullock-dev
 ```
 
-#### For users who use supported Fedora other than latest version, follow the steps below:
+#### For RPM-based Linux distributions users, follow the steps below:
 ```
 $ sudo dnf makecache
 $ sudo dnf install curl -y
@@ -50,16 +50,16 @@ To install the developer package, please install the following package.
 $ sudo dnf install libfullock-devel
 ```
 
-#### For other recent RPM-based Linux distributions users, follow the steps below:
+#### For ALPINE-based Linux distributions users, follow the steps below:
 ```
-$ sudo yum makecache
-$ sudo yum install curl -y
-$ curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.rpm.sh | sudo bash
-$ sudo yum install libfullock
+# apk update
+# apk add curl
+# curl -s https://packagecloud.io/install/repositories/antpickax/stable/script.alpine.sh | sh
+# apk add libfullock
 ```
 To install the developer package, please install the following package.
 ```
-$ sudo yum install libfullock-devel
+# apk add libfullock-dev
 ```
 
 #### Other OS

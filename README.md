@@ -5,8 +5,9 @@ fullock
 [![GitHub forks](https://img.shields.io/github/forks/yahoojapan/fullock.svg)](https://github.com/yahoojapan/fullock/network)
 [![GitHub stars](https://img.shields.io/github/stars/yahoojapan/fullock.svg)](https://github.com/yahoojapan/fullock/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/yahoojapan/fullock.svg)](https://github.com/yahoojapan/fullock/issues)
-[![debian packages](https://img.shields.io/badge/deb-packagecloud.io-844fec.svg)](https://packagecloud.io/antpickax/stable)
 [![RPM packages](https://img.shields.io/badge/rpm-packagecloud.io-844fec.svg)](https://packagecloud.io/antpickax/stable)
+[![debian packages](https://img.shields.io/badge/deb-packagecloud.io-844fec.svg)](https://packagecloud.io/antpickax/stable)
+[![ALPINE packages](https://img.shields.io/badge/apk-packagecloud.io-844fec.svg)](https://packagecloud.io/antpickax/stable)
 [![Docker image](https://img.shields.io/docker/pulls/antpickax/libfullock.svg)](https://hub.docker.com/r/antpickax/libfullock)
 [![Docker dev image](https://img.shields.io/docker/pulls/antpickax/libfullock-dev.svg)](https://hub.docker.com/r/antpickax/libfullock-dev)
 
@@ -39,6 +40,7 @@ These provide the functionality of more than pthread_rwlock and pthread_mutex, a
 ### Packages
   - [RPM packages(packagecloud.io)](https://packagecloud.io/antpickax/stable)
   - [Debian packages(packagecloud.io)](https://packagecloud.io/antpickax/stable)
+  - [ALPINE packages(packagecloud.io)](https://packagecloud.io/antpickax/stable)
 
 ### Docker images
   - [libfullock(Docker Hub)](https://hub.docker.com/r/antpickax/libfullock)

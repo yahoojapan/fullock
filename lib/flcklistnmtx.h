@@ -99,6 +99,9 @@ class FlListNMtx : public fllistbasenmtx
 // result	0	: same
 //			-1	: psrc2 is smaller than psrc1
 //			1	: psrc2 is larger than psrc1
+
+// cppcheck-suppress unmatchedSuppression
+// cppcheck-suppress constParameterPointer
 inline int fl_compare_list_base(const PFLNAMEDMUTEX psrc1, const PFLNAMEDMUTEX psrc2)
 {
 	if(psrc1->hash < psrc2->hash){

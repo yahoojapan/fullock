@@ -540,6 +540,8 @@ static bool MtReadWriteLock(PPROCPARAM pProcparam, PCHPARAM pParams)
 	return true;
 }
 
+// cppcheck-suppress unmatchedSuppression
+// cppcheck-suppress constParameterPointer
 static bool MtMutexLock(const PPROCPARAM pProcparam, const PCHPARAM pParams)
 {
 	ERR("Do not support Mutex Lock for fcntl.");

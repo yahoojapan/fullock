@@ -85,6 +85,9 @@ class FlListWaiter : public fllistbasewaiter
 //
 // [NOTE] check only lockstatus
 //
+
+// cppcheck-suppress unmatchedSuppression
+// cppcheck-suppress constParameterPointer
 inline int fl_compare_list_base(const PFLWAITER psrc1, const PFLWAITER psrc2)
 {
 	if(psrc1->lockstatus < psrc2->lockstatus){

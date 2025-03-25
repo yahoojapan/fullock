@@ -84,6 +84,9 @@ class FlListFileLock : public fllistbasefilelock
 // result	0	: same
 //			-1	: psrc2 is smaller than psrc1
 //			1	: psrc2 is larger than psrc1
+
+// cppcheck-suppress unmatchedSuppression
+// cppcheck-suppress constParameterPointer
 inline int fl_compare_list_base(const PFLFILELOCK psrc1, const PFLFILELOCK psrc2)
 {
 	int result = 0;

@@ -78,6 +78,9 @@ class FlListLocker : public fllistbaselocker
 // result	0	: same
 //			-1	: psrc2 is smaller than psrc1
 //			1	: psrc2 is larger than psrc1
+
+// cppcheck-suppress unmatchedSuppression
+// cppcheck-suppress constParameterPointer
 inline int fl_compare_list_base(const PFLLOCKER psrc1, const PFLLOCKER psrc2)
 {
 	if(psrc1->flckpid < psrc2->flckpid){

@@ -63,15 +63,17 @@ jobs:
         container:
           - ubuntu:24.04
           - ubuntu:22.04
+          - debian:trixie
           - debian:bookworm
           - debian:bullseye
+          - rockylinux/rockylinux:10
           - rockylinux:9
           - rockylinux:8
+          - fedora:42
           - fedora:41
-          - fedora:40
+          - alpine:3.22
           - alpine:3.21
           - alpine:3.20
-          - alpine:3.19
 
     container:
       image: ${{ matrix.container }}
@@ -149,7 +151,7 @@ jobs:
         # <default tag flag>:   If you want to use the created Docker image as the default image, specify "default".
         #
         imageinfo:
-          - alpine:3.21,alpine:3.21,alpine,default
+          - alpine:3.22,alpine:3.22,alpine,default
           - ubuntu:24.04,ubuntu:24.04,ubuntu
 
     #

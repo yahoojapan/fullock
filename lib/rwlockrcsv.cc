@@ -210,7 +210,7 @@ bool FLRwlRcsv::RawUnlock(bool& is_mutex_locked)
 			}
 
 			// do swap master
-			move_pending_stack(pNewMaster->PendingStack, PendingStack, pNewMaster);
+			FLRwlRcsv::move_pending_stack(pNewMaster->PendingStack, PendingStack, pNewMaster);
 			PendingStack.clear();
 
 			pNewMaster->has_locker	= true;
@@ -420,7 +420,7 @@ bool FLRwlRcsv::RawWriteLock(bool& is_mutex_locked)
 		PendingStack.push_back(*iter);
 
 		// add pending list
-		move_pending_stack(PendingStack, (*iter)->PendingStack, this);
+		FLRwlRcsv::move_pending_stack(PendingStack, (*iter)->PendingStack, this);
 		(*iter)->PendingStack.clear();
 	}
 

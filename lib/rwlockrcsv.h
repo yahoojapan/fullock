@@ -54,8 +54,7 @@ class FLRwlRcsv
 		static void StackLock(void);
 		static void StackUnlock(void);
 
-		bool compare(const FLRwlRcsv& other) const;
-		inline void move_pending_stack(flrwlrcsv_vec_t& dest, flrwlrcsv_vec_t& src, FLRwlRcsv* pNewMaster)
+		static inline void move_pending_stack(flrwlrcsv_vec_t& dest, flrwlrcsv_vec_t& src, FLRwlRcsv* pNewMaster)
 		{
 			for(flrwlrcsv_vec_t::iterator iter = src.begin(); iter != src.end(); ++iter){
 				(*iter)->pMaster = pNewMaster;
@@ -63,6 +62,7 @@ class FLRwlRcsv
 			}
 			src.clear();
 		}
+		bool compare(const FLRwlRcsv& other) const;
 
 		bool RawUnlock(bool& is_mutex_locked);
 		bool RawReadLock(bool& is_mutex_locked);

@@ -71,11 +71,11 @@ int FlListNCond::rawlock(FLCKLOCKTYPE LockType, bool is_broadcast, PFLNAMEDMUTEX
 		if(is_broadcast){
 			// BROADCAST
 			FlListWaiter	tmpobj;
-			int				subresult;
 			for(PFLWAITER ptmp = to_abs(pcurrent->waiter_list); ptmp; ptmp = to_abs(ptmp->next)){
 				tmpobj.set(ptmp);
 				if(tmpobj.is_wait()){
 					// wake up waiter
+					int	subresult;
 					if(0 != (subresult = tmpobj.signal())){
 						ERR_FLCKPRN("Failed to send signal to waiter(error code=%d).", subresult);
 						if(0 == result){

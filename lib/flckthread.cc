@@ -219,7 +219,6 @@ void* FlckThread::WorkerProc(void* param)
 	// do loop
 	struct timespec		sleepms = {(intervalms / 1000), (intervalms % 1000) * 1000 * 1000};
 	struct epoll_event  events[FLCK_WAIT_EVENT_MAX];
-	int					eventcnt;
 	while(FlckThread::FLCK_THCNTL_EXIT > *pThFlag){
 		pthread_testcancel();												// check cancel
 
@@ -229,6 +228,7 @@ void* FlckThread::WorkerProc(void* param)
 
 		}else if(FlckThread::FLCK_THCNTL_RUN == *pThFlag){
 			// wait event
+			int	eventcnt;
 			if(0 < (eventcnt = epoll_pwait(FlckThread::EventFd, events, FLCK_WAIT_EVENT_MAX, intervalms, NULL))){
 				// catch event
 				for(int cnt = 0; cnt < eventcnt; cnt++){

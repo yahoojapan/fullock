@@ -589,6 +589,8 @@ static int RunChild(string filepath, int max_child)
 	if(pChparam->is_rwlock){
 		result = MtReadWriteLock(st_procparam, pChparam);
 	}else{
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress knownConditionTrueFalse
 		result = MtMutexLock(st_procparam, pChparam);
 	}
 	if(!result){

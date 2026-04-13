@@ -93,6 +93,20 @@ if [ -z "${CI_OSTYPE}" ]; then
 	#
 	:
 
+elif echo "${CI_OSTYPE}" | grep -q -i -e "ubuntu:26.04" -e "ubuntu:resolute"; then
+	DIST_TAG="ubuntu/resolute"
+	INSTALL_PKG_LIST="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration procps"
+	INSTALLER_BIN="apt-get"
+	UPDATE_CMD="update"
+	UPDATE_CMD_ARG=""
+	INSTALL_CMD="install"
+	INSTALL_CMD_ARG=""
+	INSTALL_AUTO_ARG="-y"
+	INSTALL_QUIET_ARG="-qq"
+	PKG_OUTPUT_DIR="debian_build"
+	PKG_EXT="deb"
+	IS_OS_UBUNTU=1
+
 elif echo "${CI_OSTYPE}" | grep -q -i -e "ubuntu:24.04" -e "ubuntu:noble"; then
 	DIST_TAG="ubuntu/noble"
 	INSTALL_PKG_LIST="git autoconf autotools-dev gcc g++ make gdb dh-make fakeroot dpkg-dev devscripts libtool pkg-config ruby-dev rubygems rubygems-integration procps"
@@ -205,8 +219,8 @@ elif echo "${CI_OSTYPE}" | grep -q -i "rockylinux:8"; then
 	PKG_EXT="rpm"
 	IS_OS_ROCKY=1
 
-elif echo "${CI_OSTYPE}" | grep -q -i "fedora:42"; then
-	DIST_TAG="fedora/42"
+elif echo "${CI_OSTYPE}" | grep -q -i "fedora:44"; then
+	DIST_TAG="fedora/44"
 	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
 	INSTALLER_BIN="dnf"
 	UPDATE_CMD="update"
@@ -219,8 +233,8 @@ elif echo "${CI_OSTYPE}" | grep -q -i "fedora:42"; then
 	PKG_EXT="rpm"
 	IS_OS_FEDORA=1
 
-elif echo "${CI_OSTYPE}" | grep -q -i "fedora:41"; then
-	DIST_TAG="fedora/41"
+elif echo "${CI_OSTYPE}" | grep -q -i "fedora:43"; then
+	DIST_TAG="fedora/43"
 	INSTALL_PKG_LIST="git autoconf automake gcc gcc-c++ gdb make libtool pkgconfig redhat-rpm-config rpm-build ruby-devel rubygems procps"
 	INSTALLER_BIN="dnf"
 	UPDATE_CMD="update"
@@ -232,6 +246,20 @@ elif echo "${CI_OSTYPE}" | grep -q -i "fedora:41"; then
 	PKG_OUTPUT_DIR="."
 	PKG_EXT="rpm"
 	IS_OS_FEDORA=1
+
+elif echo "${CI_OSTYPE}" | grep -q -i "alpine:3.23"; then
+	DIST_TAG="alpine/v3.23"
+	INSTALL_PKG_LIST="bash sudo alpine-sdk automake autoconf libtool groff util-linux-misc musl-locales ruby-dev procps"
+	INSTALLER_BIN="apk"
+	UPDATE_CMD="update"
+	UPDATE_CMD_ARG="--no-progress"
+	INSTALL_CMD="add"
+	INSTALL_CMD_ARG="--no-progress --no-cache"
+	INSTALL_AUTO_ARG=""
+	INSTALL_QUIET_ARG="-q"
+	PKG_OUTPUT_DIR="apk_build"
+	PKG_EXT="apk"
+	IS_OS_ALPINE=1
 
 elif echo "${CI_OSTYPE}" | grep -q -i "alpine:3.22"; then
 	DIST_TAG="alpine/v3.22"
@@ -249,20 +277,6 @@ elif echo "${CI_OSTYPE}" | grep -q -i "alpine:3.22"; then
 
 elif echo "${CI_OSTYPE}" | grep -q -i "alpine:3.21"; then
 	DIST_TAG="alpine/v3.21"
-	INSTALL_PKG_LIST="bash sudo alpine-sdk automake autoconf libtool groff util-linux-misc musl-locales ruby-dev procps"
-	INSTALLER_BIN="apk"
-	UPDATE_CMD="update"
-	UPDATE_CMD_ARG="--no-progress"
-	INSTALL_CMD="add"
-	INSTALL_CMD_ARG="--no-progress --no-cache"
-	INSTALL_AUTO_ARG=""
-	INSTALL_QUIET_ARG="-q"
-	PKG_OUTPUT_DIR="apk_build"
-	PKG_EXT="apk"
-	IS_OS_ALPINE=1
-
-elif echo "${CI_OSTYPE}" | grep -q -i "alpine:3.20"; then
-	DIST_TAG="alpine/v3.20"
 	INSTALL_PKG_LIST="bash sudo alpine-sdk automake autoconf libtool groff util-linux-misc musl-locales ruby-dev procps"
 	INSTALLER_BIN="apk"
 	UPDATE_CMD="update"

@@ -617,7 +617,7 @@ tid_t get_threadid(void)
 {
 	tid_t	tid;
 	if(FlTidCache::IsInit()){
-		void*	pData;
+		const void*	pData;
 		if(NULL == (pData = pthread_getspecific(FlTidCache::GetTid()))){
 			tid = gettid();
 			int	result = pthread_setspecific(FlTidCache::GetTid(), reinterpret_cast<const void*>(tid));

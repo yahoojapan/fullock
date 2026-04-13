@@ -470,6 +470,8 @@ static void* RunThread(void* param)
 	if(pThParam->is_rwlock){
 		result = MtReadWriteLock(pThParam);
 	}else{
+		// cppcheck-suppress unmatchedSuppression
+		// cppcheck-suppress knownConditionTrueFalse
 		result = MtMutexLock(pThParam);
 	}
 	if(!result){

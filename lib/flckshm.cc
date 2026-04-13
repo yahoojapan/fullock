@@ -15,6 +15,11 @@
  *
  */
 
+// [NOTE]
+// To avoid the functionStatic error caused by cppcheck.
+//
+// cppcheck-suppress-file functionStatic
+
 #include <assert.h>
 #include <strings.h>
 #include <sys/types.h>
@@ -958,6 +963,87 @@ int FlShm::RawLock(FLCKLOCKTYPE LockType, const char* pcondname, const char* pmu
 		}
 	}
 	return result;
+}
+
+// [NOTE]
+// The following methods can be changed to static, but we will not change them for
+// compatibility reasons. Therefore, we have changed what was originally an inline
+// method to be defined here.
+// This was detected as a functionStatic error by cppcheck.
+//
+int FlShm::TimeoutLock(const char* pname, time_t timeout_usec)
+{
+	return FlShm::RawLock(FLCK_NMTX_LOCK, pname, timeout_usec);
+}
+
+int FlShm::TryLock(const char* pname)
+{
+	return FlShm::RawLock(FLCK_NMTX_LOCK, pname, FLCK_TRY_TIMEOUT);
+}
+
+int FlShm::Lock(const char* pname)
+{
+	return FlShm::RawLock(FLCK_NMTX_LOCK, pname, FLCK_NO_TIMEOUT);
+}
+
+int FlShm::Unlock(const char* pname)
+{
+	return FlShm::RawLock(FLCK_UNLOCK, pname, FLCK_NO_TIMEOUT);
+}
+
+int FlShm::TimeoutReadLock(int fd, off_t offset, size_t length, time_t timeout_usec)
+{
+	return FlShm::RawLock(FLCK_READ_LOCK, fd, offset, length, timeout_usec);
+}
+
+int FlShm::TryReadLock(int fd, off_t offset, size_t length)
+{
+	return FlShm::RawLock(FLCK_READ_LOCK, fd, offset, length, FLCK_TRY_TIMEOUT);
+}
+
+int FlShm::ReadLock(int fd, off_t offset, size_t length)
+{
+	return FlShm::RawLock(FLCK_READ_LOCK, fd, offset, length, FLCK_NO_TIMEOUT);
+}
+
+int FlShm::TimeoutWriteLock(int fd, off_t offset, size_t length, time_t timeout_usec)
+{
+	return FlShm::RawLock(FLCK_WRITE_LOCK, fd, offset, length, timeout_usec);
+}
+
+int FlShm::TryWriteLock(int fd, off_t offset, size_t length)
+{
+	return FlShm::RawLock(FLCK_WRITE_LOCK, fd, offset, length, FLCK_TRY_TIMEOUT);
+}
+
+int FlShm::WriteLock(int fd, off_t offset, size_t length)
+{
+	return FlShm::RawLock(FLCK_WRITE_LOCK, fd, offset, length, FLCK_NO_TIMEOUT);
+}
+
+int FlShm::Unlock(int fd, off_t offset, size_t length)
+{
+	return FlShm::RawLock(FLCK_UNLOCK, fd, offset, length, FLCK_NO_TIMEOUT);
+}
+
+int FlShm::TimeoutWait(const char* pcondname, const char* pmutexname, time_t timeout_usec)
+{
+	return FlShm::RawLock(FLCK_NCOND_WAIT, pcondname, pmutexname, false, timeout_usec);
+}
+
+int FlShm::Wait(const char* pcondname, const char* pmutexname)
+{
+	return FlShm::RawLock(FLCK_NCOND_WAIT, pcondname, pmutexname, false, FLCK_NO_TIMEOUT);
+}
+
+int FlShm::Signal(const char* pcondname)
+{
+	return FlShm::RawLock(FLCK_NCOND_UP, pcondname, NULL, false, FLCK_NO_TIMEOUT);
+}
+
+int FlShm::Broadcast(const char* pcondname)
+{
+	return FlShm::RawLock(FLCK_NCOND_UP, pcondname, NULL, true, FLCK_NO_TIMEOUT);
 }
 
 //---------------------------------------------------------

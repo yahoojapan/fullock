@@ -1036,6 +1036,20 @@ if ({ RUNCMD "${INSTALLER_BIN}" "${UPDATE_CMD}" "${UPDATE_CMD_ARG}" "${INSTALL_A
 	exit 1
 fi
 
+# [NOTE]
+# For Fedora:44, /etc/pki/tls/certs/ca-bundle.crt does not exist.
+# To create it, you need to run "update-ca-trust extract --rhbz2387674".
+#
+if [ "${IS_OS_FEDORA}" -eq 1 ]; then
+	if [ ! -f /etc/pki/tls/certs/ca-bundle.crt ]; then
+		PRNINFO "Create ca-bundle.crt file for fedora OS"
+		if ({ RUNCMD update-ca-trust extract --rhbz2387674 || echo > "${PIPEFAILURE_FILE}"; } | sed -e 's/^/    /g') && rm "${PIPEFAILURE_FILE}" >/dev/null 2>&1; then
+			PRNERR "Failed to create ca-bundle.crt"
+			exit 1
+		fi
+	fi
+fi
+
 #
 # Check and install curl
 #

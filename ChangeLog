@@ -1,3 +1,9 @@
+fullock (1.0.67) unstable; urgency=low
+
+  * Common build_helper.sh script was updated for fedora:44 - #133
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Wed, 15 Apr 2026 15:52:54 +0900
+
 fullock (1.0.66) unstable; urgency=low
 
   * Changed support OS and Fixed some code - #131

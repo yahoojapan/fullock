@@ -833,7 +833,7 @@ static bool mutex_deadlock_test(string& strtesttype, const char* procname, bool 
 static volatile bool	exiter_thread_result = false;
 static volatile bool	waiter_thread_result = false;
 
-static void* mutex_exiter_thread(void* param)
+static void* mutex_exiter_thread(void*)			// should be "void* param", but cppcheck puts constParameterCallback error.
 {
 	exiter_thread_result = false;
 
@@ -852,7 +852,7 @@ static void* mutex_exiter_thread(void* param)
 	return NULL;
 }
 
-static void* mutex_waiter_thread(void* param)
+static void* mutex_waiter_thread(void*)			// should be "void* param", but cppcheck puts constParameterCallback error.
 {
 	waiter_thread_result = false;
 

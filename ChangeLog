@@ -1,3 +1,9 @@
+fullock (1.0.68) unstable; urgency=low
+
+  * Supports Alpine 3.24, manual trigger for GHA, and fix codes - #135
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Tue, 30 Jun 2026 08:28:40 +0900
+
 fullock (1.0.67) unstable; urgency=low
 
   * Common build_helper.sh script was updated for fedora:44 - #133

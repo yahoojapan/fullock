@@ -63,7 +63,7 @@ typedef struct thread_param{
 //---------------------------------------------------------
 // Global Variables
 //---------------------------------------------------------
-static bool			is_run		= false;
+static bool			is_running	= false;
 static bool			is_print	= false;
 
 static const char	szCondName[]= "cond_mttest_condname";
@@ -311,7 +311,7 @@ static void* RunThread(void* param)
 	pParam->is_fin_init			= true;
 
 	// wait to go(global flag)
-	while(!is_run){
+	while(!is_running){
 		nanosleep(&sleeptime, NULL);
 	}
 
@@ -440,7 +440,7 @@ int main(int argc, char** argv)
 	// run all child
 	//--------------------------------------------------
 	// start to run(global flag)
-	is_run = true;
+	is_running = true;
 
 	//--------------------------------------------------
 	// wait for all children is waiting status

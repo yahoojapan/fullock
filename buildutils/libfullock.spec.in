@@ -41,6 +41,8 @@
 %global run_autogen echo "skip autogen.sh"
 %endif
 
+%global major_version %{lua: print(string.match("@VERSION@", "^%d+"))}
+
 #
 # main package
 #
@@ -84,21 +86,14 @@ mkdir -p %{buildroot}/etc/antpickax
 %postun -p /sbin/ldconfig
 %endif
 
-%if 0%{?rhel} == 6
-%clean
-rm -rf %{buildroot}
-%endif
-
 %files
-%if 0%{?rhel} == 6
-%doc COPYING
-%defattr(-,root,root)
-%else
+
 %license COPYING
-%endif
+
 %doc README AUTHORS ChangeLog
-%{_libdir}/libfullock.so.1*
+%{_libdir}/libfullock.so.%{major_version}*
 %{_mandir}/man3/*
+
 %dir %attr(0777,root,root) /var/lib/antpickax
 %dir %attr(0777,root,root) /var/run/antpickax
 %dir %attr(0777,root,root) /etc/antpickax
@@ -115,9 +110,7 @@ Development package for building with lib@PACKAGE_NAME@ shared library.
 This package has header files and symbols for it.
 
 %files devel
-%if 0%{?rhel} == 6
-%defattr(-,root,root)
-%endif
+
 %doc README AUTHORS ChangeLog
 %{_includedir}/*
 %{_libdir}/libfullock.so

@@ -117,6 +117,34 @@ bool CvtNumberStringToLong(const char* str, long* presult)
 //---------------------------------------------------------
 // File path etc Utilities
 //---------------------------------------------------------
+static bool CheckRealPath(const char* pPath)
+{
+	if(FLCKEMPTYSTR(pPath) || '/' != *pPath){
+		return false;
+	}
+
+	size_t	NestCnt = 0;
+	for(int nPos = 1, nLast = 1; '\0' != pPath[nPos]; ++nPos){
+		if('/' == pPath[nPos]){
+			// current directory
+			nLast = nPos + 1;
+		}else if('/' == pPath[nPos + 1] || '\0' == pPath[nPos + 1]){
+			if(nLast == nPos && 0 == strncmp(&pPath[nLast], ".", 1)){
+				// current directory
+			}else if((nLast + 1) == nPos && 0 == strncmp(&pPath[nLast], "..", 2)){
+				if(0 == NestCnt){
+					return false;		// over the top directory
+				}
+				--NestCnt;
+			}else{
+				++NestCnt;
+			}
+			nLast = nPos + 1;
+		}
+	}
+	return true;
+}
+
 bool GetRealPath(const char* pPath, string& strreal)
 {
 	if(FLCKEMPTYSTR(pPath)){
@@ -128,12 +156,22 @@ bool GetRealPath(const char* pPath, string& strreal)
 	string	tmppath;
 	if('/' != pPath[0]){
 		char*	cur = get_current_dir_name();
+		if(FLCKEMPTYSTR(cur)){
+			WAN_FLCKPRN("Could not get current directory path.");
+			return false;
+		}
 		tmppath	= cur;
 		tmppath	+= "/";
 		tmppath	+= pPath;
 		FLCK_Free(cur);
 	}else{
 		tmppath = pPath;
+	}
+
+	// check path
+	if(!CheckRealPath(tmppath.c_str())){
+		WAN_FLCKPRN("%s is over the top directory.", pPath);
+		return false;
 	}
 
 	// parse leaf
@@ -212,7 +250,7 @@ bool MakeWorkDirectory(const char* pDirPath)
 		fullpath += *iter;
 
 		struct stat	st;
-		if(0 != stat(fullpath.c_str(), &st)){
+		if(0 != lstat(fullpath.c_str(), &st)){
 			if(ENOENT != errno){
 				WAN_FLCKPRN("Could not access %s, errno=%d", fullpath.c_str(), errno);
 				return false;
@@ -227,7 +265,11 @@ bool MakeWorkDirectory(const char* pDirPath)
 			umask(old_umask);
 
 		}else{
-			if(0 == (st.st_mode & S_IFDIR)){
+			if(S_ISLNK(st.st_mode)){
+				ERR_FLCKPRN("%s is a symbolic link. Symlinks are not allowed in work path.", fullpath.c_str());
+				return false;
+			}
+			if(!S_ISDIR(st.st_mode)){
 				WAN_FLCKPRN("%s is not directory.", fullpath.c_str());
 				return false;
 			}

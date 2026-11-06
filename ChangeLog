@@ -1,3 +1,10 @@
+fullock (1.0.69) unstable; urgency=low
+
+  * Changed support OSes and fixed files - #138
+  * Fix access permissions for temporary file paths, and resources - #137
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Fri, 06 Nov 2026 10:29:34 +0900
+
 fullock (1.0.68) unstable; urgency=low
 
   * Supports Alpine 3.24, manual trigger for GHA, and fix codes - #135

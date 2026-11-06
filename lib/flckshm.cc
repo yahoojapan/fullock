@@ -298,7 +298,7 @@ bool FlShm::ReInitializeObject(const char* dirname, const char* filename, size_t
 		(FLCK_INITCNT_DEFAULT != lockercnt		&& (lockercnt < FLCK_FLCKLOCKERCNT_MIN	|| FLCK_FLCKLOCKERCNT_MAX < lockercnt))	||
 		(FLCK_INITCNT_DEFAULT != nmtxcnt		&& (nmtxcnt < FLCK_FLCKNMTXCNT_MIN		|| FLCK_FLCKNMTXCNT_MAX < nmtxcnt))		||
 		(FLCK_INITCNT_DEFAULT != ncondcnt		&& (ncondcnt < FLCK_FLCKNCONDCNT_MIN	|| FLCK_FLCKNCONDCNT_MAX < ncondcnt))	||
-		(FLCK_INITCNT_DEFAULT != lockercnt		&& (waitercnt < FLCK_FLCKWAITERCNT_MIN	|| FLCK_FLCKWAITERCNT_MAX < waitercnt))	)
+		(FLCK_INITCNT_DEFAULT != waitercnt		&& (waitercnt < FLCK_FLCKWAITERCNT_MIN	|| FLCK_FLCKWAITERCNT_MAX < waitercnt))	)
 	{
 		ERR_FLCKPRN("Parameters are wrong: filelock cnt(%zu), offsetlock cnt(%zu), locker cnt(%zu), named mutex cnt(%zu), named cond cnt(%zu), waiter cnt(%zu)", filelockcnt, offlockcnt, lockercnt, nmtxcnt, ncondcnt, waitercnt);
 		return false;

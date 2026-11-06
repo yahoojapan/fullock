@@ -122,14 +122,14 @@ bool FlShm::InitializeShm(void)
 	mode_t	old_umask = umask(FlShm::ShmFileUmask);
 
 	// test by creating
-	if(FLCK_INVALID_HANDLE == (FlShm::ShmFd = open(FlShm::ShmPath().c_str(), O_RDWR | O_CREAT | O_EXCL, FLCK_SHM_PERMS))){
+	if(FLCK_INVALID_HANDLE == (FlShm::ShmFd = open(FlShm::ShmPath().c_str(), O_RDWR | O_CREAT | O_EXCL | O_NOFOLLOW, FLCK_SHM_PERMS))){
 		if(EEXIST != errno){
 			ERR_FLCKPRN("Failed to open(create) %s(errno=%d).", FlShm::ShmPath().c_str(), errno);
 			umask(old_umask);
 			return false;
 		}
 		// already file exists
-		if(FLCK_INVALID_HANDLE == (FlShm::ShmFd = open(FlShm::ShmPath().c_str(), O_RDWR, FLCK_SHM_PERMS))){
+		if(FLCK_INVALID_HANDLE == (FlShm::ShmFd = open(FlShm::ShmPath().c_str(), O_RDWR | O_NOFOLLOW, FLCK_SHM_PERMS))){
 			ERR_FLCKPRN("Failed to open %s(errno=%d).", FlShm::ShmPath().c_str(), errno);
 			umask(old_umask);
 			return false;

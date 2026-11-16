@@ -1,3 +1,9 @@
+fullock (1.0.70) unstable; urgency=low
+
+  * Add strict variable checks in alpine_build.sh - #140
+
+ -- Takeshi Nakatani <ggtakec@gmail.com>  Mon, 16 Nov 2026 13:47:03 +0900
+
 fullock (1.0.69) unstable; urgency=low
 
   * Changed support OSes and fixed files - #138
